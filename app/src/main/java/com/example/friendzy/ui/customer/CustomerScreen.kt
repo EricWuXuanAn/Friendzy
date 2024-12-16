@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -48,9 +50,11 @@ fun CustomerScreen(
                onValueChange = {inputText = it},
                modifier = Modifier.fillMaxWidth().padding(5.dp),
                label = { Text(text = stringResource(R.string.Search)) },
-
-               
+               leadingIcon = {
+                   Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+               }
            )
+
        }
     }
 }
