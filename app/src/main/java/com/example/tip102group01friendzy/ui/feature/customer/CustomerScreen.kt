@@ -56,6 +56,8 @@ fun CustomerScreen(
            )
 
        }
+        //kokokokokokokko
+        //jjijijijijii
     }
 }
 
