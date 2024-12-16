@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
@@ -59,7 +57,7 @@ import kotlinx.coroutines.launch
 
 //@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Register(
+fun RegisterScreen(
     navController: NavHostController
 ) {
     val context = LocalContext.current
@@ -266,11 +264,12 @@ fun Register(
                             withDismissAction = true
                         )
                     }
-                }else{
+                }//TODO:確認之後看DB是否註冊過，若註冊過要跳通知
+                else{
                 navController.navigate(Screen.Login.name)
                 }
-            },//1.格線都輸入且符合規格回到登入頁
-            // 2.密碼確認沒問題回到登入頁
+            },//TODO:1.格線都輸入且符合規格回到登入頁
+            //TODO:2.密碼確認沒問題回到登入頁
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
                 contentColor = Color.DarkGray
@@ -336,6 +335,6 @@ fun SwitchWithText(
 @Composable
 fun RegisterPreview() {
     TIP102Group01FriendzyTheme {
-        Register(rememberNavController())
+        RegisterScreen(rememberNavController())
     }
 }

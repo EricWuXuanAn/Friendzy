@@ -53,7 +53,7 @@ import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun Login(
+fun LoginScreen(
     navController: NavHostController
 ) {
     val context = LocalContext.current
@@ -152,7 +152,7 @@ fun Login(
                             )
                         }
                     }
-                },//else if帳號或密碼錯誤跳錯誤訊息，else 進入主畫面
+                },//TODO:else if帳號或密碼錯誤跳錯誤訊息，else 進入主畫面
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),
                     contentColor = Color.DarkGray
@@ -179,7 +179,6 @@ fun Login(
                         color = colorResource(R.color.Gray)
                     )
                 }
-//                VerticalDivider(color = colorResource(R.color.Gray))
                 TextButton(
                     onClick = {
                         navController.navigate(Screen.Register.name)
@@ -203,6 +202,6 @@ fun Login(
 @Composable
 fun LoginPreview() {
     TIP102Group01FriendzyTheme {
-        Login(rememberNavController())
+        LoginScreen(rememberNavController())
     }
 }
