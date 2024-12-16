@@ -266,7 +266,7 @@ fun RegisterScreen(
                     }
                 }//TODO:確認之後看DB是否註冊過，若註冊過要跳通知
                 else{
-                navController.navigate(Screen.Login.name)
+                navController.navigate(Screen.LoginScreen.name)
                 }
             },//TODO:1.格線都輸入且符合規格回到登入頁
             //TODO:2.密碼確認沒問題回到登入頁
@@ -333,7 +333,7 @@ fun SwitchWithText(
 
 @Preview(showBackground = true)
 @Composable
-fun RegisterPreview() {
+fun RegisterScreenPreview() {
     TIP102Group01FriendzyTheme {
         RegisterScreen(rememberNavController())
     }

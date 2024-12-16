@@ -150,7 +150,7 @@ fun ForgetPasswordScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun ForgetPasswordPreview() {
+fun ForgetPasswordScreenPreview() {
     TIP102Group01FriendzyTheme {
         ForgetPasswordScreen(rememberNavController())
     }

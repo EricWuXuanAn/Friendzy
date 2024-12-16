@@ -17,10 +17,11 @@
     <string name="errorEmail">Email Formatting Error.</string>
     <string name="passwordDifferent">Password do not match.</string>
     <string name="confirmPassword">Confirm Password</string>
-    <string name="Login">Login</string>
-    <string name="Register">Register</string>
-    <string name="ForgetPassword">ForgetPassword</string>
+    <string name="LoginScreen">LoginScreen</string>
+    <string name="RegisterScreen">RegisterScreen</string>
+    <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="back_button">BackButton</string>
     <string name="EmailCanNotEmpty">Email cannot be empty.</string>
+    <string name="ChatroomScreen">ChatroomScreen</string>
 
 </resources>

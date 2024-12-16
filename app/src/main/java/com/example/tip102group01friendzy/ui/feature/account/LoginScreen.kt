@@ -171,7 +171,7 @@ fun LoginScreen(
                 TextButton(
                     onClick = {
                         password = ""
-                        navController.navigate(Screen.ForgetPassword.name)
+                        navController.navigate(Screen.ForgetPasswordScreen.name)
                     } //跳轉畫面到忘記密碼頁
                 ) {
                     Text(
@@ -181,7 +181,7 @@ fun LoginScreen(
                 }
                 TextButton(
                     onClick = {
-                        navController.navigate(Screen.Register.name)
+                        navController.navigate(Screen.RegisterScreen.name)
                     } //跳轉畫面到註冊
                 ) {
                     Text(
@@ -200,7 +200,7 @@ fun LoginScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPreview() {
+fun LoginScreenPreview() {
     TIP102Group01FriendzyTheme {
         LoginScreen(rememberNavController())
     }
