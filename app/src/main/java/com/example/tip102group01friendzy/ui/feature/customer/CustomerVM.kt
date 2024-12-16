@@ -1,9 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
 import androidx.lifecycle.ViewModel
-import com.example.tip102group01friendzy.Customer
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 

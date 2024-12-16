@@ -1,4 +1,6 @@
-package com.example.tip102group01friendzy
+package com.example.tip102group01friendzy.ui.feature.customer
+
+import com.example.tip102group01friendzy.R
 
 class Customer(
     var memberName: String = "",
