@@ -1,4 +1,4 @@
-package com.example.tip102group01friendzy.ui.customer
+package com.example.tip102group01friendzy.ui.feature.customer
 
 import android.service.controls.Control
 import androidx.compose.foundation.Image
