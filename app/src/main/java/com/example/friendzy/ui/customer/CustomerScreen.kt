@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.friendzy.R
+import com.example.tip102group01friendzy.R
 import java.security.AccessController
 
 @Composable
@@ -49,7 +49,7 @@ fun CustomerScreen(
                value = inputText,
                onValueChange = {inputText = it},
                modifier = Modifier.fillMaxWidth().padding(5.dp),
-               label = { Text(text = stringResource(R.string.Search)) },
+               label = { Text(text = stringResource(R.string.search)) },
                leadingIcon = {
                    Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
                }
