@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Friendzy"
+rootProject.name = "TIP102Group01Friendzy"
 include(":app")
  
