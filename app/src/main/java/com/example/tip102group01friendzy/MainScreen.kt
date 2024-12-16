@@ -29,7 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
-//import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
 enum class Screen(@StringRes val title: Int) {
