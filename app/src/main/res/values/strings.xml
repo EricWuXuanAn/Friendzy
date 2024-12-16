@@ -1,4 +1,5 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">TIP102Group01Friendzy</string>
     <string name="account">Account(Email)</string>
     <string name="password">Password</string>
@@ -22,4 +23,8 @@
     <string name="back_button">BackButton</string>
     <string name="EmailCanNotEmpty">Email cannot be empty.</string>
 
+=======
+    <string name="app_name">Friendzy</string>
+    <string name="Search">Search</string>
+>>>>>>> 58bdb0bc4af9e5c900d507a10d394a3a0621fe4f
 </resources>
