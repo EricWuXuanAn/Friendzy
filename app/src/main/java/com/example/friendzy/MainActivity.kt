@@ -36,7 +36,9 @@ fun Main(){}
 @Composable
 fun FriendzyNavHost(
     navController: NavHostController = rememberNavController()
-){}
+){
+
+}
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
