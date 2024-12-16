@@ -140,7 +140,7 @@ fun CustomerScreen(
                 //要跳到會員資料
             }
         )
-        
+
     }
 }
 
