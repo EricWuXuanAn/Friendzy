@@ -154,7 +154,7 @@ fun customerList(
             ListItem(
                 modifier = Modifier.clickable { onClick(customer) },
                 headlineContent = { Text(text = customer.memberName) },
-                supportingContent = { Text(text = customer.phoneNum)},
+                supportingContent = { Text(text ="I am good at  ${customer.memberSpecialty}") },
                 leadingContent = {
                     Image(
                         painter = painterResource(id = customer.memberImg),

@@ -39,11 +39,11 @@ class CustomerVM : ViewModel() {
 
     fun getMemberInfo(): List<Customer> {
          return  listOf(
-             Customer("毛安", "0978008840", "01"),
-             Customer("阿峻", "9876543219", "02"),
-             Customer("阿Miu", "0987654321", "03"),
-             Customer("Nita", "0987654567", "04"),
-             Customer("小宇", "09876542362", "05")
+             Customer("毛安", "0978008840", "01", memberSpecialty = "羽球"),
+             Customer("阿峻", "9876543219", "02", memberSpecialty = "電腦"),
+             Customer("阿Miu", "0987654321", "03", memberSpecialty = "寫程式"),
+             Customer("Nita", "0987654567", "04", memberSpecialty = "英語家教"),
+             Customer("小宇", "09876542362", "05", memberSpecialty = "動漫")
          )
     }
 }
