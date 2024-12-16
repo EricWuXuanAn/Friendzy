@@ -1,3 +1,25 @@
 <resources>
-    <string name="app_name">Friendzy</string>
+    <string name="app_name">TIP102Group01Friendzy</string>
+    <string name="account">Account(Email)</string>
+    <string name="password">Password</string>
+    <string name="setUp">Set up</string>
+    <string name="logIn">Log in</string>
+    <string name="ForgotYourPassword">Forgot Your Password?</string>
+    <string name="acc_pass_empty">Account and password cannot be empty!</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="submit">Submit</string>
+    <string name="sendLink">Please enter your email address and we will send you the link.</string>
+    <string name="columnIsEmpty">Field cannot be empty.</string>
+    <string name="passwordRule">Password(at least 8 characters)</string>
+    <string name="errorEmail">Email Formatting Error.</string>
+    <string name="passwordDifferent">Password do not match.</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="Login">Login</string>
+    <string name="Register">Register</string>
+    <string name="ForgetPassword">ForgetPassword</string>
+    <string name="back_button">BackButton</string>
+    <string name="EmailCanNotEmpty">Email cannot be empty.</string>
+
 </resources>
