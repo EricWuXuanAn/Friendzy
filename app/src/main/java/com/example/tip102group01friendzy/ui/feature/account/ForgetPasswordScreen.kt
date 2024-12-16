@@ -44,7 +44,7 @@ import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun ForgetPassword(
+fun ForgetPasswordScreen(
     navController: NavHostController
 ) {
 
@@ -123,7 +123,7 @@ fun ForgetPassword(
                                 withDismissAction = true
                             )
                         }
-                    }//else{}電子信箱正確且曾註冊過發送郵件
+                    }//TODO:else{}電子信箱正確且曾註冊過發送郵件
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),
@@ -150,8 +150,8 @@ fun ForgetPassword(
 
 @Preview(showBackground = true)
 @Composable
-fun ForgetPasswordPreview() {
+fun ForgetPasswordScreenPreview() {
     TIP102Group01FriendzyTheme {
-        ForgetPassword(rememberNavController())
+        ForgetPasswordScreen(rememberNavController())
     }
 }

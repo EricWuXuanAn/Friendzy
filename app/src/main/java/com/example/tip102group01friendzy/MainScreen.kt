@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy
 
+import android.icu.text.CaseMap.Title
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,15 +26,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.tip102group01friendzy.ui.feature.account.ForgetPassword
-import com.example.tip102group01friendzy.ui.feature.account.Login
-import com.example.tip102group01friendzy.ui.feature.account.Register
+import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
+import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
+import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
 enum class Screen(@StringRes val title: Int) {
-    Login(title = R.string.Login),
-    Register(title = R.string.Register),
-    ForgetPassword(title = R.string.ForgetPassword)
+    LoginScreen(title = R.string.LoginScreen),
+    RegisterScreen(title = R.string.RegisterScreen),
+    ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
+    ChatroomScreen(title = R.string. ChatroomScreen)
 }
 
 /**
@@ -54,7 +57,7 @@ fun Main(
             此時需要呼叫split().first()取得頁面名稱方便enum Screen比對。
             若為空值則回傳Screen01 */
         //destination最新物件 > route 最新物件的路徑
-        backStackEntry?.destination?.route?.split("/")?.first() ?: Screen.Login.name
+        backStackEntry?.destination?.route?.split("/")?.first() ?: Screen.LoginScreen.name
     )
     // 設定內容向上捲動時，TopAppBar自動收起來；呼叫pinnedScrollBehavior()則不會收起來
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -77,28 +80,35 @@ fun Main(
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Login.name,
+            startDestination = Screen.LoginScreen.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
 
         ) {
-            composable(route = Screen.Login.name) {
-                Login(
+            composable(route = Screen.LoginScreen.name) {
+                LoginScreen(
                     navController = navController
                 )
             }
             composable(
-                route = Screen.Register.name
+                route = Screen.RegisterScreen.name
             ) {
-                Register(
+                RegisterScreen(
                     navController = navController
                 )
             }
             composable(
-                route = Screen.ForgetPassword.name
+                route = Screen.ForgetPasswordScreen.name
             ) { backStackEntry ->
-                ForgetPassword(
+                ForgetPasswordScreen(
+                    navController = navController
+                )
+            }
+            composable(
+                route = Screen.ChatroomScreen.name
+            ) { backStackEntry ->
+                ChatroomScreen(
                     navController = navController
                 )
             }
