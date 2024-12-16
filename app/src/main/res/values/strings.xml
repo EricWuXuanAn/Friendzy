@@ -22,5 +22,11 @@
     <string name="ForgetPassword">ForgetPassword</string>
     <string name="back_button">BackButton</string>
     <string name="EmailCanNotEmpty">Email cannot be empty.</string>
+    <string name="order_manage">Order Manage</string>
+    <string name="collection">Collection List</string>
+    <string name="post_setting">Post Setting</string>
+    <string name="my_applaction">My Application</string>
+    <string name="recommemd">Recommend</string>
+    <string name="search_special">Type Special to get star!</string>
 
 </resources>

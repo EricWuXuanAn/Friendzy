@@ -141,6 +141,6 @@ fun MainAppBar(
 @Composable
 fun MainScreenPreview() {
     TIP102Group01FriendzyTheme {
-        Main()
+        Main(rememberNavController())
     }
 }
