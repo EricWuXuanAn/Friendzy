@@ -29,6 +29,7 @@
     <string name="ChatroomScreen">ChatroomScreen</string>
     <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="RegisterScreen">RegisterScreen</string>
+    <string name="favotite">Favorite</string>
 
 
 </resources>

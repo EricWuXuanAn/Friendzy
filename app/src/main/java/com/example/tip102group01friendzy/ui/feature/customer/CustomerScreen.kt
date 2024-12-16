@@ -12,17 +12,33 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,7 +59,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerScreen(
     navController: NavHostController = rememberNavController(),
@@ -52,114 +70,196 @@ fun CustomerScreen(
     var inputText by remember { mutableStateOf("") }
     val customerState by customerVM.memberState.collectAsState()
     var scope = rememberCoroutineScope()
+    var snackbar = remember { SnackbarHostState() }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp),
-            horizontalArrangement = Arrangement.Center
-        )
-        {
-            OutlinedTextField(
-                value = inputText,
-                onValueChange = { inputText = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-//               label = { Text(text = stringResource(R.string.search)) },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-                },
-                trailingIcon = {
-                    Icon(imageVector = Icons.Default.Clear,
-                        contentDescription = "Cancel",
-                        modifier = Modifier.clickable { inputText = "" }
-                    )
-                },
-                singleLine = true,
-                shape = RoundedCornerShape(15.dp),
-                placeholder = { Text(stringResource(R.string.search_special)) }
+    Scaffold(
+        topBar = {},
+        bottomBar = {
+            BottomAppBar(
+                actions = {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                snackbar.showSnackbar(
+                                    message = "喜愛按鈕被點擊",
+                                    //這裡之後改成跳轉到某頁面？不會用snackbar
+                                    withDismissAction = true
+                                )
+                            }
+                        }
+                    ) { Icon(Icons.Filled.Favorite, contentDescription = "favorite") }
+                    IconButton(onClick = {
+                        scope.launch {
+                            //這裡可能跳轉到設定預約時間
+                            snackbar.showSnackbar(
+                                "",
+                                withDismissAction = true
+                            )
+                        }
+                    }) {
+                        Icon(Icons.Filled.DateRange, contentDescription = "Date Range")
+                    }
+                    IconButton(onClick = {
+                        //之後要連結回到首頁
+                        scope.launch {
+                            snackbar.showSnackbar(
+                                "回到首頁",
+                                withDismissAction = true
+                            )
+                        }
+                    }) {
+                        Icon(Icons.Filled.Home, contentDescription = "Home Page")
+                    }
+                    IconButton(onClick = {
+                        //之後要連結回到個人中心介面
+                        scope.launch {
+                            snackbar.showSnackbar(
+                                "回到個人頁面",
+                                withDismissAction = true
+                            )
+                        }
+                    }) {
+                        Icon(Icons.Filled.AccountCircle, contentDescription = "Account Page")
+                    }
+                    IconButton(onClick = {
+                        scope.launch {
+                            snackbar.showSnackbar(
+                                "",
+                                withDismissAction = true
+                            )
+                        }
+                    }) {
+                        Icon(Icons.Filled.AddCircle, contentDescription = "add")
+                    }
+
+                }
 
             )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        )
-        {
-            Button(
-                modifier = Modifier.weight(1f),
+        },
+        floatingActionButton = {
+            FloatingActionButton(
                 onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.purple_200),
-                    contentColor = Color.DarkGray
-                )
-            ) { Text(text = stringResource(R.string.order_manage)) }
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.purple_200),
-                    contentColor = Color.DarkGray
-                )
-            ) { Text(text = stringResource(R.string.collection)) }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.purple_200),
-                    contentColor = Color.DarkGray
-                )
-            ) { Text(text = stringResource(R.string.post_setting)) }
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.purple_200),
-                    contentColor = Color.DarkGray
-                )
-            ) { Text(text = stringResource(R.string.my_applaction)) }
-        }
-        HorizontalDivider(
-            modifier = Modifier.padding(top = 10.dp),
-            color = colorResource(R.color.teal_700)
-        )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp),
-            text = stringResource(R.string.recommemd),
-            textAlign = TextAlign.Start,
-            fontSize = 28.sp
-        )
-        customerList(
-            customers = customerState,
-            onClick = {
-                //要跳到會員資料
+                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+            ) {
+                Icon(Icons.Filled.Notifications, contentDescription = "Chat")
             }
-        )
-        BottomAppBar(){}
+        },
+        content = { innerpadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerpadding),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp),
+                    horizontalArrangement = Arrangement.Center
+                )
+                {
+                    OutlinedTextField(
+                        value = inputText,
+                        onValueChange = { inputText = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Default.Clear,
+                                contentDescription = "Cancel",
+                                modifier = Modifier.clickable { inputText = "" }
+                            )
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(15.dp),
+                        placeholder = { Text(stringResource(R.string.search_special)) }
 
-    }
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                )
+                {
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = {},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.purple_200),
+                            contentColor = Color.DarkGray
+                        )
+                    ) { Text(text = stringResource(R.string.order_manage)) }
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = {},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.purple_200),
+                            contentColor = Color.DarkGray
+                        )
+                    ) { Text(text = stringResource(R.string.collection)) }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = {},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.purple_200),
+                            contentColor = Color.DarkGray
+                        )
+                    ) { Text(text = stringResource(R.string.post_setting)) }
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = {},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.purple_200),
+                            contentColor = Color.DarkGray
+                        )
+                    ) { Text(text = stringResource(R.string.my_applaction)) }
+                }
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 10.dp),
+                    color = colorResource(R.color.teal_700)
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp),
+                    text = stringResource(R.string.recommemd),
+                    textAlign = TextAlign.Start,
+                    fontSize = 28.sp
+                )
+                customerList(
+                    customers = customerState,
+                    onClick = {
+                        //要跳到會員資料
+                    }
+                )
+
+
+            }
+        }
+    )
+}
+
+@Composable
+//做一個日期選擇對話筐
+fun getDateRangeO() {
 }
 
 
 @Composable
+//拿到顧客資訊 目前為假資料 之後要從資料庫抓
 fun customerList(
     customers: List<Customer>,
     onClick: (Customer) -> Unit
