@@ -65,11 +65,10 @@ fun ChatroomScreen(
 
     Column(
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
         Column (
-            verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .fillMaxWidth(0.9f)
         ){
