@@ -6,7 +6,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.Customer
 class Chatroom (
     var roomNo: String ="",
     var UserTwoName : String="",
-    var image: Int= R.drawable.friendzy,
+    var image: Int= R.drawable.puzzle,
     var lastMessageTime: String =""
 ){
     override fun equals(other: Any?): Boolean {

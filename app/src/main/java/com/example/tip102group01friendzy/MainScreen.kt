@@ -131,7 +131,7 @@ fun MainAppBar(
 ) {
     TopAppBar(
 //         設定頁面標題
-        title = { Text("") },
+        title = { Text(text = "") },
         modifier = modifier,
         navigationIcon = {
             // 如果可回前頁，就顯示Back按鈕

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -68,10 +69,11 @@ fun ChatroomScreen(
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
-        Column (
+        Text(text = stringResource(R.string.chatroom))
+        Column(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-        ){
+        ) {
             OutlinedTextField(
                 value = searchChatroom,
                 onValueChange = { searchChatroom = it },
@@ -88,7 +90,7 @@ fun ChatroomScreen(
                     .fillMaxWidth()
             )
         }
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
         ) {
@@ -107,11 +109,11 @@ fun ChatroomLists(
     chatrooms: List<Chatroom>,
     onClick: (Chatroom) -> Unit
 ) {
-    LazyColumn (
+    LazyColumn(
         contentPadding = PaddingValues(),
         modifier = Modifier
 
-    ){
+    ) {
         items(chatrooms) { chatroom ->
             // 用來建立Lists內容物
             ListItem(
