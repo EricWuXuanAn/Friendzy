@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +25,10 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerFormatter
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -34,14 +39,18 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,6 +69,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter.ofPattern
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,6 +82,9 @@ fun CustomerScreen(
     navController: NavHostController = rememberNavController(),
     customerVM: CustomerVM
 ) {
+    val dateFormat = ofPattern("YYYY-MM-YY")
+    var selectDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
+    var showDatePickerDialog by remember { mutableStateOf(false) }
     var inputText by remember { mutableStateOf("") }
     val customerState by customerVM.memberState.collectAsState()
     var scope = rememberCoroutineScope()
@@ -74,64 +92,75 @@ fun CustomerScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        topBar = {},
         bottomBar = {
             BottomAppBar(
                 actions = {
+
                     IconButton(
+                        modifier = Modifier.weight(0.4f),
                         onClick = {
+                            //之後要連結回到首頁  之後不需要scope 會直接切畫面
                             scope.launch {
                                 snackbar.showSnackbar(
-                                    message = "喜愛按鈕被點擊",
-                                    //這裡之後改成跳轉到某頁面？不會用snackbar
+                                    "回到首頁",
                                     withDismissAction = true
                                 )
                             }
                         }
-                    ) { Icon(Icons.Filled.Favorite, contentDescription = "favorite") }
-                    IconButton(onClick = {
-                        scope.launch {
-                            //這裡可能跳轉到設定預約時間
-                            snackbar.showSnackbar(
-                                "",
-                                withDismissAction = true
-                            )
+                    ) {
+                        Column {
+                            Icon(Icons.Default.Home, contentDescription = "Home Page")
+                            Text(stringResource(R.string.Home))
                         }
-                    }) {
+
+                    }
+                    IconButton(
+                        modifier = Modifier.weight(0.4f),
+                        onClick = {
+                            scope.launch {
+                                showDatePickerDialog = true
+                            }
+                        }) {
                         Icon(Icons.Filled.DateRange, contentDescription = "Date Range")
-                    }
-                    IconButton(onClick = {
-                        //之後要連結回到首頁
-                        scope.launch {
-                            snackbar.showSnackbar(
-                                "回到首頁",
-                                withDismissAction = true
+                        if (showDatePickerDialog){
+                            getDatePicker(
+                                onClick = {date ->
+                                    selectDate = date?.let {
+                                        Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC"))
+                                            .toLocalDate().format(dateFormat)
+                                    }?: "no selection"
+                                    showDatePickerDialog = false
+                                },
+                                onDismiss = {showDatePickerDialog = false}
                             )
                         }
-                    }) {
-                        Icon(Icons.Filled.Home, contentDescription = "Home Page")
                     }
-                    IconButton(onClick = {
-                        //之後要連結回到個人中心介面
-                        scope.launch {
-                            snackbar.showSnackbar(
-                                "回到個人頁面",
-                                withDismissAction = true
-                            )
-                        }
-                    }) {
-                        Icon(Icons.Filled.AccountCircle, contentDescription = "Account Page")
-                    }
-                    IconButton(onClick = {
-                        scope.launch {
-                            snackbar.showSnackbar(
-                                "",
-                                withDismissAction = true
-                            )
-                        }
-                    }) {
+                    IconButton(
+                        modifier = Modifier.weight(0.4f),
+                        onClick = {
+                            scope.launch {
+                                snackbar.showSnackbar(
+                                    "跳轉到刊登頁面",
+                                    withDismissAction = true
+                                )
+                            }
+                        }) {
                         Icon(Icons.Filled.AddCircle, contentDescription = "add")
                     }
+                    IconButton(
+                        modifier = Modifier.weight(0.4f),
+                        onClick = {
+                            //之後要連結回到個人中心介面
+                            scope.launch {
+                                snackbar.showSnackbar(
+                                    "回到個人頁面",
+                                    withDismissAction = true
+                                )
+                            }
+                        }) {
+                        Icon(Icons.Filled.AccountCircle, contentDescription = "Account Page")
+                    }
+
 
                 }
 
@@ -217,7 +246,7 @@ fun CustomerScreen(
                             containerColor = colorResource(R.color.purple_200),
                             contentColor = Color.DarkGray
                         )
-                    ) { Text(text = stringResource(R.string.post_setting)) }
+                    ) { Text(text = stringResource(R.string.blackList)) }
                     Button(
                         modifier = Modifier.weight(1f),
                         onClick = {},
@@ -252,10 +281,35 @@ fun CustomerScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //做一個日期選擇對話筐
-fun getDateRangeO() {
+fun getDatePicker(
+    onClick: (selectedDateMills: Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+     var datePickerState = rememberDatePickerState(
+        selectableDates = object : SelectableDates{
+            override fun isSelectableYear(year: Int): Boolean {
+                return year >= 2024
+            }
+        }
+    )
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = {datePickerState.selectedDateMillis}
+            ) { Text(text = stringResource(R.string.Confirm)) }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) { Text(text = stringResource(R.string.Cancel)) }
+        }
+    ) { DatePicker(state = datePickerState) }
 }
+
+
 
 
 @Composable
@@ -272,6 +326,7 @@ fun customerList(
                 supportingContent = { Text(text = "I am good at  ${customer.memberSpecialty}") },
                 leadingContent = {
                     Image(
+                        modifier = Modifier.size(50.dp),
                         painter = painterResource(id = customer.memberImg),
                         contentDescription = "memberPhoto"
                     )
