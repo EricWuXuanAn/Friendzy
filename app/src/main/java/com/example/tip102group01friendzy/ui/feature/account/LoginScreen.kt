@@ -151,7 +151,8 @@ fun LoginScreen(
                                 withDismissAction = true
                             )
                         }
-                    }
+                    }else{
+                    navController.navigate(Screen.ChatroomScreen.name)}
                 },//TODO:else if帳號或密碼錯誤跳錯誤訊息，else 進入主畫面
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),

@@ -2,9 +2,11 @@ package com.example.tip102group01friendzy.ui.feature.chat
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,8 +57,7 @@ import java.util.Locale
 @Composable
 fun ChatroomScreen(
     navController: NavController = rememberNavController(),
-    chatroomViewModel: ChatroomViewModel = viewModel(),
-    innerPadding: PaddingValues
+    chatroomViewModel: ChatroomViewModel = viewModel()
 ) {
     var searchChatroom by remember { mutableStateOf("") }
     val chatrooms by chatroomViewModel.chatroomState.collectAsState()
@@ -64,11 +66,13 @@ fun ChatroomScreen(
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
+
     ) {
-        Column {
+        Column (
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+        ){
             OutlinedTextField(
                 value = searchChatroom,
                 onValueChange = { searchChatroom = it },
@@ -85,13 +89,17 @@ fun ChatroomScreen(
                     .fillMaxWidth()
             )
         }
-        ChatroomLists(
-            chatrooms.filter { it.UserTwoName.contains(searchChatroom, true) },
-            onClick = {
-                // TODO:跳轉到該聊天室
-            }
-        )
-
+        Column (
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+        ) {
+            ChatroomLists(
+                chatrooms.filter { it.UserTwoName.contains(searchChatroom, true) },
+                onClick = {
+                    // TODO:跳轉到該聊天室
+                }
+            )
+        }
     }
 }
 
@@ -101,7 +109,9 @@ fun ChatroomLists(
     onClick: (Chatroom) -> Unit
 ) {
     LazyColumn (
-        contentPadding = PaddingValues()
+        contentPadding = PaddingValues(),
+        modifier = Modifier
+
     ){
         items(chatrooms) { chatroom ->
             // 用來建立Lists內容物
@@ -152,6 +162,6 @@ fun formatDatetime(datetime: String): String {
 @Composable
 fun ChatroomScreenPreview() {
     TIP102Group01FriendzyTheme {
-        ChatroomScreen(rememberNavController(), chatroomViewModel = ChatroomViewModel(), innerPadding = PaddingValues())
+        ChatroomScreen(rememberNavController(), chatroomViewModel = ChatroomViewModel())
     }
 }

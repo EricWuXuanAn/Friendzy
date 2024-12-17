@@ -60,10 +60,11 @@ fun Main(
         backStackEntry?.destination?.route?.split("/")?.first() ?: Screen.LoginScreen.name
     )
     // 設定內容向上捲動時，TopAppBar自動收起來；呼叫pinnedScrollBehavior()則不會收起來
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         // 設定則可追蹤捲動狀態，藉此調整畫面(例如內容向上捲動時，TopAppBar自動收起來)
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MainAppBar(
                 currentScreen = currentScreen,
@@ -109,8 +110,7 @@ fun Main(
                 route = Screen.ChatroomScreen.name
             ) { backStackEntry ->
                 ChatroomScreen(
-                    navController = navController,
-                    innerPadding = innerPadding
+                    navController = navController
                 )
             }
         }
