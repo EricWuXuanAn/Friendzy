@@ -30,6 +30,7 @@
     <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="RegisterScreen">RegisterScreen</string>
     <string name="chatroom">Chatroom</string>
+    <string name="input">Input</string>
 
 
 </resources>
