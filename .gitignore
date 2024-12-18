@@ -18,5 +18,3 @@ local.properties
 .gradle/*
 .gradle
 local.properties
-.gradle
-local.properties
