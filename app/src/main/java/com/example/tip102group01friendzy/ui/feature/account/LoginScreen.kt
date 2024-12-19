@@ -103,6 +103,7 @@ fun LoginScreen(
                         contentDescription = "password"
                     )
                 },
+                isError = loginViewModel.password.value.isNotBlank() && loginViewModel.password.value.count() <8,
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Clear,
