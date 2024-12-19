@@ -1,7 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.chat
 
 import com.example.tip102group01friendzy.R
-import com.example.tip102group01friendzy.ui.feature.customer.Customer
 
 class Chatroom (
     var roomNo: String ="",

@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
+import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
@@ -89,7 +90,8 @@ fun Main(
         ) {
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
-                    navController = navController
+                    navController = navController,
+                    loginViewModel = LoginViewModel()
                 )
             }
             composable(
