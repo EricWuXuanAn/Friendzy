@@ -37,7 +37,7 @@ enum class Screen(@StringRes val title: Int) {
     LoginScreen(title = R.string.LoginScreen),
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
-    ChatroomScreen(title = R.string.ChatroomScreen)
+
 }
 
 /**
@@ -108,13 +108,7 @@ fun Main(
                     navController = navController
                 )
             }
-            composable(
-                route = Screen.ChatroomScreen.name
-            ) { backStackEntry ->
-                ChatroomScreen(
-                    navController = navController
-                )
-            }
+
         }
     }
 }
