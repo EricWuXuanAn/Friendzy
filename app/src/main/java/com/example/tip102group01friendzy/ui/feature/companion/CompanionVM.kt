@@ -12,7 +12,8 @@ class CompanionVM :ViewModel(){
     val companionState = _companionState.asStateFlow()
 
     init {
-        _companionState.update { fetchCompanion() }
+//        _companionState.update { fetchCompanion() }
+        _companionState.value =  fetchCompanion()
     }
 
     private fun fetchCompanion() :List<Companion>{
