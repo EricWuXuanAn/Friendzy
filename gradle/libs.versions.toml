@@ -12,6 +12,7 @@ materialIconsExtended = "1.7.6"
 streamChat = "<latest_version>"
 navigationRuntimeKtx = "2.8.5"
 navigationCompose = "2.8.5"
+gson = "2.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +34,7 @@ stream-chat-android-compose = { module = "io.getstream:stream-chat-android-compo
 stream-chat-android-offline = { module = "io.getstream:stream-chat-android-offline", version.ref = "streamChat" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
