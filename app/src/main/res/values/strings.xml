@@ -20,12 +20,12 @@
     <string name="LoginScreen">LoginScreen</string>
     <string name="back_button">BackButton</string>
     <string name="EmailCanNotEmpty">Email cannot be empty.</string>
-    <string name="order_manage">Order Manage</string>
-    <string name="collection">Collection List</string>
-    <string name="post_setting">Post Setting</string>
-    <string name="my_applaction">My Application</string>
+    <string name="order_manage">Order</string>
+    <string name="collection">Collection</string>
+    <string name="post_setting">Post</string>
+    <string name="my_applaction">Apply</string>
     <string name="recommemd">Recommend</string>
-    <string name="search_special">Type Special to get star!</string>
+    <string name="search_special">Type Special to get start!</string>
     <string name="ChatroomScreen">ChatroomScreen</string>
     <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="RegisterScreen">RegisterScreen</string>
@@ -34,6 +34,16 @@
     <string name="Cancel">Cancel</string>
     <string name="blackList">Black List</string>
     <string name="Home">Home</string>
+    <string name="unconfirm">Unconfirm</string>
+    <string name="in_progress">In Progress</string>
+    <string name="complete">Completed</string>
+    <string name="order_List">Order List</string>
+    <string name="reservation">Reservation</string>
+    <string name="CustomerScreen">Customer Screen</string>
+    <string name="OrderListScreen">Order List</string>
+    <string name="Favorite_and_BlackListScreen">Favorite and BlackListScreen</string>
+    <string name="reservationScreen">Reservation Screen</string>
+    <string name="customerscreen" />
 
 
 </resources>

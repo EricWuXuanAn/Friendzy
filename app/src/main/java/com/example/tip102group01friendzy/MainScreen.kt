@@ -1,6 +1,6 @@
 package com.example.tip102group01friendzy
 
-import android.icu.text.CaseMap.Title
+//import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,14 +30,25 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
-//import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
+import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
+import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BkackListScreen
+import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_Black_ListVM
+import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
+import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
+import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
+import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
 enum class Screen(@StringRes val title: Int) {
     LoginScreen(title = R.string.LoginScreen),
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
-    ChatroomScreen(title = R.string. ChatroomScreen)
+    ChatroomScreen(title = R.string. ChatroomScreen),
+    CustomerScreen(title = R.string.CustomerScreen),
+    OrderListScreen(title = R.string.OrderListScreen),
+    Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
+    Reservation(title = R.string.reservationScreen)
 }
 
 /**
@@ -46,8 +58,12 @@ enum class Screen(@StringRes val title: Int) {
 @Composable
 fun Main(
     //導覽式頁面控制器
-    navController: NavHostController = rememberNavController()
-) {
+    navController: NavHostController = rememberNavController(),
+    customerVM: CustomerVM = viewModel(),
+    orderlistVM: OrderVM = viewModel(),
+    reservationVM: ReservationVM = viewModel(),
+    favorite_and_bkacklistVM:Favorite_and_Black_ListVM = viewModel()
+ ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
     // 取得當前頁面的名稱
@@ -105,6 +121,26 @@ fun Main(
                     navController = navController
                 )
             }
+            composable(
+                route = Screen.OrderListScreen.name
+            ){
+                OrderListScreen(navConrollor = navController, orderlistVM = orderlistVM)
+            }
+            composable(
+                route = Screen.CustomerScreen.name
+            ){
+                CustomerScreen(navController = navController, customerVM = customerVM)
+            }
+            composable(
+                route = Screen.Favorite_and_BlackListScreen.name
+            ){
+                Favorite_and_BkackListScreen(navController = navController, favorite_and_bkacklistVM = favorite_and_bkacklistVM)
+            }
+            composable(
+                route = Screen.Reservation.name
+            ){
+                ReservationScreen(navController = navController, reservationVM = reservationVM)
+            }
 //            composable(
 //                route = Screen.ChatroomScreen.name
 //            ) { backStackEntry ->
@@ -151,6 +187,6 @@ fun MainAppBar(
 @Composable
 fun MainScreenPreview() {
     TIP102Group01FriendzyTheme {
-        Main(rememberNavController())
+        Main()
     }
 }

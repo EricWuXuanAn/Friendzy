@@ -13,47 +13,34 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerFormatter
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberDateRangePickerState
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,216 +55,183 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
-import kotlinx.coroutines.launch
-import java.time.DayOfWeek
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter.ofPattern
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerScreen(
-    navController: NavHostController = rememberNavController(),
-    customerVM: CustomerVM
+    navController: NavHostController, customerVM: CustomerVM
 ) {
+    var tabIndex by remember { mutableStateOf(4) }
+    var text by remember { mutableStateOf("") }
+    var accountStatus by remember { mutableStateOf(false) }
     val dateFormat = ofPattern("YYYY-MM-YY")
     var selectDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var inputText by remember { mutableStateOf("") }
     val customerState by customerVM.memberState.collectAsState()
-    var scope = rememberCoroutineScope()
-    var snackbar = remember { SnackbarHostState() }
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val tab = listOf(
+        stringResource(R.string.order_manage),
+        stringResource(R.string.collection),
+        stringResource(R.string.blackList),
+        stringResource(R.string.reservation),
+        stringResource(R.string.customerscreen)
+    )
+    when (tabIndex) {
+        0 ->  OrderListScreen(navConrollor = rememberNavController(), orderlistVM = OrderVM())
+        1 -> Favorite_and_BkackListScreen(
+            navController = rememberNavController(), favorite_and_bkacklistVM = Favorite_and_Black_ListVM()
+        )
 
-    Scaffold(
-        bottomBar = {
-            BottomAppBar(
-                actions = {
+        2 -> Favorite_and_BkackListScreen(
+            navController = rememberNavController(), favorite_and_bkacklistVM = Favorite_and_Black_ListVM()
+        )
 
-                    IconButton(
-                        modifier = Modifier.weight(0.4f),
-                        onClick = {
-                            //之後要連結回到首頁  之後不需要scope 會直接切畫面
-                            scope.launch {
-                                snackbar.showSnackbar(
-                                    "回到首頁",
-                                    withDismissAction = true
-                                )
-                            }
-                        }
-                    ) {
-                        Column {
-                            Icon(Icons.Default.Home, contentDescription = "Home Page")
-                            Text(stringResource(R.string.Home))
-                        }
+        3 -> ReservationScreen(navController = rememberNavController(), reservationVM = ReservationVM())
+        4 -> {
+            Text("")
+        }
+    }
 
-                    }
-                    IconButton(
-                        modifier = Modifier.weight(0.4f),
-                        onClick = {
-                            scope.launch {
-                                showDatePickerDialog = true
-                            }
-                        }) {
-                        Icon(Icons.Filled.DateRange, contentDescription = "Date Range")
-                        if (showDatePickerDialog){
-                            getDatePicker(
-                                onClick = {date ->
-                                    selectDate = date?.let {
-                                        Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC"))
-                                            .toLocalDate().format(dateFormat)
-                                    }?: "no selection"
-                                    showDatePickerDialog = false
-                                },
-                                onDismiss = {showDatePickerDialog = false}
-                            )
-                        }
-                    }
-                    IconButton(
-                        modifier = Modifier.weight(0.4f),
-                        onClick = {
-                            scope.launch {
-                                snackbar.showSnackbar(
-                                    "跳轉到刊登頁面",
-                                    withDismissAction = true
-                                )
-                            }
-                        }) {
-                        Icon(Icons.Filled.AddCircle, contentDescription = "add")
-                    }
-                    IconButton(
-                        modifier = Modifier.weight(0.4f),
-                        onClick = {
-                            //之後要連結回到個人中心介面
-                            scope.launch {
-                                snackbar.showSnackbar(
-                                    "回到個人頁面",
-                                    withDismissAction = true
-                                )
-                            }
-                        }) {
-                        Icon(Icons.Filled.AccountCircle, contentDescription = "Account Page")
-                    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            switch(
+                check = accountStatus
+            ) {
+                accountStatus = it
+            }
+            if (accountStatus) {
+                text = "Customer"
+            } else {
+                text = "Companion"
+            }
+            Text(
+                text = "$text"
+            )
 
-
-                }
+            IconButton(
+                onClick = {},
+            ) { Icon(Icons.Filled.Notifications, contentDescription = "Notification") }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            OutlinedTextField(value = inputText,
+                onValueChange = { inputText = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                },
+                trailingIcon = {
+                    Icon(imageVector = Icons.Default.Clear,
+                        contentDescription = "Cancel",
+                        modifier = Modifier.clickable { inputText = "" })
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(15.dp),
+                placeholder = { Text(stringResource(R.string.search_special)) }
 
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {},
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
-            ) {
-                Icon(Icons.Filled.Notifications, contentDescription = "Chat")
-            }
-        },
-        content = { innerpadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerpadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    horizontalArrangement = Arrangement.Center
-                )
-                {
-                    OutlinedTextField(
-                        value = inputText,
-                        onValueChange = { inputText = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(5.dp),
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-                        },
-                        trailingIcon = {
-                            Icon(imageVector = Icons.Default.Clear,
-                                contentDescription = "Cancel",
-                                modifier = Modifier.clickable { inputText = "" }
+        }
+        ScrollableTabRow(
+            selectedTabIndex = tabIndex, edgePadding = 0.dp
+        ) {
+            tab.forEachIndexed { index, title ->
+                Tab(text = { Text(text = title, softWrap = false) },
+                    selected = index == tabIndex,
+                    onClick = { tabIndex = index },
+                    selectedContentColor = colorResource(R.color.teal_700),
+                    unselectedContentColor = Color.Gray,
+                    icon = {
+                        when (index) {
+                            0 -> Icon(
+                                painter = painterResource(R.drawable.orderlist),
+                                contentDescription = "order_list"
                             )
-                        },
-                        singleLine = true,
-                        shape = RoundedCornerShape(15.dp),
-                        placeholder = { Text(stringResource(R.string.search_special)) }
 
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                )
-                {
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        onClick = {},
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.purple_200),
-                            contentColor = Color.DarkGray
-                        )
-                    ) { Text(text = stringResource(R.string.order_manage)) }
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        onClick = {},
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.purple_200),
-                            contentColor = Color.DarkGray
-                        )
-                    ) { Text(text = stringResource(R.string.collection)) }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        onClick = {},
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.purple_200),
-                            contentColor = Color.DarkGray
-                        )
-                    ) { Text(text = stringResource(R.string.blackList)) }
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        onClick = {},
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.purple_200),
-                            contentColor = Color.DarkGray
-                        )
-                    ) { Text(text = stringResource(R.string.my_applaction)) }
-                }
-                HorizontalDivider(
-                    modifier = Modifier.padding(top = 10.dp),
-                    color = colorResource(R.color.teal_700)
-                )
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    text = stringResource(R.string.recommemd),
-                    textAlign = TextAlign.Start,
-                    fontSize = 28.sp
-                )
-                customerList(
-                    customers = customerState,
-                    onClick = {
-                        //要跳到會員資料
-                    }
-                )
+                            1 -> Icon(
+                                imageVector = Icons.Default.Favorite,
+                                contentDescription = "favorite"
+                            )
 
+                            2 -> Icon(
+                                painter = painterResource(R.drawable.blacklist),
+                                contentDescription = "black_list"
+                            )
+
+                            3 -> Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "reservation"
+                            )
+                        }
+                    })
 
             }
         }
+        HorizontalDivider(
+            modifier = Modifier.padding(top = 10.dp), color = colorResource(R.color.teal_700)
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            text = stringResource(R.string.recommemd),
+            textAlign = TextAlign.Start,
+            fontSize = 28.sp
+        )
+        customerList(customers = customerState, onClick = {
+            //要跳到會員資料
+        })
+
+
+    }
+}
+
+
+@Composable
+fun switch(
+    check: Boolean,
+    onCheckChange: (Boolean) -> Unit,
+
+    ) {
+    Switch(
+        checked = check, onCheckedChange = onCheckChange, thumbContent = {
+            if (check) {
+                Icon(
+                    Icons.Filled.AccountCircle,
+                    contentDescription = "Customer",
+                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                )
+            } else {
+                Icon(
+                    Icons.Filled.AccountBox,
+                    contentDescription = "Companion",
+                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                )
+            }
+        }, colors = SwitchDefaults.colors(
+            checkedThumbColor = Color.White,
+            checkedTrackColor = colorResource(R.color.purple_200),
+            uncheckedThumbColor = Color.Gray,
+            uncheckedTrackColor = colorResource(R.color.green_200)
+        )
     )
 }
 
@@ -285,38 +239,26 @@ fun CustomerScreen(
 @Composable
 //做一個日期選擇對話筐
 fun getDatePicker(
-    onClick: (selectedDateMills: Long?) -> Unit,
-    onDismiss: () -> Unit
+    onClick: (selectedDateMills: Long?) -> Unit, onDismiss: () -> Unit
 ) {
-     var datePickerState = rememberDatePickerState(
-        selectableDates = object : SelectableDates{
-            override fun isSelectableYear(year: Int): Boolean {
-                return year >= 2024
-            }
+    var datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
+        override fun isSelectableYear(year: Int): Boolean {
+            return year >= 2024
         }
-    )
+    })
 
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            Button(
-                onClick = {datePickerState.selectedDateMillis}
-            ) { Text(text = stringResource(R.string.Confirm)) }
-        },
-        dismissButton = {
-            Button(onClick = onDismiss) { Text(text = stringResource(R.string.Cancel)) }
-        }
-    ) { DatePicker(state = datePickerState) }
+    DatePickerDialog(onDismissRequest = onDismiss, confirmButton = {
+        Button(onClick = { datePickerState.selectedDateMillis }) { Text(text = stringResource(R.string.Confirm)) }
+    }, dismissButton = {
+        Button(onClick = onDismiss) { Text(text = stringResource(R.string.Cancel)) }
+    }) { DatePicker(state = datePickerState) }
 }
-
-
 
 
 @Composable
 //拿到顧客資訊 目前為假資料 之後要從資料庫抓
 fun customerList(
-    customers: List<Customer>,
-    onClick: (Customer) -> Unit
+    customers: List<Customer>, onClick: (Customer) -> Unit
 ) {
     LazyColumn {
         items(customers) { customer ->
