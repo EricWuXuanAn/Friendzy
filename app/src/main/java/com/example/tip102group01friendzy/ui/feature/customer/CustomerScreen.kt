@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
@@ -29,11 +28,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -55,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ofPattern
 
@@ -63,7 +61,6 @@ import java.time.format.DateTimeFormatter.ofPattern
 fun CustomerScreen(
     navController: NavHostController, customerVM: CustomerVM
 ) {
-    var tabIndex by remember { mutableStateOf(4) }
     var text by remember { mutableStateOf("") }
     var accountStatus by remember { mutableStateOf(false) }
     val dateFormat = ofPattern("YYYY-MM-YY")
@@ -71,28 +68,7 @@ fun CustomerScreen(
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var inputText by remember { mutableStateOf("") }
     val customerState by customerVM.memberState.collectAsState()
-    val tab = listOf(
-        stringResource(R.string.order_manage),
-        stringResource(R.string.collection),
-        stringResource(R.string.blackList),
-        stringResource(R.string.reservation),
-        stringResource(R.string.customerscreen)
-    )
-    when (tabIndex) {
-        0 ->  OrderListScreen(navConrollor = rememberNavController(), orderlistVM = OrderVM())
-        1 -> Favorite_and_BkackListScreen(
-            navController = rememberNavController(), favorite_and_bkacklistVM = Favorite_and_Black_ListVM()
-        )
 
-        2 -> Favorite_and_BkackListScreen(
-            navController = rememberNavController(), favorite_and_bkacklistVM = Favorite_and_Black_ListVM()
-        )
-
-        3 -> ReservationScreen(navController = rememberNavController(), reservationVM = ReservationVM())
-        4 -> {
-            Text("")
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -150,41 +126,57 @@ fun CustomerScreen(
 
             )
         }
-        ScrollableTabRow(
-            selectedTabIndex = tabIndex, edgePadding = 0.dp
+        HorizontalDivider(
+            modifier = Modifier.padding(bottom = 10.dp), color = colorResource(R.color.teal_700)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            tab.forEachIndexed { index, title ->
-                Tab(text = { Text(text = title, softWrap = false) },
-                    selected = index == tabIndex,
-                    onClick = { tabIndex = index },
-                    selectedContentColor = colorResource(R.color.teal_700),
-                    unselectedContentColor = Color.Gray,
-                    icon = {
-                        when (index) {
-                            0 -> Icon(
-                                painter = painterResource(R.drawable.orderlist),
-                                contentDescription = "order_list"
-                            )
-
-                            1 -> Icon(
-                                imageVector = Icons.Default.Favorite,
-                                contentDescription = "favorite"
-                            )
-
-                            2 -> Icon(
-                                painter = painterResource(R.drawable.blacklist),
-                                contentDescription = "black_list"
-                            )
-
-                            3 -> Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = "reservation"
-                            )
-                        }
-                    })
-
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconButton(onClick = {
+                    navController.navigate(route = Screen.OrderScreen.name)
+                }) {
+                    Icon(painter = painterResource(R.drawable.orderlist), "order list")
+                }
+                Text(text = stringResource(R.string.order_manage))
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconButton(onClick = {
+                    navController.navigate(Screen.Favorite_and_BlackListScreen.name)
+                }) {
+                    Icon(painter = painterResource(R.drawable.blacklist), "black list")
+                }
+                Text(text = stringResource(R.string.blackList))
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconButton(onClick = {
+                    navController.navigate(Screen.Reservation)
+                }) {
+                    Icon(painter = painterResource(R.drawable.date_range), "reservation")
+                }
+                Text(text = stringResource(R.string.reservation))
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconButton(onClick = {
+                    navController.navigate(Screen.Favorite_and_BlackListScreen.name)
+                }) {
+                    Icon(imageVector = Icons.Default.Favorite, "favorite list")
+                }
+                Text(text = stringResource(R.string.collection))
             }
         }
+
         HorizontalDivider(
             modifier = Modifier.padding(top = 10.dp), color = colorResource(R.color.teal_700)
         )

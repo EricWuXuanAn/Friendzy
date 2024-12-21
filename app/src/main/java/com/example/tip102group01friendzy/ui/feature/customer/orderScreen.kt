@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
@@ -41,7 +40,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OrderListScreen(
     orderlistVM: OrderVM,
-    navConrollor: NavHostController
+    navController: NavHostController
 ) {
     var tabIndex by remember { mutableStateOf(3) }
     val ordeState by orderlistVM.orderList.collectAsState()
@@ -160,5 +159,5 @@ fun orderList(
 @Composable
 @Preview(showBackground = true)
 fun OrderListScreenPreview() {
-    OrderListScreen(orderlistVM = viewModel(), navConrollor = rememberNavController())
+    OrderListScreen(orderlistVM = OrderVM(), navController = rememberNavController())
 }
