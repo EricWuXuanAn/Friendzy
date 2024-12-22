@@ -38,7 +38,7 @@ fun EnterScreen(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         isVisible = true
-        delay(1000)
+        delay(1200)
         navController.navigate(Screen.LoginScreen.name){
             popUpTo(Screen.EnterScreen.name){inclusive=true}
         }
