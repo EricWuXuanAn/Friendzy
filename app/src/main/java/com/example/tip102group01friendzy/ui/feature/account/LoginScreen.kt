@@ -135,6 +135,8 @@ fun LoginScreen(
             Button(
                 onClick = {
                     loginViewModel.onLoginClicked()
+                    //TODO: 確認帳號正確才能登入
+
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),

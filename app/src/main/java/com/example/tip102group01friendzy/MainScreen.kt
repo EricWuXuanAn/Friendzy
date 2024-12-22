@@ -31,6 +31,7 @@ import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BkackListScreen
@@ -50,7 +51,9 @@ enum class Screen(@StringRes val title: Int) {
     CustomerScreen(title = R.string.CustomerScreen),
     OrderListScreen(title = R.string.OrderListScreen),
     Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
-    Reservation(title = R.string.reservationScreen)
+    Reservation(title = R.string.reservationScreen),
+
+    EnterScreen(title=R.string.enterScreen)
 }
 
 /**
@@ -99,7 +102,7 @@ fun Main(
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.LoginScreen.name,
+            startDestination = Screen.EnterScreen.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -146,13 +149,20 @@ fun Main(
             ){
                 ReservationScreen(navController = navController, reservationVM = reservationVM)
             }
-//            composable(
-//                route = Screen.ChatroomScreen.name
-//            ) { backStackEntry ->
-//                ChatroomScreen(
-//                    navController = navController
-//                )
-//            }
+            composable(
+                route = Screen.ChatroomScreen.name
+            ) { backStackEntry ->
+                ChatroomScreen(
+                    navController = navController
+                )
+            }
+            composable(
+                route = Screen.EnterScreen.name
+            ) {
+                EnterScreen(
+                    navController = navController
+                )
+            }
         }
     }
 }
