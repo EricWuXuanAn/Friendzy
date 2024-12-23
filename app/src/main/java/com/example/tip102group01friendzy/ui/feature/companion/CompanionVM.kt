@@ -11,11 +11,18 @@ class CompanionVM :ViewModel(){
     private val _companionState = MutableStateFlow(emptyList<Companion>())
     val companionState = _companionState.asStateFlow()
 
+
     init {
-//        _companionState.update { fetchCompanion() }
-        _companionState.value =  fetchCompanion()
+        _companionState.update { fetchCompanion() }
+//        _companionState.value =  fetchCompanion()
     }
 
+    private val _setCompanionState = MutableStateFlow(Companion())
+    val setCompanionState = _setCompanionState.asStateFlow()
+
+    fun setCompanion(companion: Companion){
+        _setCompanionState.value = companion
+    }
     private fun fetchCompanion() :List<Companion>{
         return listOf(
             Companion("001","名字01", R.drawable.friendzy,"需求項目01"),

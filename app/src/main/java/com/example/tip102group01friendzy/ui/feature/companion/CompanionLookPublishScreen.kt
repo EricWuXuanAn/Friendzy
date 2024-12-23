@@ -2,14 +2,18 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -17,8 +21,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusOrder
 import androidx.compose.ui.graphics.Color
@@ -34,11 +41,12 @@ import com.example.tip102group01friendzy.R
 @Composable
 fun CompanionLookPublishScreen(
     navController: NavHostController = rememberNavController(),
-
+    companionVM : CompanionVM
     ){
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
+    val companion by companionVM.setCompanionState.collectAsState()
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -46,26 +54,32 @@ fun CompanionLookPublishScreen(
     ){
         //顧客資(頭像、名字、聊天鈕)
         Row (
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier
+                .fillMaxHeight(0.15f)
+                .padding(top = 8.dp)
         ){
             Image(
-                modifier = Modifier.size(120.dp),
+                modifier = Modifier.size(120.dp).clip(CircleShape).border(2.dp, Color.DarkGray,
+                    CircleShape),
                 painter = painterResource(R.drawable.friendzy),
                 contentDescription = "memberPhoto",
             )
             Column (
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
+                    .fillMaxSize()
+                    .padding(start = 8.dp, top = 8.dp),
+                horizontalAlignment = Alignment.End
             ){
-                Text(text = "名字123456",
-                    fontSize = 28.sp,
-                    modifier = Modifier.fillMaxWidth())
+                Text(text = "名字：${ companion.memberName }",
+                    fontSize = 24.sp,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp))
                 Button(
                     onClick ={
 
                     },
-                    modifier = Modifier.fillMaxWidth(0.5f).padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent ,//背景顏色
                         contentColor =Color.Black//內容顏色
@@ -85,13 +99,13 @@ fun CompanionLookPublishScreen(
             }
         }
         HorizontalDivider(modifier = Modifier.padding(6.dp))//分隔線
-        Text(text = "需求：1231231", fontSize = 24.sp)
+        Text(text = "需求：${companion.service}", fontSize = 24.sp)
         Image(//再設最大上限
             painter = painterResource(R.drawable.friendzy),
             contentDescription = "servicImage",
             modifier = Modifier.sizeIn(
                 maxWidth = screenWidth * 0.9f,
-                maxHeight = screenHeight * 0.6f,
+                maxHeight = screenHeight * 0.4f,
                 minWidth = screenWidth * 0.4f,
                 minHeight = screenHeight * 0.2f,
             )
@@ -127,6 +141,7 @@ fun CompanionLookPublishScreen(
 
 @Composable
 @Preview(showBackground = true)
-fun PreviewCompanionLookPublishScreen() {
-    CompanionLookPublishScreen()
+fun PreviewCompanionLookPublishScreen(
+    ) {
+    CompanionLookPublishScreen(companionVM = CompanionVM())
 }

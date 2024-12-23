@@ -1,12 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
-import android.icu.text.Transliterator.Position
-import android.util.Log
-import android.view.Gravity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,23 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,25 +40,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
-import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
 import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
 import com.example.tip102group01friendzy.ui.feature.customer.switch
@@ -89,7 +67,7 @@ fun CompanionScreen(
     var inputText by remember { mutableStateOf("") }//搜尋內容
     var tabIndex by remember { mutableIntStateOf(2) }//使用tabs的index編號
     val companionState by companionVM.companionState.collectAsState()
-    var testiten by remember { mutableStateOf("") }//測試用
+    var testIten by remember { mutableStateOf("") }//測試用
 
     var accountStatus by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
@@ -135,13 +113,13 @@ fun CompanionScreen(
                         orderlistVM = OrderVM(),
                         navConrollor = rememberNavController()
                     )
-                    testiten = "123"
+                    testIten = "123"
                 }
                 1 ->{//可預約時間
-                    testiten = "456"
+                    testIten = "456"
                 }
                 2 ->{//申請項目
-                    testiten = "asd"
+                    testIten = "asd"
                 }
             }
         }
@@ -232,9 +210,10 @@ fun CompanionScreen(
             ) {
                 Text("推薦項目", fontSize = 28.sp)
                 Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = testiten)//測試tab功能用
-                ServicList(companions = companionState){ companions ->
-                    testiten = companions.memberNo
+                Text(text = testIten)//測試tab功能用
+                ServicList(companions = companionState){
+                    companionVM.setCompanion(it)
+                    navController.navigate(Screen.CompanionLookPublish.name)
                 }
             }
         }
@@ -257,19 +236,19 @@ fun ServicList(
                 supportingContent = { Text(text = companion.memberName)},
                 leadingContent = {
                     Image(
-                        modifier = Modifier.size(width = 80.dp, height = 80.dp),
+                        modifier = Modifier.size(80.dp),
                         painter = painterResource(id = companion.memberImg),
                         contentDescription = "memberPhoto",
                         contentScale = ContentScale.FillBounds
                     )
                 },
-                trailingContent = {
-                    Icon(
-                        imageVector = Icons.Default.Call,
-                        contentDescription = "",
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
+//                trailingContent = {
+//                    Icon(
+//                        painter = painterResource(R.drawable.chat),
+//                        contentDescription = "",
+//                        modifier = Modifier.padding(8.dp).size(40.dp)
+//                    )
+//                }
             )
             HorizontalDivider()//分隔線
         }

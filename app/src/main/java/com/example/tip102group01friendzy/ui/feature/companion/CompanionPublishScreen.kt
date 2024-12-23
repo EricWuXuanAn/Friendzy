@@ -65,7 +65,12 @@ fun CompanionPublishScreen(
     //下拉選單的顯示
     var skillExpanded by remember { mutableStateOf(false) }
     var locationExpanded by remember { mutableStateOf(false) }
+    var TimeStartExpanded by remember { mutableStateOf(false) }
+    var TimeEndExpanded by remember { mutableStateOf(false) }
 
+    //時間用的小時數
+    val timeList = listOf("00","01","02","03","04","05","06","07","08","09","10",
+        "11","12","13","14","15","16","17","18","19","20","21","22","23")
     //呼叫VM
     val skillState by skillVM.skillState.collectAsState()
 
@@ -81,69 +86,69 @@ fun CompanionPublishScreen(
         Column(
             horizontalAlignment = Alignment.Start
         ) {
-            //專長
+            //專長下拉選單
+            ExposedDropdownMenuBox(
+                expanded = skillExpanded,
+                onExpandedChange = {
+                    skillExpanded = it
+                    inputDropdownMenu = ""
+                },
+            ) {
+                OutlinedTextField(
+                    readOnly = true,
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
+                    value = inputDropdownMenu,
+                    onValueChange = {
+                        inputDropdownMenu = it
+                        skillExpanded = true
+                    },
+                    placeholder = { Text("專長選項") },
+                    shape = RoundedCornerShape(15.dp),
+                    trailingIcon = { TrailingIcon(expanded = skillExpanded) },
+                    enabled = false
+                )
+                ExposedDropdownMenu(
+                    expanded = skillExpanded,
+                    onDismissRequest = { skillExpanded = false },
+                ) {
+                    skillState.forEach { skill ->
+                        DropdownMenuItem(
+                            text = { Text(skill.skillName) },
+                            onClick = {
+                                inputDropdownMenu = skill.skillName
+                                skillExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 2.dp),
+                    .padding(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "專長：", fontSize = 16.sp)
-                OutlinedTextField(
-                    value = inputSkillText,
-                    onValueChange = { inputSkillText = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = false,
-                    shape = RoundedCornerShape(15.dp),
-                    placeholder = { Text("透過選項輸入專長 限30個字") },
-                    enabled = false //禁止打字
-                )
-            }
-            //專長下拉選單
-            Spacer(modifier = Modifier.size(8.dp))//間隔
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-//                Text("專長選項：")
-                ExposedDropdownMenuBox(
-                    expanded = skillExpanded,
-                    onExpandedChange = {
-                        skillExpanded = it
-                        inputDropdownMenu = ""
-                    },
-                ) {
-                    OutlinedTextField(
-                        readOnly = true,
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth(0.75f),
-                        value = inputDropdownMenu,
-                        onValueChange = {
-                            inputDropdownMenu = it
-                            skillExpanded = true
-                        },
-                        placeholder = { Text("專長選項") },
-                        shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = skillExpanded) },
-                        enabled = false
-                    )
-                    ExposedDropdownMenu(
-                        expanded = skillExpanded,
-                        onDismissRequest = { skillExpanded = false },
-                    ) {
-                        skillState.forEach { skill ->
-                            DropdownMenuItem(
-                                text = { Text(skill.skillName) },
-                                onClick = {
-                                    inputDropdownMenu = skill.skillName
-                                    skillExpanded = false
-                                }
-                            )
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(end = 6.dp),
+                    onClick = {
+                        //判斷文字方塊是否有這個詞，有就不變 沒有就新增
+                        when(inputSkillText.contains(inputDropdownMenu)){
+                            true -> {}
+                            false -> inputSkillText += "$inputDropdownMenu "
                         }
                     }
-                }
+                ) { Text("加入選擇專長") }
+                Button(
+                    modifier = Modifier.fillMaxWidth(1f),
+                    onClick = {
+                        inputSkillText = inputSkillText.replace("$inputDropdownMenu ","")
+                    }
+                ) { Text("刪除選擇專長") }
+                /*
                 IconButton(onClick = {
                     //判斷文字方塊是否有這個詞，有就不變 沒有就新增
                     when(inputSkillText.contains(inputDropdownMenu)){
@@ -166,6 +171,26 @@ fun CompanionPublishScreen(
                         modifier = Modifier.size(60.dp)
                     )
                 }
+                */
+            }
+            Spacer(modifier = Modifier.size(8.dp))//間隔
+            //專長
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "專長：", fontSize = 16.sp)
+                OutlinedTextField(
+                    value = inputSkillText,
+                    onValueChange = { inputSkillText = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = false,
+                    shape = RoundedCornerShape(15.dp),
+                    placeholder = { Text("透過選項輸入專長 限30個字") },
+                    enabled = false //禁止打字
+                )
             }
             //開始時間
             Spacer(modifier = Modifier.size(8.dp))//間隔
@@ -196,6 +221,44 @@ fun CompanionPublishScreen(
                     }
                 )
                 //開始時間
+                ExposedDropdownMenuBox(
+                    expanded = TimeStartExpanded,
+                    onExpandedChange = {
+                        TimeStartExpanded = it
+                        inputTimeStart = ""
+                    },
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
+                        value = inputTimeStart,
+                        onValueChange = {
+                            inputTimeStart = it
+                            TimeStartExpanded = true
+                        },
+                        placeholder = { Text("選時間") },
+                        shape = RoundedCornerShape(15.dp),
+                        trailingIcon = { TrailingIcon(expanded = TimeStartExpanded) },
+                        enabled = false
+                    )
+                    ExposedDropdownMenu(
+                        expanded = TimeStartExpanded,
+                        onDismissRequest = { TimeStartExpanded = false },
+                    ) {
+                        timeList.forEach { time ->
+                            DropdownMenuItem(
+                                text = { Text(time) },
+                                onClick = {
+                                    inputTimeStart = time
+                                    TimeStartExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+                /*
                 OutlinedTextField(
                     value = inputTimeStart,
                     onValueChange = {  },
@@ -204,13 +267,14 @@ fun CompanionPublishScreen(
                     shape = RoundedCornerShape(15.dp),
                     placeholder = { Text("選時間") },
                     enabled = false, //禁止打字
-                    trailingIcon = {
-                        Icon(painter = painterResource(R.drawable.clock),
-                            contentDescription ="Clear",
-                            modifier = Modifier.clickable {  }
-                        )
-                    }
+//                    trailingIcon = {
+//                        Icon(painter = painterResource(R.drawable.clock),
+//                            contentDescription ="Clear",
+//                            modifier = Modifier.clickable {  }
+//                        )
+//                    }
                 )
+                 */
             }
             //結束時間
             Spacer(modifier = Modifier.size(8.dp))//間隔
@@ -241,6 +305,44 @@ fun CompanionPublishScreen(
                     }
                 )
                 //結束時間
+                ExposedDropdownMenuBox(
+                    expanded = TimeEndExpanded,
+                    onExpandedChange = {
+                        TimeEndExpanded = it
+                        inputTimeEnd = ""
+                    },
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
+                        value = inputTimeEnd,
+                        onValueChange = {
+                            inputTimeEnd = it
+                            TimeEndExpanded = true
+                        },
+                        placeholder = { Text("選時間") },
+                        shape = RoundedCornerShape(15.dp),
+                        trailingIcon = { TrailingIcon(expanded = TimeEndExpanded) },
+                        enabled = false
+                    )
+                    ExposedDropdownMenu(
+                        expanded = TimeEndExpanded,
+                        onDismissRequest = { TimeEndExpanded = false },
+                    ) {
+                        timeList.forEach { time ->
+                            DropdownMenuItem(
+                                text = { Text(time) },
+                                onClick = {
+                                    inputTimeEnd = time
+                                    TimeEndExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+                /*
                 OutlinedTextField(
                     value = inputTimeEnd,
                     onValueChange = {  },
@@ -249,13 +351,14 @@ fun CompanionPublishScreen(
                     shape = RoundedCornerShape(15.dp),
                     placeholder = { Text("選時間") },
                     enabled = false, //禁止打字
-                    trailingIcon = {
-                        Icon(painter = painterResource(R.drawable.clock),
-                            contentDescription ="Clear",
-                            modifier = Modifier.clickable {  }
-                        )
-                    }
+//                    trailingIcon = {
+//                        Icon(painter = painterResource(R.drawable.clock),
+//                            contentDescription ="Clear",
+//                            modifier = Modifier.clickable {  }
+//                        )
+//                    }
                 )
+                 */
             }
             //地區
             Spacer(modifier = Modifier.size(8.dp))//間隔
@@ -335,14 +438,10 @@ fun CompanionPublishScreen(
             ) {
                 Button(
                     modifier = Modifier
-                        .fillMaxWidth(0.5f)
+                        .fillMaxWidth(1f)
                         .padding(end = 6.dp),
                     onClick = {}
                 ) { Text("刊登")}
-                Button(
-                    modifier = Modifier.fillMaxWidth(1f),
-                    onClick = {}
-                ) { Text("取消")}
             }
         }
     }
