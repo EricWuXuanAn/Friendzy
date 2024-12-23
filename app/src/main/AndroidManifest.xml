@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- 設定網絡訪問權限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TIP102Group01Friendzy"
         tools:targetApi="31">
+
+        <!-- benita 12/21在這裡加入 Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="你的 API 金鑰" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

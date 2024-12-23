@@ -36,7 +36,9 @@ enum class Screen(@StringRes val title: Int) {
     LoginScreen(title = R.string.LoginScreen),
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
-    ChatroomScreen(title = R.string. ChatroomScreen)
+    ChatroomScreen(title = R.string.ChatroomScreen),
+    SearchResultScreen(title = R.string.SearchResultScreen),
+    SearchWithMapScreen(title = R.string.SearchWithMapRScreen)
 }
 
 /**

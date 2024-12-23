@@ -12,6 +12,9 @@ materialIconsExtended = "1.7.6"
 streamChat = "<latest_version>"
 navigationRuntimeKtx = "2.8.5"
 navigationCompose = "2.8.5"
+datastoreCoreAndroid = "1.1.1"
+datastoreCoreJvm = "1.1.1"
+playServicesNearby = "19.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +36,9 @@ stream-chat-android-compose = { module = "io.getstream:stream-chat-android-compo
 stream-chat-android-offline = { module = "io.getstream:stream-chat-android-offline", version.ref = "streamChat" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
+androidx-datastore-core-jvm = { group = "androidx.datastore", name = "datastore-core-jvm", version.ref = "datastoreCoreJvm" }
+play-services-nearby = { group = "com.google.android.gms", name = "play-services-nearby", version.ref = "playServicesNearby" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
