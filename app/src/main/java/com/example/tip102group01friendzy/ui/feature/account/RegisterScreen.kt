@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -56,12 +58,35 @@ import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
 
+@Composable
+fun SetupErrorRequest(viewModel: RegisterViewModel){
+    val errorRequest by viewModel.errorRequest.collectAsState()
+    LaunchedEffect(errorRequest) {
+        if (errorRequest!=null){
+            // alert
+            viewModel.consumeErrorRequest()
+        }
+    }
+}
+
 //@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     navController: NavHostController,
     registerViewModel: RegisterViewModel
 ) {
+
+    SetupErrorRequest(registerViewModel)
+
+    val naviRequest by registerViewModel.naviRequest.collectAsState()
+    LaunchedEffect(naviRequest) {
+        if (naviRequest == true){
+            navController.navigate("home")
+            registerViewModel.consumeNaviRequest()
+        }
+    }
+
+
     val snackbarMessage by registerViewModel.snackbarMessage.collectAsState()
     val snackberTrigger by registerViewModel.snackbarTrigger.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }

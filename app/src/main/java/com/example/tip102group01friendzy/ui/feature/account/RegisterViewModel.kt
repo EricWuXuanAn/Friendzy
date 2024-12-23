@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class RegisterViewModel : ViewModel() {
     var account = mutableStateOf("")
@@ -24,7 +25,20 @@ class RegisterViewModel : ViewModel() {
     private val _snackbarMessage = MutableStateFlow<String?>(null)
     val snackbarMessage: StateFlow<String?> = _snackbarMessage.asStateFlow()
 
+    private val _errorRequest = MutableStateFlow<String?>(null)
+    val errorRequest:StateFlow<String?> = _errorRequest.asStateFlow()
+
+    private val _naviRequest = MutableStateFlow<Boolean?>(null)
+    val naviRequest = _naviRequest.asStateFlow()
+
     fun onRegesterClicked() {
+
+        if (isFormat){
+            _naviRequest.update { true }
+        }else {
+            _errorRequest.update { "格式錯誤" }
+        }
+
         if (account.value.isBlank() || password.value.isBlank() || confirmPassword.value.isBlank() || username.value.isBlank()) {
             _snackbarMessage.value = "Field cannot be empty."
             _snackbarTrigger.value += 1
@@ -41,5 +55,13 @@ class RegisterViewModel : ViewModel() {
             //TODO: 確認之後看DB是否註冊過，若註冊過要跳通知
             _snackbarMessage.value = ""
         }
+    }
+
+    fun consumeErrorRequest() {
+        _errorRequest.update { null }
+    }
+
+    fun consumeNaviRequest() {
+        _naviRequest.update { null }
     }
 }
