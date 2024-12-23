@@ -1,6 +1,6 @@
 package com.example.tip102group01friendzy
 
-import android.icu.text.CaseMap.Title
+//import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,24 +21,48 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
+import com.example.tip102group01friendzy.ui.feature.Memberpage.Settingpage
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
+import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
+import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
+import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BkackListScreen
+import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_Black_ListVM
+import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
+import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
+import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
+import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
 enum class Screen(@StringRes val title: Int) {
     LoginScreen(title = R.string.LoginScreen),
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
+<<<<<<< HEAD
     ChatroomScreen(title = R.string.ChatroomScreen),
     SearchResultScreen(title = R.string.SearchResultScreen),
     SearchWithMapScreen(title = R.string.SearchWithMapRScreen)
+=======
+
+    ChatroomScreen(title = R.string. ChatroomScreen),
+    CustomerScreen(title = R.string.CustomerScreen),
+    OrderScreen(title = R.string.OrderScreen),
+    Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
+    ReservationScreen(title = R.string.reservationScreen),
+
+    SettingScreen(title = R.string.Setting),
+    MemberScreen(title = R.string.Member)
+>>>>>>> main
 }
 
 /**
@@ -48,8 +72,12 @@ enum class Screen(@StringRes val title: Int) {
 @Composable
 fun Main(
     //導覽式頁面控制器
-    navController: NavHostController = rememberNavController()
-) {
+    navController: NavHostController = rememberNavController(),
+    customerVM: CustomerVM = CustomerVM(),
+    orderlistVM: OrderVM = OrderVM(),
+    reservationVM: ReservationVM = ReservationVM(),
+    favorite_and_bkacklistVM:Favorite_and_Black_ListVM = Favorite_and_Black_ListVM()
+ ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
     // 取得當前頁面的名稱
@@ -62,10 +90,11 @@ fun Main(
         backStackEntry?.destination?.route?.split("/")?.first() ?: Screen.LoginScreen.name
     )
     // 設定內容向上捲動時，TopAppBar自動收起來；呼叫pinnedScrollBehavior()則不會收起來
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         // 設定則可追蹤捲動狀態，藉此調整畫面(例如內容向上捲動時，TopAppBar自動收起來)
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MainAppBar(
                 currentScreen = currentScreen,
@@ -90,7 +119,8 @@ fun Main(
         ) {
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
-                    navController = navController
+                    navController = navController,
+                    loginViewModel = LoginViewModel()
                 )
             }
             composable(
@@ -107,13 +137,41 @@ fun Main(
                     navController = navController
                 )
             }
-//            composable(
-//                route = Screen.ChatroomScreen.name
-//            ) { backStackEntry ->
-//                ChatroomScreen(
-//                    navController = navController
-//                )
-//            }
+
+            composable(
+                route = Screen.OrderScreen.name
+            ){
+                OrderListScreen(navController = navController, orderlistVM = orderlistVM)
+            }
+            composable(
+                route = Screen.CustomerScreen.name
+            ){
+                CustomerScreen(navController = navController, customerVM = customerVM)
+            }
+            composable(
+                route = Screen.Favorite_and_BlackListScreen.name
+            ){
+                Favorite_and_BkackListScreen(navController = navController, favorite_and_bkacklistVM = favorite_and_bkacklistVM)
+            }
+            composable(
+                route = Screen.ReservationScreen.name
+            ){
+                ReservationScreen(navController = navController, reservationVM = reservationVM)
+            }
+            composable(
+                route = Screen.ChatroomScreen.name
+            ) { backStackEntry ->
+                ChatroomScreen(
+                    navController = navController
+                )
+            }
+            composable(route = Screen.SettingScreen.name) {
+                Settingpage(navController = navController, settingVM = viewModel())
+            }
+
+            composable(route = Screen.MemberScreen.name) {
+                MemberScreen(navController = navController, memberVM = viewModel())
+            }
         }
     }
 }
@@ -132,7 +190,7 @@ fun MainAppBar(
 ) {
     TopAppBar(
 //         設定頁面標題
-        title = { Text("") },
+        title = { Text(text = "") },
         modifier = modifier,
         navigationIcon = {
             // 如果可回前頁，就顯示Back按鈕
@@ -153,6 +211,6 @@ fun MainAppBar(
 @Composable
 fun MainScreenPreview() {
     TIP102Group01FriendzyTheme {
-        Main(rememberNavController())
+        Main()
     }
 }
