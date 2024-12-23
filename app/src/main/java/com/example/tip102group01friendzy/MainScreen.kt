@@ -27,6 +27,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
+import com.example.tip102group01friendzy.ui.feature.Memberpage.Settingpage
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordViewModel
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
@@ -49,13 +51,19 @@ enum class Screen(@StringRes val title: Int) {
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
 
+    SearchResultScreen(title = R.string.SearchResultScreen),
+    SearchWithMapScreen(title = R.string.SearchWithMapRScreen),
     ChatroomScreen(title = R.string. ChatroomScreen),
     CustomerScreen(title = R.string.CustomerScreen),
-    OrderListScreen(title = R.string.OrderListScreen),
+    OrderScreen(title = R.string.OrderScreen),
     Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
     Reservation(title = R.string.reservationScreen),
 
     EnterScreen(title=R.string.enterScreen)
+    ReservationScreen(title = R.string.reservationScreen),
+
+    SettingScreen(title = R.string.Setting),
+    MemberScreen(title = R.string.Member)
 }
 
 /**
@@ -66,10 +74,10 @@ enum class Screen(@StringRes val title: Int) {
 fun Main(
     //導覽式頁面控制器
     navController: NavHostController = rememberNavController(),
-    customerVM: CustomerVM = viewModel(),
-    orderlistVM: OrderVM = viewModel(),
-    reservationVM: ReservationVM = viewModel(),
-    favorite_and_bkacklistVM:Favorite_and_Black_ListVM = viewModel()
+    customerVM: CustomerVM = CustomerVM(),
+    orderlistVM: OrderVM = OrderVM(),
+    reservationVM: ReservationVM = ReservationVM(),
+    favorite_and_bkacklistVM:Favorite_and_Black_ListVM = Favorite_and_Black_ListVM()
  ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -134,9 +142,9 @@ fun Main(
             }
 
             composable(
-                route = Screen.OrderListScreen.name
+                route = Screen.OrderScreen.name
             ){
-                OrderListScreen(navConrollor = navController, orderlistVM = orderlistVM)
+                OrderListScreen(navController = navController, orderlistVM = orderlistVM)
             }
             composable(
                 route = Screen.CustomerScreen.name
@@ -149,7 +157,7 @@ fun Main(
                 Favorite_and_BkackListScreen(navController = navController, favorite_and_bkacklistVM = favorite_and_bkacklistVM)
             }
             composable(
-                route = Screen.Reservation.name
+                route = Screen.ReservationScreen.name
             ){
                 ReservationScreen(navController = navController, reservationVM = reservationVM)
             }
@@ -166,6 +174,12 @@ fun Main(
                 EnterScreen(
                     navController = navController
                 )
+            composable(route = Screen.SettingScreen.name) {
+                Settingpage(navController = navController, settingVM = viewModel())
+            }
+
+            composable(route = Screen.MemberScreen.name) {
+                MemberScreen(navController = navController, memberVM = viewModel())
             }
         }
     }

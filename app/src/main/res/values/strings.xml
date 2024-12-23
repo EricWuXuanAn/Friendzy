@@ -20,7 +20,7 @@
     <string name="LoginScreen">LoginScreen</string>
     <string name="back_button">BackButton</string>
     <string name="EmailCanNotEmpty">Email cannot be empty.</string>
-    <string name="order_manage">Order</string>
+    <string name="order_manage">Orde Manage</string>
     <string name="collection">Collection</string>
     <string name="post_setting">Post</string>
     <string name="my_applaction">Apply</string>
@@ -29,6 +29,8 @@
     <string name="ChatroomScreen">ChatroomScreen</string>
     <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="RegisterScreen">RegisterScreen</string>
+    <string name="SearchResultScreen" />
+    <string name="SearchWithMapRScreen" />
     <string name="chatroom">Chatroom</string>
     <string name="input">Input</string>
     <string name="favotite">Favorite</string>
@@ -41,11 +43,15 @@
     <string name="complete">Completed</string>
     <string name="order_List">Order List</string>
     <string name="reservation">Reservation</string>
-    <string name="CustomerScreen">Customer Screen</string>
-    <string name="OrderListScreen">Order List</string>
-    <string name="Favorite_and_BlackListScreen">Favorite and BlackListScreen</string>
-    <string name="reservationScreen">Reservation Screen</string>
+    <string name="CustomerScreen">CustomerScreen</string>
+    <string name="OrderScreen">OrderScreen</string>
+    <string name="Favorite_and_BlackListScreen">Favorite_and_BlackListScreen</string>
+    <string name="reservationScreen">ReservationScreen</string>
     <string name="customerscreen" />
+    <string name="myreservation">My Reservation</string>
+    <string name="my_post">My Post</string>
+    <string name="Setting">Setting</string>
+    <string name="Member">Member</string>
     <string name="enterScreen">EnterScreen</string>
 
 
