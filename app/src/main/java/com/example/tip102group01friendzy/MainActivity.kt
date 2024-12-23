@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TIP102Group01FriendzyTheme {
-               Main()
+             Main()
             }
         }
     }

@@ -6,7 +6,8 @@ class OrderList (
     var order_Person: String = "",
     var order_Pirce:Double,
     var order_Status: Int,
-    var order_content:String = ""
+    var order_content:String = "",
+    var reservation:  Boolean = false
 ){
     override fun equals(other: Any?): Boolean {
         return this.orderID == (other as OrderList).orderID
