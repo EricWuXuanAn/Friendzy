@@ -33,11 +33,11 @@ class RegisterViewModel : ViewModel() {
 
     fun onRegesterClicked() {
 
-        if (isFormat){
-            _naviRequest.update { true }
-        }else {
-            _errorRequest.update { "格式錯誤" }
-        }
+//        if (isFormat){
+//            _naviRequest.update { true }
+//        }else {
+//            _errorRequest.update { "格式錯誤" }
+//        }
 
         if (account.value.isBlank() || password.value.isBlank() || confirmPassword.value.isBlank() || username.value.isBlank()) {
             _snackbarMessage.value = "Field cannot be empty."

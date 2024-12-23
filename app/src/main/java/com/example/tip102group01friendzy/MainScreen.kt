@@ -1,6 +1,6 @@
 package com.example.tip102group01friendzy
 
-//import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -53,13 +53,13 @@ enum class Screen(@StringRes val title: Int) {
 
     SearchResultScreen(title = R.string.SearchResultScreen),
     SearchWithMapScreen(title = R.string.SearchWithMapRScreen),
-    ChatroomScreen(title = R.string. ChatroomScreen),
+    ChatroomScreen(title = R.string.ChatroomScreen),
     CustomerScreen(title = R.string.CustomerScreen),
     OrderScreen(title = R.string.OrderScreen),
     Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
     Reservation(title = R.string.reservationScreen),
 
-    EnterScreen(title=R.string.enterScreen)
+    EnterScreen(title = R.string.enterScreen),
     ReservationScreen(title = R.string.reservationScreen),
 
     SettingScreen(title = R.string.Setting),
@@ -77,8 +77,8 @@ fun Main(
     customerVM: CustomerVM = CustomerVM(),
     orderlistVM: OrderVM = OrderVM(),
     reservationVM: ReservationVM = ReservationVM(),
-    favorite_and_bkacklistVM:Favorite_and_Black_ListVM = Favorite_and_Black_ListVM()
- ) {
+    favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM()
+) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
     // 取得當前頁面的名稱
@@ -143,22 +143,25 @@ fun Main(
 
             composable(
                 route = Screen.OrderScreen.name
-            ){
+            ) {
                 OrderListScreen(navController = navController, orderlistVM = orderlistVM)
             }
             composable(
                 route = Screen.CustomerScreen.name
-            ){
+            ) {
                 CustomerScreen(navController = navController, customerVM = customerVM)
             }
             composable(
                 route = Screen.Favorite_and_BlackListScreen.name
-            ){
-                Favorite_and_BkackListScreen(navController = navController, favorite_and_bkacklistVM = favorite_and_bkacklistVM)
+            ) {
+                Favorite_and_BkackListScreen(
+                    navController = navController,
+                    favorite_and_bkacklistVM = favorite_and_bkacklistVM
+                )
             }
             composable(
                 route = Screen.ReservationScreen.name
-            ){
+            ) {
                 ReservationScreen(navController = navController, reservationVM = reservationVM)
             }
             composable(
@@ -174,47 +177,48 @@ fun Main(
                 EnterScreen(
                     navController = navController
                 )
-            composable(route = Screen.SettingScreen.name) {
-                Settingpage(navController = navController, settingVM = viewModel())
-            }
+                composable(route = Screen.SettingScreen.name) {
+                    Settingpage(navController = navController, settingVM = viewModel())
+                }
 
-            composable(route = Screen.MemberScreen.name) {
-                MemberScreen(navController = navController, memberVM = viewModel())
+                composable(route = Screen.MemberScreen.name) {
+                    MemberScreen(navController = navController, memberVM = viewModel())
+                }
             }
         }
     }
 }
-
-/**
- * 建立topBar與回前頁按鈕
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MainAppBar(
-    currentScreen: Screen,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior
-) {
-    TopAppBar(
+    /**
+     * 建立topBar與回前頁按鈕
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun MainAppBar(
+        currentScreen: Screen,
+        canNavigateBack: Boolean,
+        navigateUp: () -> Unit,
+        modifier: Modifier = Modifier,
+        scrollBehavior: TopAppBarScrollBehavior
+    ) {
+        TopAppBar(
 //         設定頁面標題
-        title = { Text(text = "") },
-        modifier = modifier,
-        navigationIcon = {
-            // 如果可回前頁，就顯示Back按鈕
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_button)
-                    )
+            title = { Text(text = "") },
+            modifier = modifier,
+            navigationIcon = {
+                // 如果可回前頁，就顯示Back按鈕
+                if (canNavigateBack) {
+                    IconButton(onClick = navigateUp) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back_button)
+                        )
+                    }
                 }
-            }
-        },
-        scrollBehavior = scrollBehavior
-    )
-}
+            },
+            scrollBehavior = scrollBehavior
+        )
+    }
+
 
 @Preview(showBackground = true)
 @Composable
