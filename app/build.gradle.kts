@@ -52,16 +52,13 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-<<<<<<< HEAD
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.play.services.nearby)
-=======
     implementation(libs.gson)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
->>>>>>> main
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -69,7 +66,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-<<<<<<< HEAD
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
     implementation ("com.google.maps.android:maps-compose:2.14.0")
     implementation ("androidx.compose.ui:ui-tooling:1.5.0")
@@ -79,7 +75,5 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.maps.android:android-maps-utils:2.3.0")
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
-=======
->>>>>>> main
 
 }

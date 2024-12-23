@@ -109,10 +109,10 @@ fun CompanionScreen(
             //tab選項點擊功能
             when(tabIndex){
                 0 ->{//訂單管理
-                    OrderListScreen(
-                        orderlistVM = OrderVM(),
-                        navConrollor = rememberNavController()
-                    )
+//                    OrderListScreen(
+//                        orderlistVM = OrderVM(),
+//                        navConrollor = rememberNavController()
+//                    )
                     testIten = "123"
                 }
                 1 ->{//可預約時間
@@ -213,7 +213,7 @@ fun CompanionScreen(
                 Text(text = testIten)//測試tab功能用
                 ServicList(companions = companionState){
                     companionVM.setCompanion(it)
-                    navController.navigate(Screen.CompanionLookPublish.name)
+//                    navController.navigate(Screen.CompanionLookPublish.name)
                 }
             }
         }

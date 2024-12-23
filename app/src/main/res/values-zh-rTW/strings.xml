@@ -24,10 +24,7 @@
     <string name="back_button">BackButton</string>
     <string name="EmailCanNotEmpty">信箱不可以為空</string>
     <string name="ChatroomScreen">ChatroomScreen</string>
-<<<<<<< HEAD
     <string name="SearchResultScreen" />
     <string name="SearchWithMapRScreen" />
-=======
     <string name="chatroom">聊天室</string>
->>>>>>> main
 </resources>
