@@ -1,4 +1,5 @@
-package com.example.tip102group01friendzy.Memberpage
+
+package com.example.tip102group01friendzy.ui.feature.Memberpage
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -138,6 +139,8 @@ fun Settingpage(
         // 姓名部分
         Text(text = "姓名", fontWeight = FontWeight.Bold) // 顯示標籤文字
         Text(text = "Angle Huang", modifier = Modifier.padding(vertical = 8.dp)) // 顯示姓名內容
+        Text(text = "angelhuang@cw.com.tw", modifier = Modifier.padding(vertical = 8.dp)) // 顯示帳號內容
+
 
         // 暱稱部分
         EditableRow(
@@ -219,7 +222,7 @@ fun EditableRow(
             }
         ) {
             Icon(
-                painter = painterResource(id = if (isEditing) R.drawable.Check else R.drawable.Edit),
+                painter = painterResource(id = if (isEditing) R.drawable.check else R.drawable.check),
                 contentDescription = if (isEditing) "Save" else "Edit"
             )
         }

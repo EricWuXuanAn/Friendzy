@@ -31,28 +31,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun OrderListScreen(
     orderlistVM: OrderVM,
-    navConrollor: NavHostController
+    navController: NavHostController
 ) {
-    var tabIndex by remember { mutableStateOf(3) }
+    var tabIndex by remember { mutableStateOf(0) }
     val ordeState by orderlistVM.orderList.collectAsState()
     val uncomfirm = ordeState.filter { it.order_Status == 0 }
     val inProfress = ordeState.filter { it.order_Status == 1 }
     val completed = ordeState.filter { it.order_Status == 2 }
+    val reservation = ordeState.filter { it.reservation == true }
     val tab = listOf(
+        stringResource(R.string.order_List),
         stringResource(R.string.unconfirm),
         stringResource(R.string.in_progress),
         stringResource(R.string.complete),
-        stringResource(R.string.order_List)
+        stringResource(R.string.myreservation)
     )
     val scope = rememberCoroutineScope()
     var snackbar = remember { SnackbarHostState() }
@@ -80,23 +82,28 @@ fun OrderListScreen(
                         icon = {
                             when (index) {
                                 0 -> Icon(
+                                    painter = painterResource(R.drawable.orderlist),
+                                    contentDescription = "orderlist"
+                                )
+
+                                1 -> Icon(
                                     painter = painterResource(R.drawable.unconirm),
                                     contentDescription = "unconfirm"
                                 )
 
-                                1 -> Icon(
+                                2 -> Icon(
                                     painter = painterResource(R.drawable.inprogress),
                                     contentDescription = "inprogress"
                                 )
 
-                                2 -> Icon(
+                                3 -> Icon(
                                     painter = painterResource(R.drawable.check_circle),
                                     contentDescription = "complete"
                                 )
 
-                                3 -> Icon(
-                                    painter = painterResource(R.drawable.orderlist),
-                                    contentDescription = "orderlist"
+                                4 -> Icon(
+                                    painter = painterResource(R.drawable.date_range),
+                                    contentDescription = "Reservation"
                                 )
                             }
                         }
@@ -111,22 +118,33 @@ fun OrderListScreen(
                 .fillMaxWidth()
         )
         when (tabIndex) {
-            0 -> orderList(orders = uncomfirm, onClick = {
+            0 -> orderList(orders = ordeState, onClick = {
                 scope.launch {
                     snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
                 }
             })
-            1 -> orderList(orders = inProfress, onClick = {
+
+            1 -> orderList(orders = uncomfirm, onClick = {
                 scope.launch {
                     snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
                 }
             })
-            2 -> orderList(orders = completed, onClick = {scope.launch {
-                snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
-            }})
-            3 -> orderList(orders = ordeState, onClick = {scope.launch {
-                snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
-            }})
+
+            2 -> orderList(orders = inProfress, onClick = {
+                scope.launch {
+                    snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
+                }
+            })
+
+            3 -> orderList(orders = completed, onClick = {
+                scope.launch {
+                    snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
+                }
+            })
+
+            4 -> orderList(orders = reservation, onClick = {
+                navController.navigate(Screen.ReservationScreen.name)
+            })
         }
         SnackbarHost(hostState = snackbar)
     }
@@ -143,7 +161,7 @@ fun orderList(
                 modifier = Modifier.clickable { onClick(order) },
                 headlineContent = { Text(text = "order Content: ${order.order_content}") },
                 overlineContent = { Text(text = "Order ID: ${order.orderID}", fontSize = 18.sp) },
-                supportingContent = { Text(text = "Order Person:${ order.order_Person }") },
+                supportingContent = { Text(text = "Order Person:${order.order_Person}") },
                 trailingContent = {
                     Text(
                         text = "Order Price: \n${order.order_Pirce.toString()}",
@@ -160,5 +178,5 @@ fun orderList(
 @Composable
 @Preview(showBackground = true)
 fun OrderListScreenPreview() {
-    OrderListScreen(orderlistVM = viewModel(), navConrollor = rememberNavController())
+    OrderListScreen(orderlistVM = OrderVM(), navController = rememberNavController())
 }
