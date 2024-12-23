@@ -44,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -174,7 +175,8 @@ fun LoginScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.ForgotYourPassword),
-                        color = colorResource(R.color.Gray)
+                        color = colorResource(R.color.Gray),
+                        textDecoration = TextDecoration.Underline
                     )
                 }
                 TextButton(
@@ -183,8 +185,9 @@ fun LoginScreen(
                     } //跳轉畫面到註冊
                 ) {
                     Text(
-                        text = stringResource(R.string.setUp),
-                        color = colorResource(R.color.Gray)
+                        text = stringResource(R.string.signUp),
+                        color = colorResource(R.color.Gray),
+                        textDecoration = TextDecoration.Underline
                     )
                 }
 

@@ -86,42 +86,12 @@ fun RegisterScreen(
                 .padding(6.dp)
         ) {
             Text(
-                text = stringResource(R.string.setUp),
+                text = stringResource(R.string.signUp),
                 fontSize = 20.sp,
                 modifier = Modifier
                     .padding(6.dp)
             )
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp, 8.dp)
-        ) {
-            Text(
-                text = "Accompany",
-                color =
-                if (!registerViewModel.status.value) colorResource(R.color.blue_700)
-                else colorResource(R.color.Gray),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            SwitchWithText(registerViewModel.status.value) {
-                registerViewModel.status.value = it
-            }
-            Text(
-                text = "Companion",
-                color =
-                if (registerViewModel.status.value) colorResource(R.color.blue_700)
-                else colorResource(R.color.Gray),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-        }
-
         OutlinedTextField(
             value = registerViewModel.account.value,
             onValueChange = { registerViewModel.account.value = it },
@@ -236,9 +206,15 @@ fun RegisterScreen(
 
         Button(
             onClick = {
-                registerViewModel.onRegesterClicked()
-                //TODO:資料都輸入且符合規格回到登入頁
-//                navController.navigate(Screen.LoginScreen.name)
+                if(snackberTrigger==0) {
+                    registerViewModel.onRegesterClicked()
+                }else if(snackbarMessage != null){
+                    registerViewModel.onRegesterClicked()
+                }
+                else{
+                    //TODO:資料都輸入且符合規格回到登入頁
+                    navController.navigate(Screen.LoginScreen.name)
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
@@ -296,36 +272,6 @@ fun RegisterScreen(
 
     }
 }
-
-@Composable
-fun SwitchWithText(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    Switch(
-        checked = checked,
-        onCheckedChange = onCheckedChange,
-        thumbContent =
-        if (checked) {
-            {
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = "ststus",
-                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                )
-            }
-        } else {
-            null
-        },
-        colors = SwitchDefaults.colors(
-            checkedThumbColor = colorResource(R.color.pink_200),
-            checkedTrackColor = colorResource(R.color.green_200),
-            uncheckedThumbColor = colorResource(R.color.blue_700),
-            uncheckedTrackColor = colorResource(R.color.green_200)
-        )
-    )
-}
-
 
 @Preview(showBackground = true)
 @Composable

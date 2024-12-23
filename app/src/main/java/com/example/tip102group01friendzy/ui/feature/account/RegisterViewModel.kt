@@ -39,7 +39,7 @@ class RegisterViewModel : ViewModel() {
             _snackbarTrigger.value += 1
         } else {
             //TODO: 確認之後看DB是否註冊過，若註冊過要跳通知
-            _snackbarMessage.value = null
+            _snackbarMessage.value = ""
         }
     }
 }
