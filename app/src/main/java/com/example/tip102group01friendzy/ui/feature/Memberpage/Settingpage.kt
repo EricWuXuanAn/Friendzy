@@ -1,4 +1,4 @@
-package com.example.tip102group01friendzy.Memberpage
+package com.example.tip102group01friendzy.ui.feature.Memberpage
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

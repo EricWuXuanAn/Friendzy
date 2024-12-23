@@ -46,6 +46,8 @@
     <string name="Favorite_and_BlackListScreen">Favorite_and_BlackListScreen</string>
     <string name="reservationScreen">ReservationScreen</string>
     <string name="customerscreen" />
+    <string name="myreservation">My Reservation</string>
+    <string name="my_post">My Post</string>
 
 
 </resources>

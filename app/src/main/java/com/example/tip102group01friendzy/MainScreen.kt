@@ -50,7 +50,7 @@ enum class Screen(@StringRes val title: Int) {
     CustomerScreen(title = R.string.CustomerScreen),
     OrderScreen(title = R.string.OrderScreen),
     Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
-    Reservation(title = R.string.reservationScreen)
+    ReservationScreen(title = R.string.reservationScreen)
 }
 
 /**
@@ -142,7 +142,7 @@ fun Main(
                 Favorite_and_BkackListScreen(navController = navController, favorite_and_bkacklistVM = favorite_and_bkacklistVM)
             }
             composable(
-                route = Screen.Reservation.name
+                route = Screen.ReservationScreen.name
             ){
                 ReservationScreen(navController = navController, reservationVM = reservationVM)
             }

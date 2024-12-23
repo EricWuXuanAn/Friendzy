@@ -29,7 +29,9 @@ class OrderVM:ViewModel() {
             OrderList(2, 3, "阿Miu", 200.0, 1,"教我寫程式"),
             OrderList(3, 2, "阿俊", 150.0, 2, "教我英文"),
             OrderList(4, 5, "Nita", 280.0, 0, "陪我去逛街"),
-            OrderList(5, 4, "小宇", 400.0, 0, "陪我打電動")
+            OrderList(5, 4, "小宇", 400.0, 0, "陪我打電動"),
+            OrderList(6, 1,"Ruby", 250.0, 0, "教我寫程式", true),
+            OrderList(7, 2,"綸綸", 100.0, 0, "一起去跑步", true)
         )
     }
 }

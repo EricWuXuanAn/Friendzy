@@ -103,7 +103,9 @@ fun getFavList(
                 },
                 trailingContent = {
                     Icon(
-                        modifier = Modifier.size(20.dp).clickable { navController.navigate(Screen.ChatroomScreen.name) },
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable { navController.navigate(Screen.ChatroomScreen.name) },
                         painter = painterResource(id = R.drawable.chat),
                         contentDescription = "chat"
                     )
@@ -126,7 +128,12 @@ fun getBlackList(
 
             ListItem(
                 modifier = Modifier.clickable { onClick(balckList) },
-                headlineContent = { Text(text = "memberID: ${balckList.black_account} \n Being block reason: \n${balckList.content}", fontSize = 14.sp) },
+                headlineContent = {
+                    Text(
+                        text = "memberID: ${balckList.black_account} \n Being block reason: \n${balckList.content}",
+                        fontSize = 14.sp
+                    )
+                },
                 leadingContent = {
                     Image(
                         modifier = Modifier.size(70.dp),
