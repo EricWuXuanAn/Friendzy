@@ -29,6 +29,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
+import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
@@ -44,6 +45,7 @@ enum class Screen(@StringRes val title: Int) {
     LoginScreen(title = R.string.LoginScreen),
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
+
     ChatroomScreen(title = R.string. ChatroomScreen),
     CustomerScreen(title = R.string.CustomerScreen),
     OrderListScreen(title = R.string.OrderListScreen),
@@ -76,10 +78,11 @@ fun Main(
         backStackEntry?.destination?.route?.split("/")?.first() ?: Screen.LoginScreen.name
     )
     // 設定內容向上捲動時，TopAppBar自動收起來；呼叫pinnedScrollBehavior()則不會收起來
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         // 設定則可追蹤捲動狀態，藉此調整畫面(例如內容向上捲動時，TopAppBar自動收起來)
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MainAppBar(
                 currentScreen = currentScreen,
@@ -104,7 +107,8 @@ fun Main(
         ) {
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
-                    navController = navController
+                    navController = navController,
+                    loginViewModel = LoginViewModel()
                 )
             }
             composable(
@@ -121,6 +125,7 @@ fun Main(
                     navController = navController
                 )
             }
+
             composable(
                 route = Screen.OrderListScreen.name
             ){
@@ -166,7 +171,7 @@ fun MainAppBar(
 ) {
     TopAppBar(
 //         設定頁面標題
-        title = { Text("") },
+        title = { Text(text = "") },
         modifier = modifier,
         navigationIcon = {
             // 如果可回前頁，就顯示Back按鈕
