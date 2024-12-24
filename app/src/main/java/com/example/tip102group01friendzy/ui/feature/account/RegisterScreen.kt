@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
+import android.app.AlertDialog
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -62,12 +63,14 @@ import kotlinx.coroutines.launch
 fun SetupErrorRequest(viewModel: RegisterViewModel){
     val errorRequest by viewModel.errorRequest.collectAsState()
     LaunchedEffect(errorRequest) {
-        if (errorRequest!=null){
+        if (errorRequest.any()){
             // alert
             viewModel.consumeErrorRequest()
         }
     }
 }
+
+
 
 //@OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,22 +78,20 @@ fun RegisterScreen(
     navController: NavHostController,
     registerViewModel: RegisterViewModel
 ) {
-
     SetupErrorRequest(registerViewModel)
-
     val naviRequest by registerViewModel.naviRequest.collectAsState()
     LaunchedEffect(naviRequest) {
         if (naviRequest == true){
-            navController.navigate("home")
+            navController.navigate(Screen.LoginScreen.name)
             registerViewModel.consumeNaviRequest()
         }
     }
 
 
-    val snackbarMessage by registerViewModel.snackbarMessage.collectAsState()
-    val snackberTrigger by registerViewModel.snackbarTrigger.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+//    val snackbarMessage by registerViewModel.snackbarMessage.collectAsState()
+//    val snackberTrigger by registerViewModel.snackbarTrigger.collectAsState()
+//    val snackbarHostState = remember { SnackbarHostState() }
+//    val scope = rememberCoroutineScope()
 
     val fieldEmptyMessage = stringResource(R.string.columnIsEmpty)
     val emailFormatErrorMessage = stringResource(R.string.errorEmail)
@@ -231,15 +232,9 @@ fun RegisterScreen(
 
         Button(
             onClick = {
-                if(snackberTrigger==0) {
-                    registerViewModel.onRegesterClicked()
-                }else if(snackbarMessage != null){
-                    registerViewModel.onRegesterClicked()
-                }
-                else{
+                registerViewModel.onRegisterClicked()
+
                     //TODO:資料都輸入且符合規格回到登入頁
-                    navController.navigate(Screen.LoginScreen.name)
-                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
@@ -251,33 +246,33 @@ fun RegisterScreen(
                 text = stringResource(R.string.submit)
             )
         }
-        LaunchedEffect(snackberTrigger) {
-            if (snackbarMessage != null) {
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = when (snackbarMessage) {
-                            "Field cannot be empty." -> fieldEmptyMessage
-                            "Email Formatting Error." -> emailFormatErrorMessage
-                            "Password(at least 8 characters)" -> passwordLengthMessage
-                            "Password do not match." -> passwordDifferent
-                            else -> snackbarMessage ?: ""
-                        },
-                        duration = SnackbarDuration.Short,
-                        withDismissAction = true
-                    )
-                }
-            }
-
-        }
-        Box (
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ){
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier.padding(bottom = 100.dp)
-            )
-        }
+//        LaunchedEffect(snackberTrigger) {
+//            if (snackbarMessage != null) {
+//                scope.launch {
+//                    snackbarHostState.showSnackbar(
+//                        message = when (snackbarMessage) {
+//                            "Field cannot be empty." -> fieldEmptyMessage
+//                            "Email Formatting Error." -> emailFormatErrorMessage
+//                            "Password(at least 8 characters)" -> passwordLengthMessage
+//                            "Password do not match." -> passwordDifferent
+//                            else -> snackbarMessage ?: ""
+//                        },
+//                        duration = SnackbarDuration.Short,
+//                        withDismissAction = true
+//                    )
+//                }
+//            }
+//
+//        }
+//        Box (
+//            modifier = Modifier.fillMaxSize(),
+//            contentAlignment = Alignment.BottomCenter
+//        ){
+//            SnackbarHost(
+//                hostState = snackbarHostState,
+//                modifier = Modifier.padding(bottom = 100.dp)
+//            )
+//        }
     }
 
 

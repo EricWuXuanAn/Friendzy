@@ -170,7 +170,7 @@ fun LoginScreen(
                 TextButton(
                     onClick = {
                         loginViewModel.password.value = ""
-                        navController.navigate(Screen.MemberScreen.name)
+                        navController.navigate(Screen.ForgetPasswordScreen.name)
                     } //跳轉畫面到忘記密碼頁
                 ) {
                     Text(
@@ -181,7 +181,7 @@ fun LoginScreen(
                 }
                 TextButton(
                     onClick = {
-                        navController.navigate(Screen.SettingScreen.name)
+                        navController.navigate(Screen.RegisterScreen.name)
                     } //跳轉畫面到註冊
                 ) {
                     Text(

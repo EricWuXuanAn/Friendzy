@@ -140,7 +140,6 @@ fun Main(
                     forgetPasswordViewModel = ForgetPasswordViewModel()
                 )
             }
-
             composable(
                 route = Screen.OrderScreen.name
             ) {
@@ -177,47 +176,48 @@ fun Main(
                 EnterScreen(
                     navController = navController
                 )
-                composable(route = Screen.SettingScreen.name) {
-                    Settingpage(navController = navController, settingVM = viewModel())
-                }
+            }
+            composable(route = Screen.SettingScreen.name) {
+                Settingpage(navController = navController, settingVM = viewModel())
+            }
 
-                composable(route = Screen.MemberScreen.name) {
-                    MemberScreen(navController = navController, memberVM = viewModel())
-                }
+            composable(route = Screen.MemberScreen.name) {
+                MemberScreen(navController = navController, memberVM = viewModel())
             }
         }
     }
 }
-    /**
-     * 建立topBar與回前頁按鈕
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun MainAppBar(
-        currentScreen: Screen,
-        canNavigateBack: Boolean,
-        navigateUp: () -> Unit,
-        modifier: Modifier = Modifier,
-        scrollBehavior: TopAppBarScrollBehavior
-    ) {
-        TopAppBar(
+
+/**
+ * 建立topBar與回前頁按鈕
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainAppBar(
+    currentScreen: Screen,
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior
+) {
+    TopAppBar(
 //         設定頁面標題
-            title = { Text(text = "") },
-            modifier = modifier,
-            navigationIcon = {
-                // 如果可回前頁，就顯示Back按鈕
-                if (canNavigateBack) {
-                    IconButton(onClick = navigateUp) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back_button)
-                        )
-                    }
+        title = { Text(text = "") },
+        modifier = modifier,
+        navigationIcon = {
+            // 如果可回前頁，就顯示Back按鈕
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_button)
+                    )
                 }
-            },
-            scrollBehavior = scrollBehavior
-        )
-    }
+            }
+        },
+        scrollBehavior = scrollBehavior
+    )
+}
 
 
 @Preview(showBackground = true)
