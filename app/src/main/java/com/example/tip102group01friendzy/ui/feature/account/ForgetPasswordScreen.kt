@@ -110,7 +110,7 @@ fun ForgetPasswordScreen(
             Button(
                 onClick = {
                     forgetPasswordViewModel.onForgetPasswordClecked()
-                    //TODO:else{}電子信箱正確且曾註冊過發送郵件
+                    //TODO:else{}電子信箱正確且曾註冊過發送郵件，點連結回登入後的首頁
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),

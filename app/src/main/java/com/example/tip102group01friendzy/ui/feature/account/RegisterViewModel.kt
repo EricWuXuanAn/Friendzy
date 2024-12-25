@@ -57,4 +57,5 @@ class RegisterViewModel : ViewModel() {
     fun consumeNaviRequest() {
         _naviRequest.update { null }
     }
+
 }

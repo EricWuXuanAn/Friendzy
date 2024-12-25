@@ -39,8 +39,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +63,17 @@ import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
 
 @Composable
+fun getErrorMessage(errorCode: String?):String{
+    return when(errorCode){
+        "Field cannot be empty." -> stringResource(R.string.columnIsEmpty)
+        "Email Formatting Error." -> stringResource(R.string.errorEmail)
+        "Password(at least 8 characters)" -> stringResource(R.string.passwordRule)
+        "Password do not match" -> stringResource(R.string.passwordDifferent)
+        else -> errorCode.toString()
+    }
+}
+
+@Composable
 fun ErrorDialog(
     errors: List<String>,
     onDismiss: () -> Unit
@@ -70,16 +83,16 @@ fun ErrorDialog(
             onDismissRequest = onDismiss,
             title = {
                 Text(
-                    text = "Registration Error",
+                    text = "Registration Error", //TODO: 多語
                     fontSize = 18.sp,
                     color = Color.Red
                 )
             },
             text = {
                 Column {
-                    errors.forEach { error ->
+                    errors.forEach { errorCode ->
                         Text(
-                            text = "• $error",
+                            text = "• ${getErrorMessage(errorCode)}",
                             modifier = Modifier
                                 .padding(vertical = 4.dp)
                         )
@@ -106,7 +119,25 @@ fun SetupErrorRequest(viewModel: RegisterViewModel) {
     val errorRequest by viewModel.errorRequest.collectAsState()
     ErrorDialog(
         errors = errorRequest,
-        onDismiss = {viewModel.consumeErrorRequest()}
+        onDismiss = { viewModel.consumeErrorRequest() }
+    )
+}
+
+@Composable
+fun successDialog(
+    navController: NavHostController,
+    onConfirm: ()-> Unit,
+    onDismissRequest: () -> Unit
+){
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = { Text("Registration completed!\nplease log in again.") },
+        //TODO: 多語
+        confirmButton = {
+            Button(
+                onClick = onConfirm
+            ) { Text("OK") }
+        }
     )
 }
 
@@ -116,12 +147,26 @@ fun RegisterScreen(
     registerViewModel: RegisterViewModel
 ) {
     SetupErrorRequest(registerViewModel)
+
+    var showDialog by remember { mutableStateOf(false) }
+
     val naviRequest by registerViewModel.naviRequest.collectAsState()
     LaunchedEffect(naviRequest) {
         if (naviRequest == true) {
-            navController.navigate(Screen.LoginScreen.name)
+            //TODO:與資料庫比對是否曾註冊過，無註冊過才通過
+            showDialog = true
             registerViewModel.consumeNaviRequest()
         }
+    }
+
+    if (showDialog){
+        successDialog(navController= navController,
+            onConfirm = {
+                navController.navigate(Screen.LoginScreen.name){
+                    popUpTo(Screen.RegisterScreen.name){inclusive = true}
+                }
+            }
+        ) {}
     }
 
     Column(
