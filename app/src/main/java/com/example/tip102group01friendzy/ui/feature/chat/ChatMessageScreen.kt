@@ -18,12 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
 
 @Composable
-fun ChatMessageScreen() {
+fun ChatMessageScreen(
+    navController: NavHostController,
+) {
     var chatMessage by remember { mutableStateOf("") }
 
 
@@ -59,10 +63,10 @@ fun ChatMessageScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ChatMessageScreenPreview() {
-    TIP102Group01FriendzyTheme {
-        ChatMessageScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ChatMessageScreenPreview() {
+//    TIP102Group01FriendzyTheme {
+//        ChatMessageScreen(tabVM = TabVM)
+//    }
+//}

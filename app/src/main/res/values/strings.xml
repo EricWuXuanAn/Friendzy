@@ -3,7 +3,7 @@
     <string name="search">Search</string>
     <string name="account">Account(Email)</string>
     <string name="password">Password</string>
-    <string name="signUp">Sign up</string>
+    <string name="setUp">Set up</string>
     <string name="logIn">Log in</string>
     <string name="ForgotYourPassword">Forgot Your Password?</string>
     <string name="acc_pass_empty">Account and password cannot be empty!</string>
@@ -29,6 +29,7 @@
     <string name="ChatroomScreen">ChatroomScreen</string>
     <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="RegisterScreen">RegisterScreen</string>
+
     <string name="SearchResultScreen" />
     <string name="SearchWithMapRScreen" />
     <string name="chatroom">Chatroom</string>
@@ -53,6 +54,11 @@
     <string name="Setting">Setting</string>
     <string name="Member">Member</string>
     <string name="enterScreen">EnterScreen</string>
+    <string name="home">Home</string>
+    <string name="service">Service</string>
+    <string name="post">Post</string>
+    <string name="chat">Chat</string>
+    <string name="information">Information</string>
 
 
 </resources>

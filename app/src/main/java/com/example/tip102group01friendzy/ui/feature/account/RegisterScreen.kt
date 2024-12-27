@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
 import android.app.AlertDialog
+import android.os.Message
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,8 +39,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,43 +63,111 @@ import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun SetupErrorRequest(viewModel: RegisterViewModel){
-    val errorRequest by viewModel.errorRequest.collectAsState()
-    LaunchedEffect(errorRequest) {
-        if (errorRequest.any()){
-            // alert
-            viewModel.consumeErrorRequest()
-        }
+fun getErrorMessage(errorCode: String?):String{
+    return when(errorCode){
+        "Field cannot be empty." -> stringResource(R.string.columnIsEmpty)
+        "Email Formatting Error." -> stringResource(R.string.errorEmail)
+        "Password(at least 8 characters)" -> stringResource(R.string.passwordRule)
+        "Password do not match" -> stringResource(R.string.passwordDifferent)
+        else -> errorCode.toString()
     }
 }
 
+@Composable
+fun ErrorDialog(
+    errors: List<String>,
+    onDismiss: () -> Unit
+) {
+    if (errors.isNotEmpty()) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = {
+                Text(
+                    text = "Registration Error", //TODO: 多語
+                    fontSize = 18.sp,
+                    color = Color.Red
+                )
+            },
+            text = {
+                Column {
+                    errors.forEach { errorCode ->
+                        Text(
+                            text = "• ${getErrorMessage(errorCode)}",
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = colorResource(R.color.Gray)
+                    )
+                ) {
+                    Text("OK")
+                }
+            }
+        )
+    }
+}
 
+@Composable
+fun SetupErrorRequest(viewModel: RegisterViewModel) {
+    val errorRequest by viewModel.errorRequest.collectAsState()
+    ErrorDialog(
+        errors = errorRequest,
+        onDismiss = { viewModel.consumeErrorRequest() }
+    )
+}
 
-//@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun successDialog(
+    navController: NavHostController,
+    onConfirm: ()-> Unit,
+    onDismissRequest: () -> Unit
+){
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = { Text("Registration completed!\nplease log in again.") },
+        //TODO: 多語
+        confirmButton = {
+            Button(
+                onClick = onConfirm
+            ) { Text("OK") }
+        }
+    )
+}
+
 @Composable
 fun RegisterScreen(
     navController: NavHostController,
     registerViewModel: RegisterViewModel
 ) {
     SetupErrorRequest(registerViewModel)
+
+    var showDialog by remember { mutableStateOf(false) }
+
     val naviRequest by registerViewModel.naviRequest.collectAsState()
     LaunchedEffect(naviRequest) {
-        if (naviRequest == true){
-            navController.navigate(Screen.LoginScreen.name)
+        if (naviRequest == true) {
+            //TODO:與資料庫比對是否曾註冊過，無註冊過才通過
+            showDialog = true
             registerViewModel.consumeNaviRequest()
         }
     }
 
-
-//    val snackbarMessage by registerViewModel.snackbarMessage.collectAsState()
-//    val snackberTrigger by registerViewModel.snackbarTrigger.collectAsState()
-//    val snackbarHostState = remember { SnackbarHostState() }
-//    val scope = rememberCoroutineScope()
-
-    val fieldEmptyMessage = stringResource(R.string.columnIsEmpty)
-    val emailFormatErrorMessage = stringResource(R.string.errorEmail)
-    val passwordLengthMessage = stringResource(R.string.passwordRule)
-    val passwordDifferent = stringResource(R.string.passwordDifferent)
+    if (showDialog){
+        successDialog(navController= navController,
+            onConfirm = {
+                navController.navigate(Screen.LoginScreen.name){
+                    popUpTo(Screen.RegisterScreen.name){inclusive = true}
+                }
+            }
+        ) {}
+    }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -144,9 +215,9 @@ fun RegisterScreen(
         OutlinedTextField(
             value = registerViewModel.password.value,
             onValueChange = {
-                Log.d("tag","New password value: $it")
+                Log.d("tag", "New password value: $it")
                 registerViewModel.password.value = it
-                            },
+            },
             placeholder = { Text(text = stringResource(R.string.password)) },
             leadingIcon = {
                 Icon(
@@ -229,12 +300,11 @@ fun RegisterScreen(
                 .padding(18.dp, 12.dp)
                 .background(colorResource(R.color.purple_200))
         )
-
         Button(
             onClick = {
                 registerViewModel.onRegisterClicked()
 
-                    //TODO:資料都輸入且符合規格回到登入頁
+                //TODO:資料都輸入且符合規格回到登入頁
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
@@ -246,35 +316,7 @@ fun RegisterScreen(
                 text = stringResource(R.string.submit)
             )
         }
-//        LaunchedEffect(snackberTrigger) {
-//            if (snackbarMessage != null) {
-//                scope.launch {
-//                    snackbarHostState.showSnackbar(
-//                        message = when (snackbarMessage) {
-//                            "Field cannot be empty." -> fieldEmptyMessage
-//                            "Email Formatting Error." -> emailFormatErrorMessage
-//                            "Password(at least 8 characters)" -> passwordLengthMessage
-//                            "Password do not match." -> passwordDifferent
-//                            else -> snackbarMessage ?: ""
-//                        },
-//                        duration = SnackbarDuration.Short,
-//                        withDismissAction = true
-//                    )
-//                }
-//            }
-//
-//        }
-//        Box (
-//            modifier = Modifier.fillMaxSize(),
-//            contentAlignment = Alignment.BottomCenter
-//        ){
-//            SnackbarHost(
-//                hostState = snackbarHostState,
-//                modifier = Modifier.padding(bottom = 100.dp)
-//            )
-//        }
     }
-
 
     Column(
         verticalArrangement = Arrangement.Bottom,
@@ -289,7 +331,6 @@ fun RegisterScreen(
             modifier = Modifier
                 .size(200.dp)
         )
-
     }
 }
 

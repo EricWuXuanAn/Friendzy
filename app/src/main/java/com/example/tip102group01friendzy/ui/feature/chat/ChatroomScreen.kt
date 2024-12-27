@@ -49,6 +49,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -58,8 +59,10 @@ import java.util.Locale
 @Composable
 fun ChatroomScreen(
     navController: NavController = rememberNavController(),
-    chatroomViewModel: ChatroomViewModel = viewModel()
+    chatroomViewModel: ChatroomViewModel = viewModel(),
+    tabVM: TabVM = TabVM()
 ) {
+    tabVM.tabBarState(true)
     var searchChatroom by remember { mutableStateOf("") }
     val chatrooms by chatroomViewModel.chatroomState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -159,10 +162,10 @@ fun formatDatetime(datetime: String): String {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun ChatroomScreenPreview() {
-    TIP102Group01FriendzyTheme {
-        ChatroomScreen(rememberNavController(), chatroomViewModel = ChatroomViewModel())
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ChatroomScreenPreview() {
+//    TIP102Group01FriendzyTheme {
+//        ChatroomScreen(rememberNavController(), chatroomViewModel = ChatroomViewModel(), tabVM=TabVM())
+//    }
+//}

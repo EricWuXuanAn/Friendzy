@@ -18,12 +18,6 @@ class RegisterViewModel : ViewModel() {
     val isValidEmail: Boolean
         get() = emailRegex.matcher(account.value).matches()
 
-//    private val _snackbarTrigger = MutableStateFlow(0)
-//    val snackbarTrigger: StateFlow<Int> = _snackbarTrigger.asStateFlow()
-//
-//    private val _snackbarMessage = MutableStateFlow<String?>(null)
-//    val snackbarMessage: StateFlow<String?> = _snackbarMessage.asStateFlow()
-
     private val _errorRequest = MutableStateFlow<List<String>>(emptyList())
     val errorRequest: StateFlow<List<String>> = _errorRequest.asStateFlow()
 
@@ -32,29 +26,21 @@ class RegisterViewModel : ViewModel() {
 
     fun onRegisterClicked() {
         if (account.value.isBlank() || password.value.isBlank() || confirmPassword.value.isBlank() || username.value.isBlank()) {
-            //_snackbarMessage.value = "Field cannot be empty."
-            //_snackbarTrigger.value += 1
             _errorRequest.update { currentList ->
                 currentList + "Field cannot be empty."
             }
         }
         if (!isValidEmail) {
-            //_snackbarMessage.value = "Email Formatting Error."
-            //_snackbarTrigger.value += 1
             _errorRequest.update { currentList ->
                 currentList + "Email Formatting Error."
             }
         }
         if (password.value.isNotBlank() && password.value.count() < 8) {
-            //_snackbarMessage.value = "Password(at least 8 characters)"
-            //_snackbarTrigger.value += 1
             _errorRequest.update { currentList ->
                 currentList + "Password(at least 8 characters)"
             }
         }
         if (password.value != confirmPassword.value) {
-            //_snackbarMessage.value = "Password do not match."
-            //_snackbarTrigger.value += 1
             _errorRequest.update { currentList ->
                 currentList + "Password do not match."
             }
@@ -71,4 +57,5 @@ class RegisterViewModel : ViewModel() {
     fun consumeNaviRequest() {
         _naviRequest.update { null }
     }
+
 }
