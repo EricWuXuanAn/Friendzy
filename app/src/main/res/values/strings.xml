@@ -46,13 +46,15 @@
     <string name="CustomerScreen">CustomerScreen</string>
     <string name="OrderScreen">OrderScreen</string>
     <string name="Favorite_and_BlackListScreen">Favorite_and_BlackListScreen</string>
-    <string name="reservationScreen">ReservationScreen</string>
+    <string name="reservationConfirmScreen">ReservationConfirmScreen</string>
     <string name="customerscreen" />
     <string name="myreservation">My Reservation</string>
     <string name="my_post">My Post</string>
     <string name="Setting">Setting</string>
     <string name="Member">Member</string>
     <string name="enterScreen">EnterScreen</string>
+    <string name="Post">Post</string>
+    <string name="my_request">My Request</string>
 
 
 </resources>
