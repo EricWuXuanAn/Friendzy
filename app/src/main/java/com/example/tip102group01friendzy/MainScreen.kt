@@ -48,21 +48,16 @@ enum class Screen(@StringRes val title: Int) {
     LoginScreen(title = R.string.LoginScreen),
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
-<<<<<<< HEAD
     ChatroomScreen(title = R.string.ChatroomScreen),
     SearchResultScreen(title = R.string.SearchResultScreen),
-    SearchWithMapScreen(title = R.string.SearchWithMapRScreen)
-=======
-
-    ChatroomScreen(title = R.string. ChatroomScreen),
-    CustomerScreen(title = R.string.CustomerScreen),
+    SearchWithMapScreen(title = R.string.SearchWithMapRScreen),
     OrderScreen(title = R.string.OrderScreen),
     Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
     ReservationScreen(title = R.string.reservationScreen),
-
     SettingScreen(title = R.string.Setting),
-    MemberScreen(title = R.string.Member)
->>>>>>> main
+    MemberScreen(title = R.string.Member),
+    CustomerScreen(title = R.string.CustomerScreen)
+
 }
 
 /**
