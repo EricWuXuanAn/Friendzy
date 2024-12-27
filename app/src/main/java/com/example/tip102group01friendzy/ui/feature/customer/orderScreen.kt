@@ -54,7 +54,8 @@ fun OrderListScreen(
         stringResource(R.string.unconfirm),
         stringResource(R.string.in_progress),
         stringResource(R.string.complete),
-        stringResource(R.string.myreservation)
+        stringResource(R.string.myreservation),
+//        stringResource(R.string.my_request)
     )
     val scope = rememberCoroutineScope()
     var snackbar = remember { SnackbarHostState() }
@@ -143,7 +144,7 @@ fun OrderListScreen(
             })
 
             4 -> orderList(orders = reservation, onClick = {
-                navController.navigate(Screen.ReservationScreen.name)
+                navController.navigate(Screen.ReservationConfirmScreen.name)
             })
         }
         SnackbarHost(hostState = snackbar)
