@@ -41,13 +41,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.TabVM
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //陪伴者刊登畫面
 fun CompanionPublishScreen(
     navController: NavHostController = rememberNavController(),
-    skillVM: SkillVM
+    skillVM: SkillVM,
+    tabVM: TabVM
 ) {
     //專長文字輸入方塊文字
     var inputSkillText by remember { mutableStateOf("") }
@@ -69,8 +71,11 @@ fun CompanionPublishScreen(
     var TimeEndExpanded by remember { mutableStateOf(false) }
 
     //時間用的小時數
-    val timeList = listOf("00","01","02","03","04","05","06","07","08","09","10",
-        "11","12","13","14","15","16","17","18","19","20","21","22","23")
+    val timeList = listOf(
+        "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
+        "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
+        "20:00", "21:00", "22:00", "23:00", "24:00"
+    )
     //呼叫VM
     val skillState by skillVM.skillState.collectAsState()
 
@@ -408,6 +413,7 @@ fun CompanionPublishScreen(
                 }
             }
             //金額
+            /*
             Spacer(modifier = Modifier.size(8.dp))//間隔
             Row(
                 modifier = Modifier
@@ -426,6 +432,7 @@ fun CompanionPublishScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
+             */
         }
         Column (
             modifier = Modifier.fillMaxSize(),
@@ -450,5 +457,5 @@ fun CompanionPublishScreen(
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionPublishScreen() {
-    CompanionPublishScreen(skillVM = SkillVM())
+    CompanionPublishScreen(skillVM = SkillVM(), tabVM = TabVM())
 }

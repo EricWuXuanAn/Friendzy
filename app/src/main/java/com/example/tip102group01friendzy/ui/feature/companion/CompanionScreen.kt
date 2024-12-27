@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
-import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
 import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
 import com.example.tip102group01friendzy.ui.feature.customer.switch
@@ -60,9 +60,11 @@ import com.example.tip102group01friendzy.ui.feature.customer.switch
 class Tabs(var name: String = "",var btIcon: Int = R.drawable.icon,var color:Int = R.color.white)
 
 @Composable
+//陪伴者主頁
 fun CompanionScreen(
     navController: NavHostController = rememberNavController(),
     companionVM: CompanionVM,
+    tabVM: TabVM
     ){
     var inputText by remember { mutableStateOf("") }//搜尋內容
     var tabIndex by remember { mutableIntStateOf(2) }//使用tabs的index編號
@@ -109,10 +111,10 @@ fun CompanionScreen(
             //tab選項點擊功能
             when(tabIndex){
                 0 ->{//訂單管理
-//                    OrderListScreen(
-//                        orderlistVM = OrderVM(),
-//                        navConrollor = rememberNavController()
-//                    )
+                    OrderListScreen(
+                        orderlistVM = OrderVM(),
+                        navController = rememberNavController(),
+                    )
                     testIten = "123"
                 }
                 1 ->{//可預約時間
@@ -232,7 +234,7 @@ fun ServicList(
         items(companions) {companion ->
             ListItem(
                 modifier = Modifier.clickable { onClick(companion) },
-                headlineContent = { Text(text = companion.service)},
+                headlineContent = { Text(text = companion.serviceTitle)},
                 supportingContent = { Text(text = companion.memberName)},
                 leadingContent = {
                     Image(
@@ -260,5 +262,5 @@ fun ServicList(
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionScreen(){
-    CompanionScreen(rememberNavController(), companionVM = CompanionVM())
+    CompanionScreen(rememberNavController(), companionVM = CompanionVM(), tabVM = TabVM())
 }
