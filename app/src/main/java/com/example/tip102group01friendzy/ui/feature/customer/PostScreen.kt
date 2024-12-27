@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -55,23 +58,39 @@ import java.time.format.DateTimeFormatter.ofPattern
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    postVM: PostVM
 ) {
-    var expendText by remember { mutableStateOf("HH") }
-    var expended by remember { mutableStateOf(false) }
+    var startExpendText by remember { mutableStateOf("HH") }
+    var endExpendText by remember { mutableStateOf("HH") }
+
+    var startExpended by remember { mutableStateOf(false) }
+    var endtExpended by remember { mutableStateOf(false) }
+
     val options = listOf(
         "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
         "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
         "20:00", "21:00", "22:00", "23:00", "24:00"
     )
+
     val dateFormat = ofPattern("YYYY-MM-dd") //設定日期格式
-    var selectDate by remember {
+    var startSelectDate by remember {
         mutableStateOf(
             LocalDate.now().format(dateFormat)
         )
-    } //日期對話選擇後會在Text上顯示的日期
-    var showDatePickerDialog by remember { mutableStateOf(false) } //預設日期對話匡要顯示還是不顯示，預設為不顯示
+    }
+    var endSelectDate by remember {
+        mutableStateOf(
+            LocalDate.now().format(dateFormat)
+        )
+    }
+
+    //日期對話選擇後會在Text上顯示的日期
+    var showStartDatePickerDialog by remember { mutableStateOf(false) } //預設日期對話匡要顯示還是不顯示，預設為不顯示
+    var showEndtDatePickerDialog by remember { mutableStateOf(false) }
     var inputTitle by remember { mutableStateOf("") }
+    var scpoe = rememberCoroutineScope()
+    val snackBar = remember { SnackbarHostState() }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -121,12 +140,12 @@ fun PostScreen(
             ) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(0.64f),
-                    value = "Date: ${selectDate}",
-                    onValueChange = { selectDate = it },
+                    value = "Date: ${startSelectDate}",
+                    onValueChange = { startSelectDate = it },
                     shape = RoundedCornerShape(15.dp),
                     trailingIcon = {
                         IconButton(onClick = {
-                            showDatePickerDialog = true
+                            showStartDatePickerDialog = true
 
                         }) {
                             Icon(
@@ -134,21 +153,21 @@ fun PostScreen(
                                 contentDescription = "Date select"
                             )
                         }
-                        if (showDatePickerDialog) {
+                        if (showStartDatePickerDialog) {
                             getDatePicker(
                                 onDismiss = {
-                                    showDatePickerDialog = false
+                                    showStartDatePickerDialog = false
                                 },
-                                onClick = { utcTimeMillis ->
-                                    selectDate = utcTimeMillis?.let {
+                                onClick = { startutcTimeMillis ->
+                                    startSelectDate = startutcTimeMillis?.let {
                                         Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC"))
                                             .toLocalDate()
                                             .format(dateFormat)
-                                    } ?: selectDate
-                                    showDatePickerDialog = false
+                                    } ?: startSelectDate
+                                    showStartDatePickerDialog = false
                                 },
                                 onDismissRequest = {
-                                    showDatePickerDialog = false
+                                    showStartDatePickerDialog = false
                                 }
                             )
                         }
@@ -156,32 +175,32 @@ fun PostScreen(
                 )
                 ExposedDropdownMenuBox(
                     onExpandedChange = {
-                        expended = it
-                        expended = true
+                        startExpended = it
+                        startExpended = true
                     },
-                    expanded = expended
+                    expanded = startExpended
                 ) {
                     OutlinedTextField(
-                        value = expendText,
-                        onValueChange = { expendText = it },
+                        value = startExpendText,
+                        onValueChange = { startExpendText = it },
                         singleLine = true,
                         modifier = Modifier
                             .menuAnchor()
                             .padding(start = 10.dp),
                         shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = expended) },
+                        trailingIcon = { TrailingIcon(expanded = startExpended) },
                         readOnly = true
                     )
                     ExposedDropdownMenu(
-                        expanded = expended,
-                        onDismissRequest = { expended = false }
+                        expanded = startExpended,
+                        onDismissRequest = { startExpended = false }
                     ) {
-                        options.forEach { opiton ->
+                        options.forEach { startoption ->
                             DropdownMenuItem(
-                                text = { Text(opiton) },
+                                text = { Text(startoption) },
                                 onClick = {
-                                    expendText = opiton
-                                    expended = false
+                                    startExpendText = startoption
+                                    startExpended = false
                                 }
                             )
                         }
@@ -198,12 +217,12 @@ fun PostScreen(
             ) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(0.64f),
-                    value = "Date: ${selectDate}",
-                    onValueChange = { selectDate = it },
+                    value = "Date: ${endSelectDate}",
+                    onValueChange = { endSelectDate = it },
                     shape = RoundedCornerShape(15.dp),
                     trailingIcon = {
                         IconButton(onClick = {
-                            showDatePickerDialog = true
+                            showEndtDatePickerDialog = true
 
                         }) {
                             Icon(
@@ -211,21 +230,21 @@ fun PostScreen(
                                 contentDescription = "Date select"
                             )
                         }
-                        if (showDatePickerDialog) {
+                        if (showEndtDatePickerDialog) {
                             getDatePicker(
                                 onDismiss = {
-                                    showDatePickerDialog = false
+                                    showEndtDatePickerDialog = false
                                 },
-                                onClick = { utcTimeMillis ->
-                                    selectDate = utcTimeMillis?.let {
+                                onClick = { endutcTimeMillis ->
+                                    endSelectDate = endutcTimeMillis?.let {
                                         Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC"))
                                             .toLocalDate()
                                             .format(dateFormat)
-                                    } ?: selectDate
-                                    showDatePickerDialog = false
+                                    } ?: endSelectDate
+                                    showEndtDatePickerDialog = false
                                 },
                                 onDismissRequest = {
-                                    showDatePickerDialog = false
+                                    showEndtDatePickerDialog = false
                                 }
                             )
                         }
@@ -233,32 +252,32 @@ fun PostScreen(
                 )
                 ExposedDropdownMenuBox(
                     onExpandedChange = {
-                        expended = it
-                        expended = true
+                        endtExpended = it
+                        endtExpended = true
                     },
-                    expanded = expended
+                    expanded = endtExpended
                 ) {
                     OutlinedTextField(
-                        value = expendText,
-                        onValueChange = { expendText = it },
+                        value = endExpendText,
+                        onValueChange = { endExpendText = it },
                         singleLine = true,
                         modifier = Modifier
                             .menuAnchor()
                             .padding(start = 10.dp),
                         shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = expended) },
+                        trailingIcon = { TrailingIcon(expanded = endtExpended) },
                         readOnly = true
                     )
                     ExposedDropdownMenu(
-                        expanded = expended,
-                        onDismissRequest = { expended = false }
+                        expanded = endtExpended,
+                        onDismissRequest = { endtExpended = false }
                     ) {
-                        options.forEach { opiton ->
+                        options.forEach { endopiton ->
                             DropdownMenuItem(
-                                text = { Text(opiton) },
+                                text = { Text(endopiton) },
                                 onClick = {
-                                    expendText = opiton
-                                    expended = false
+                                    endExpendText = endopiton
+                                    endtExpended = false
                                 }
                             )
                         }
@@ -277,7 +296,9 @@ fun PostScreen(
             .padding(20.dp)
     ) {
         OutlinedButton(
-            modifier = Modifier.padding(10.dp).height(110.dp),
+            modifier = Modifier
+                .padding(10.dp)
+                .height(110.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {}
         ) {
@@ -294,8 +315,17 @@ fun PostScreen(
                 containerColor = colorResource(R.color.purple_200),
                 contentColor = Color.DarkGray
             ),
-            modifier = Modifier.fillMaxWidth().padding(15.dp),
-            onClick = {}
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp),
+            onClick = {
+                scpoe.launch {
+                    snackBar.showSnackbar(
+                        "Successfully Post Your Event!",
+                        withDismissAction = true
+                    )
+                }
+            }
         ) {
             Text("Post")
         }
@@ -338,5 +368,5 @@ fun getDatePicker(
 @Composable
 @Preview(showBackground = true)
 fun PostScreenPreview() {
-    PostScreen(rememberNavController())
+    PostScreen(rememberNavController(), PostVM())
 }

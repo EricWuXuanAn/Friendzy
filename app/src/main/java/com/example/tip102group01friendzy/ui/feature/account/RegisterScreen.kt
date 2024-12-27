@@ -1,10 +1,12 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
-import android.util.Patterns
+import android.app.AlertDialog
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,10 +21,13 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
@@ -30,16 +35,15 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,24 +59,44 @@ import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
 
+@Composable
+fun SetupErrorRequest(viewModel: RegisterViewModel){
+    val errorRequest by viewModel.errorRequest.collectAsState()
+    LaunchedEffect(errorRequest) {
+        if (errorRequest.any()){
+            // alert
+            viewModel.consumeErrorRequest()
+        }
+    }
+}
+
+
+
 //@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    registerViewModel: RegisterViewModel
 ) {
-    val context = LocalContext.current
-    var account by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var status by remember { mutableStateOf(false) }
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    val emailRegex = Patterns.EMAIL_ADDRESS
-    val isValidEmail = emailRegex.matcher(account).matches()
-    val emailShowError = account.isNotBlank() && !isValidEmail
-    val passwordShowError = password.count() < 8 && password.isNotBlank()
+    SetupErrorRequest(registerViewModel)
+    val naviRequest by registerViewModel.naviRequest.collectAsState()
+    LaunchedEffect(naviRequest) {
+        if (naviRequest == true){
+            navController.navigate(Screen.LoginScreen.name)
+            registerViewModel.consumeNaviRequest()
+        }
+    }
 
+
+//    val snackbarMessage by registerViewModel.snackbarMessage.collectAsState()
+//    val snackberTrigger by registerViewModel.snackbarTrigger.collectAsState()
+//    val snackbarHostState = remember { SnackbarHostState() }
+//    val scope = rememberCoroutineScope()
+
+    val fieldEmptyMessage = stringResource(R.string.columnIsEmpty)
+    val emailFormatErrorMessage = stringResource(R.string.errorEmail)
+    val passwordLengthMessage = stringResource(R.string.passwordRule)
+    val passwordDifferent = stringResource(R.string.passwordDifferent)
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -88,45 +112,15 @@ fun RegisterScreen(
                 .padding(6.dp)
         ) {
             Text(
-                text = stringResource(R.string.setUp),
+                text = stringResource(R.string.signUp),
                 fontSize = 20.sp,
                 modifier = Modifier
                     .padding(6.dp)
             )
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp, 8.dp)
-        ) {
-            Text(
-                text = "Accompany",
-                color =
-                if (!status) colorResource(R.color.blue_700)
-                else colorResource(R.color.Gray),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            SwitchWithText(status) {
-                status = it
-            }
-            Text(
-                text = "Companion",
-                color =
-                if (status) colorResource(R.color.blue_700)
-                else colorResource(R.color.Gray),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-        }
-
         OutlinedTextField(
-            value = account,
-            onValueChange = { account = it },
+            value = registerViewModel.account.value,
+            onValueChange = { registerViewModel.account.value = it },
             placeholder = { Text(text = stringResource(R.string.account)) },
             leadingIcon = {
                 Icon(
@@ -136,7 +130,7 @@ fun RegisterScreen(
             },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            isError = emailShowError,
+            isError = registerViewModel.account.value.isNotBlank() && !registerViewModel.isValidEmail,
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = colorResource(R.color.teal_700),
                 unfocusedIndicatorColor = colorResource(R.color.purple_200),
@@ -148,8 +142,11 @@ fun RegisterScreen(
                 .background(colorResource(R.color.purple_200))
         )
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = registerViewModel.password.value,
+            onValueChange = {
+                Log.d("tag","New password value: $it")
+                registerViewModel.password.value = it
+                            },
             placeholder = { Text(text = stringResource(R.string.password)) },
             leadingIcon = {
                 Icon(
@@ -157,20 +154,19 @@ fun RegisterScreen(
                     contentDescription = "password"
                 )
             },
-
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.Clear,
                     contentDescription = "clear",
                     modifier = Modifier.clickable {
-                        password = ""
+                        registerViewModel.password.value = ""
                     }
                 )
             },
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            isError = passwordShowError,
+            isError = registerViewModel.password.value.isNotBlank() && registerViewModel.password.value.count() < 8,
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = colorResource(R.color.teal_700),
                 unfocusedIndicatorColor = colorResource(R.color.purple_200),
@@ -182,8 +178,8 @@ fun RegisterScreen(
                 .background(colorResource(R.color.purple_200))
         )
         OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            value = registerViewModel.confirmPassword.value,
+            onValueChange = { registerViewModel.confirmPassword.value = it },
             placeholder = { Text(text = stringResource(R.string.confirmPassword)) },
             leadingIcon = {
                 Icon(
@@ -196,7 +192,7 @@ fun RegisterScreen(
                     imageVector = Icons.Default.Clear,
                     contentDescription = "clear",
                     modifier = Modifier.clickable {
-                        confirmPassword = ""
+                        registerViewModel.confirmPassword.value = ""
                     }
                 )
             },
@@ -213,8 +209,8 @@ fun RegisterScreen(
                 .background(colorResource(R.color.purple_200))
         )
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = registerViewModel.username.value,
+            onValueChange = { registerViewModel.username.value = it },
             placeholder = { Text(text = stringResource(R.string.name)) },
             leadingIcon = {
                 Icon(
@@ -236,40 +232,10 @@ fun RegisterScreen(
 
         Button(
             onClick = {
-                if (passwordShowError) {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.passwordRule),
-                            withDismissAction = true
-                        )
-                    }
-                } else if (emailShowError) {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.errorEmail),
-                            withDismissAction = true
-                        )
-                    }
-                } else if (password != confirmPassword) {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.passwordDifferent),
-                            withDismissAction = true
-                        )
-                    }
-                } else if (account.isBlank() || password.isBlank() || confirmPassword.isBlank() || username.isBlank()) {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.columnIsEmpty),
-                            withDismissAction = true
-                        )
-                    }
-                }//TODO:確認之後看DB是否註冊過，若註冊過要跳通知
-                else{
-                navController.navigate(Screen.LoginScreen.name)
-                }
-            },//TODO:1.格線都輸入且符合規格回到登入頁
-            //TODO:2.密碼確認沒問題回到登入頁
+                registerViewModel.onRegisterClicked()
+
+                    //TODO:資料都輸入且符合規格回到登入頁
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
                 contentColor = Color.DarkGray
@@ -280,7 +246,33 @@ fun RegisterScreen(
                 text = stringResource(R.string.submit)
             )
         }
-        SnackbarHost(hostState = snackbarHostState)
+//        LaunchedEffect(snackberTrigger) {
+//            if (snackbarMessage != null) {
+//                scope.launch {
+//                    snackbarHostState.showSnackbar(
+//                        message = when (snackbarMessage) {
+//                            "Field cannot be empty." -> fieldEmptyMessage
+//                            "Email Formatting Error." -> emailFormatErrorMessage
+//                            "Password(at least 8 characters)" -> passwordLengthMessage
+//                            "Password do not match." -> passwordDifferent
+//                            else -> snackbarMessage ?: ""
+//                        },
+//                        duration = SnackbarDuration.Short,
+//                        withDismissAction = true
+//                    )
+//                }
+//            }
+//
+//        }
+//        Box (
+//            modifier = Modifier.fillMaxSize(),
+//            contentAlignment = Alignment.BottomCenter
+//        ){
+//            SnackbarHost(
+//                hostState = snackbarHostState,
+//                modifier = Modifier.padding(bottom = 100.dp)
+//            )
+//        }
     }
 
 
@@ -301,40 +293,10 @@ fun RegisterScreen(
     }
 }
 
-@Composable
-fun SwitchWithText(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    Switch(
-        checked = checked,
-        onCheckedChange = onCheckedChange,
-        thumbContent =
-        if (checked) {
-            {
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = "ststus",
-                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                )
-            }
-        } else {
-            null
-        },
-        colors = SwitchDefaults.colors(
-            checkedThumbColor = colorResource(R.color.pink_200),
-            checkedTrackColor = colorResource(R.color.green_200),
-            uncheckedThumbColor = colorResource(R.color.blue_700),
-            uncheckedTrackColor = colorResource(R.color.green_200)
-        )
-    )
-}
-
-
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
     TIP102Group01FriendzyTheme {
-        RegisterScreen(rememberNavController())
+        RegisterScreen(rememberNavController(), registerViewModel = RegisterViewModel())
     }
 }

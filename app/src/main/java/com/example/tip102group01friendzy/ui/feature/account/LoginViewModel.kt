@@ -18,6 +18,9 @@ class LoginViewModel : ViewModel() {
     val isValidEmail: Boolean
         get() = emailRegex.matcher(account.value).matches()
 
+    private val _snackbarTrigger = MutableStateFlow(0)
+    val snackbarTrigger: StateFlow<Int> = _snackbarTrigger.asStateFlow()
+
     private val _snackbarMessage = MutableStateFlow<String?>(null)
     val snackbarMessage: StateFlow<String?> = _snackbarMessage.asStateFlow()
 
@@ -25,10 +28,12 @@ class LoginViewModel : ViewModel() {
     fun onLoginClicked() {
         if (account.value.isBlank() || password.value.isBlank()) {
             _snackbarMessage.value = "empty_fields"
+            _snackbarTrigger.value += 1
         } else if (!isValidEmail) {
             _snackbarMessage.value = "invalid_email"
+            _snackbarTrigger.value += 1
         } else {
-            //TODO: 處理登入邏輯 -> 曾經註冊過且帳密正確即可登入，帳密不正卻跳通知
+            //TODO: 處理登入邏輯 -> 曾經註冊過且帳密正確即可登入，帳密不正確跳通知
             _snackbarMessage.value = null
         }
     }

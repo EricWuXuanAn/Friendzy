@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ import com.example.tip102group01friendzy.Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerScreen(
-    navController: NavHostController, customerVM: CustomerVM
+    navController: NavHostController, customerVM: CustomerVM, postListVM: PostListVM
 ) {
     var text by remember { mutableStateOf("") } //使用者的型態文字串
     var accountStatus by remember { mutableStateOf(false) } //設定要顯示什麼身份
@@ -60,7 +61,7 @@ fun CustomerScreen(
 //    var selectDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
 //    var showDatePickerDialog by remember { mutableStateOf(false) }
     var inputText by remember { mutableStateOf("") } //搜尋功能使用的
-    val customerState by customerVM.memberState.collectAsState()
+    val postListState by postListVM.postListState.collectAsState()
 
 
     Column(
@@ -152,11 +153,11 @@ fun CustomerScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 IconButton(onClick = {
-                    navController.navigate(Screen.ReservationScreen.name)
+                    navController.navigate(Screen.Reservation.name)
                 }) {
                     Icon(painter = painterResource(R.drawable.date_range), "reservation")
                 }
-                Text(text = stringResource(R.string.reservation))
+                Text(text = stringResource(R.string.reservation))// 很奇怪 再討論
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -177,16 +178,19 @@ fun CustomerScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp),
-            text = stringResource(R.string.my_post),
+            text = stringResource(R.string.recommemd),
             textAlign = TextAlign.Start,
             fontSize = 28.sp
         )
-        customerList(customers = customerState, onClick = {
-            //要跳到會員資料
-        })
-
-
+        postList(
+            postlist = postListState.filter { it.postTitle.contains(inputText, true) },
+            onClick = {
+                navController.navigate(route = Screen.RegisterScreen.name)
+            }
+        )
     }
+
+
 }
 
 
@@ -223,23 +227,27 @@ fun switch(
 
 @Composable
 //拿到顧客資訊 目前為假資料 之後要從資料庫抓
-fun customerList(
-    customers: List<Customer>, onClick: (Customer) -> Unit
+fun postList(
+    postlist: List<PostList>, onClick: (PostList) -> Unit
 ) {
     LazyColumn {
-        items(customers) { customer ->
+        items(postlist) { post ->
             ListItem(
-                modifier = Modifier.clickable { onClick(customer) },
-                headlineContent = { Text(text = customer.memberName) },
-                supportingContent = { Text(text = "I am good at  ${customer.memberSpecialty}") },
+                modifier = Modifier.clickable { onClick(post) },
+                overlineContent = { Text(text = post.postID, fontSize = 18.sp) },
+                headlineContent = { Text(text = post.postTitle, fontFamily = FontFamily.Default) },
+                supportingContent = { Text(text = post.postContent) },
                 leadingContent = {
                     Image(
-                        modifier = Modifier.size(50.dp),
-                        painter = painterResource(id = customer.memberImg),
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(end = 10.dp),
+                        painter = painterResource(id = post.postImg),
                         contentDescription = "memberPhoto"
                     )
                 },
-            )
+
+                )
             HorizontalDivider(modifier = Modifier.padding(top = 5.dp))
         }
     }
@@ -249,5 +257,5 @@ fun customerList(
 @Composable
 @Preview(showBackground = true)
 fun CustomerScreenPreview() {
-    CustomerScreen(rememberNavController(), customerVM = CustomerVM())
+    CustomerScreen(rememberNavController(), customerVM = CustomerVM(), postListVM = PostListVM())
 }

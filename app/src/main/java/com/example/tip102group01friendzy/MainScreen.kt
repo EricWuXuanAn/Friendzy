@@ -1,6 +1,5 @@
 package com.example.tip102group01friendzy
 
-//import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,9 +29,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
 import com.example.tip102group01friendzy.ui.feature.Memberpage.Settingpage
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
+import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordViewModel
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
+import com.example.tip102group01friendzy.ui.feature.account.RegisterViewModel
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
@@ -40,6 +41,9 @@ import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BkackL
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_Black_ListVM
 import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
 import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
+import com.example.tip102group01friendzy.ui.feature.customer.PostListVM
+import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
+import com.example.tip102group01friendzy.ui.feature.customer.PostVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
@@ -48,6 +52,7 @@ enum class Screen(@StringRes val title: Int) {
     LoginScreen(title = R.string.LoginScreen),
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
+
     ChatroomScreen(title = R.string.ChatroomScreen),
     SearchResultScreen(title = R.string.SearchResultScreen),
     SearchWithMapScreen(title = R.string.SearchWithMapRScreen),
@@ -56,8 +61,10 @@ enum class Screen(@StringRes val title: Int) {
     ReservationScreen(title = R.string.reservationScreen),
     SettingScreen(title = R.string.Setting),
     MemberScreen(title = R.string.Member),
-    CustomerScreen(title = R.string.CustomerScreen)
-
+    CustomerScreen(title = R.string.CustomerScreen),
+    EnterScreen(title = R.string.enterScreen),
+    ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
+    PostScreen(title = R.string.Post)
 }
 
 /**
@@ -71,8 +78,10 @@ fun Main(
     customerVM: CustomerVM = CustomerVM(),
     orderlistVM: OrderVM = OrderVM(),
     reservationVM: ReservationVM = ReservationVM(),
-    favorite_and_bkacklistVM:Favorite_and_Black_ListVM = Favorite_and_Black_ListVM()
- ) {
+    favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
+    postVM: PostVM = PostVM(),
+    postListVM: PostListVM = PostListVM()
+) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
     // 取得當前頁面的名稱
@@ -122,41 +131,52 @@ fun Main(
                 route = Screen.RegisterScreen.name
             ) {
                 RegisterScreen(
-                    navController = navController
+                    navController = navController,
+                    registerViewModel = RegisterViewModel()
                 )
             }
             composable(
                 route = Screen.ForgetPasswordScreen.name
             ) { backStackEntry ->
                 ForgetPasswordScreen(
-                    navController = navController
+                    navController = navController,
+                    forgetPasswordViewModel = ForgetPasswordViewModel()
                 )
             }
-
             composable(
                 route = Screen.OrderScreen.name
-            ){
+            ) {
                 OrderListScreen(navController = navController, orderlistVM = orderlistVM)
             }
             composable(
                 route = Screen.CustomerScreen.name
-            ){
-                CustomerScreen(navController = navController, customerVM = customerVM)
+            ) {
+                CustomerScreen(navController = navController, customerVM = customerVM, postListVM = postListVM)
             }
             composable(
                 route = Screen.Favorite_and_BlackListScreen.name
-            ){
-                Favorite_and_BkackListScreen(navController = navController, favorite_and_bkacklistVM = favorite_and_bkacklistVM)
+            ) {
+                Favorite_and_BkackListScreen(
+                    navController = navController,
+                    favorite_and_bkacklistVM = favorite_and_bkacklistVM
+                )
             }
             composable(
-                route = Screen.ReservationScreen.name
-            ){
-                ReservationScreen(navController = navController, reservationVM = reservationVM)
+                route = Screen.Reservation.name
+            ) {
+                ReservationScreen(navController = navController, reservationVM = reservationVM, PostListVM())
             }
             composable(
                 route = Screen.ChatroomScreen.name
             ) { backStackEntry ->
                 ChatroomScreen(
+                    navController = navController
+                )
+            }
+            composable(
+                route = Screen.EnterScreen.name
+            ) {
+                EnterScreen(
                     navController = navController
                 )
             }
@@ -166,6 +186,9 @@ fun Main(
 
             composable(route = Screen.MemberScreen.name) {
                 MemberScreen(navController = navController, memberVM = viewModel())
+            }
+            composable(route = Screen.PostScreen.name){
+                PostScreen(navController = navController, postVM = postVM)
             }
         }
     }
@@ -201,6 +224,7 @@ fun MainAppBar(
         scrollBehavior = scrollBehavior
     )
 }
+
 
 @Preview(showBackground = true)
 @Composable

@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,14 +21,19 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -45,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -52,6 +60,12 @@ fun LoginScreen(
     loginViewModel: LoginViewModel
 ) {
     val snackbarMessage by loginViewModel.snackbarMessage.collectAsState()
+    val snackberTrigger by loginViewModel.snackbarTrigger.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val accountOrPasswordEmptyMessage = stringResource(R.string.acc_pass_empty)
+    val emailFormatErrorMessage = stringResource(R.string.errorEmail)
 
 
     Column(
@@ -59,7 +73,8 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, 64.dp)
+            .padding(16.dp)
+            .padding(top=150.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -135,6 +150,7 @@ fun LoginScreen(
             Button(
                 onClick = {
                     loginViewModel.onLoginClicked()
+                    //TODO: 確認帳號正確才能登入(控制器到首頁)
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),
@@ -154,39 +170,53 @@ fun LoginScreen(
                 TextButton(
                     onClick = {
                         loginViewModel.password.value = ""
-                        navController.navigate(Screen.MemberScreen.name)
+                        navController.navigate(Screen.ForgetPasswordScreen.name)
                     } //跳轉畫面到忘記密碼頁
                 ) {
                     Text(
                         text = stringResource(R.string.ForgotYourPassword),
-                        color = colorResource(R.color.Gray)
+                        color = colorResource(R.color.Gray),
+                        textDecoration = TextDecoration.Underline
                     )
                 }
                 TextButton(
                     onClick = {
-                        navController.navigate(Screen.SettingScreen.name)
+                        navController.navigate(Screen.RegisterScreen.name)
                     } //跳轉畫面到註冊
                 ) {
                     Text(
-                        text = stringResource(R.string.setUp),
-                        color = colorResource(R.color.Gray)
+                        text = stringResource(R.string.signUp),
+                        color = colorResource(R.color.Gray),
+                        textDecoration = TextDecoration.Underline
                     )
                 }
 
 
             }
         }
-        snackbarMessage?.let {
-            val message = when (it) {
-                "empty_fields" -> stringResource(R.string.acc_pass_empty)
-                "invalid_email" -> stringResource(R.string.errorEmail)
-                else -> ""
-            }
-            if (message.isNotBlank()) {
-                Snackbar {
-                    Text(message)
+        LaunchedEffect (snackberTrigger){
+            if (snackbarMessage != null){
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = when(snackbarMessage){
+                            "empty_fields" -> accountOrPasswordEmptyMessage
+                            "invalid_email" -> emailFormatErrorMessage
+                            else -> snackbarMessage ?: ""
+                        },
+                        duration = SnackbarDuration.Short,
+                        withDismissAction = true
+                    )
                 }
             }
+        }
+        Box (
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ){
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(bottom = 100.dp)
+            )
         }
     }
 }

@@ -25,11 +25,13 @@ datastoreCoreAndroid = "1.1.1"
 datastoreCoreJvm = "1.1.1"
 playServicesNearby = "19.0.0"
 
+
 gson = "2.11.0"
 appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
+
 playServicesLocation = "21.3.0"
 accompanistPermissions = "0.37.0"
 uiTooling = "1.7.6"
@@ -79,7 +81,6 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistPermissions" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
