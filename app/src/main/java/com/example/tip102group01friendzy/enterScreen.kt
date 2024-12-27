@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -29,7 +30,8 @@ import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.delay
 
 @Composable
-fun EnterScreen(navController: NavHostController) {
+fun EnterScreen(navController: NavHostController, tabVM: TabVM) {
+    tabVM.tabBarState(false)
     var isVisible by remember { mutableStateOf(false) }
     val alpha by animateFloatAsState(
         targetValue = if (isVisible) 1f else 0f,
@@ -37,8 +39,11 @@ fun EnterScreen(navController: NavHostController) {
     )
 
     LaunchedEffect(Unit) {
+        Log.d("tag_", "EnterScreen - LaunchedEffect1")
         isVisible = true
         delay(1200)
+        Log.d("tag_", "EnterScreen - LaunchedEffect2")
+//        navController.navigate(Screen.LoginScreen.name)
         navController.navigate(Screen.LoginScreen.name){
             popUpTo(Screen.EnterScreen.name){inclusive=true}
         }
@@ -80,6 +85,6 @@ fun EnterScreen(navController: NavHostController) {
 @Composable
 fun EnterScreenPreview() {
     TIP102Group01FriendzyTheme {
-        EnterScreen(rememberNavController())
+        EnterScreen(rememberNavController(),TabVM())
     }
 }

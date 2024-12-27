@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -67,7 +68,7 @@ fun LoginScreen(
     val accountOrPasswordEmptyMessage = stringResource(R.string.acc_pass_empty)
     val emailFormatErrorMessage = stringResource(R.string.errorEmail)
 
-
+    Log.d("tag_", "LoginScreen")
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,6 +77,8 @@ fun LoginScreen(
             .padding(16.dp)
             .padding(top=150.dp)
     ) {
+        Log.d("tag_", "LoginScreen - Column")
+
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -150,7 +153,9 @@ fun LoginScreen(
             Button(
                 onClick = {
                     loginViewModel.onLoginClicked()
-                    //TODO: 確認帳號正確才能登入(控制器到首頁)
+                    //TODO: 確認帳號正確才能登入(控制器到首頁)，測試直接跳轉
+                    navController.navigate(Screen.ChatroomScreen.name)
+
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),

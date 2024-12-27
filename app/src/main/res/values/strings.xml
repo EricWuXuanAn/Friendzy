@@ -53,6 +53,11 @@
     <string name="Setting">Setting</string>
     <string name="Member">Member</string>
     <string name="enterScreen">EnterScreen</string>
+    <string name="home">Home</string>
+    <string name="service">Service</string>
+    <string name="post">Post</string>
+    <string name="chat">Chat</string>
+    <string name="information">Information</string>
 
 
 </resources>

@@ -44,6 +44,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
 import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
+import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
 enum class Screen(@StringRes val title: Int) {
@@ -77,7 +78,8 @@ fun Main(
     customerVM: CustomerVM = CustomerVM(),
     orderlistVM: OrderVM = OrderVM(),
     reservationVM: ReservationVM = ReservationVM(),
-    favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM()
+    favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
+    tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -167,14 +169,15 @@ fun Main(
                 route = Screen.ChatroomScreen.name
             ) { backStackEntry ->
                 ChatroomScreen(
-                    navController = navController
+                    navController = navController,
+                    tabVM = tabVM
                 )
             }
             composable(
                 route = Screen.EnterScreen.name
             ) {
                 EnterScreen(
-                    navController = navController
+                    navController = navController, tabVM = tabVM
                 )
             }
             composable(route = Screen.SettingScreen.name) {
@@ -184,6 +187,12 @@ fun Main(
             composable(route = Screen.MemberScreen.name) {
                 MemberScreen(navController = navController, memberVM = viewModel())
             }
+
+            composable(route = Screen.SearchWithMapScreen.name) {
+                SearchWithMap()
+            }
+
+
         }
     }
 }
@@ -224,6 +233,6 @@ fun MainAppBar(
 @Composable
 fun MainScreenPreview() {
     TIP102Group01FriendzyTheme {
-        Main()
+//        Main()
     }
 }
