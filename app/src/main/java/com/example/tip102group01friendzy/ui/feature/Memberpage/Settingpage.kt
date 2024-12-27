@@ -107,8 +107,8 @@ fun Settingpage(
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
-            // 儲存按鈕
-            Button(
+            // 儲存按鈕（自訂圖示）
+            IconButton(
                 onClick = {
                     if (newPassword == confirmPassword) {
                         password = newPassword // 更新密碼
@@ -118,21 +118,32 @@ fun Settingpage(
                         passwordError = true // 顯示錯誤訊息
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.align(Alignment.End) // 將按鈕對齊到右側
             ) {
                 Text("變更密碼")
             }
         } else {
-            // 顯示密碼與編輯按鈕
+            // 顯示密碼與編輯按鈕（自訂圖示）
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
             ) {
                 Text(text = password, modifier = Modifier.weight(1f))
-                Button(onClick = { isEditingPassword = true }) {
-                    Text("編輯")
+                // 將密碼顯示為與字數相同的星號
+                Text(
+                    text = "*".repeat(password.length), // 根據密碼長度生成星號
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = { isEditingPassword = true }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.edit), // 編輯按鈕圖示
+                        contentDescription = "Edit"
+                    )
                 }
             }
+
         }
 
 
@@ -222,7 +233,7 @@ fun EditableRow(
             }
         ) {
             Icon(
-                painter = painterResource(id = if (isEditing) R.drawable.check else R.drawable.check),
+                painter = painterResource(id = if (isEditing) R.drawable.check else R.drawable.edit),
                 contentDescription = if (isEditing) "Save" else "Edit"
             )
         }

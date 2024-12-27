@@ -1,6 +1,5 @@
 package com.example.tip102group01friendzy
 
-import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -42,6 +41,9 @@ import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BkackL
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_Black_ListVM
 import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
 import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
+import com.example.tip102group01friendzy.ui.feature.customer.PostListVM
+import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
+import com.example.tip102group01friendzy.ui.feature.customer.PostVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
@@ -52,19 +54,18 @@ enum class Screen(@StringRes val title: Int) {
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
 
+    ChatroomScreen(title = R.string.ChatroomScreen),
     SearchResultScreen(title = R.string.SearchResultScreen),
     SearchWithMapScreen(title = R.string.SearchWithMapRScreen),
-    ChatroomScreen(title = R.string.ChatroomScreen),
-    CustomerScreen(title = R.string.CustomerScreen),
     OrderScreen(title = R.string.OrderScreen),
     Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
-    Reservation(title = R.string.reservationScreen),
-
-    EnterScreen(title = R.string.enterScreen),
     ReservationScreen(title = R.string.reservationScreen),
-
     SettingScreen(title = R.string.Setting),
-    MemberScreen(title = R.string.Member)
+    MemberScreen(title = R.string.Member),
+    CustomerScreen(title = R.string.CustomerScreen),
+    EnterScreen(title = R.string.enterScreen),
+    ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
+    PostScreen(title = R.string.Post)
 }
 
 /**
@@ -79,6 +80,8 @@ fun Main(
     orderlistVM: OrderVM = OrderVM(),
     reservationVM: ReservationVM = ReservationVM(),
     favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
+    postVM: PostVM = PostVM(),
+    postListVM: PostListVM = PostListVM()
     tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
@@ -114,7 +117,7 @@ fun Main(
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.EnterScreen.name,
+            startDestination = Screen.LoginScreen.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -150,7 +153,7 @@ fun Main(
             composable(
                 route = Screen.CustomerScreen.name
             ) {
-                CustomerScreen(navController = navController, customerVM = customerVM)
+                CustomerScreen(navController = navController, customerVM = customerVM, postListVM = postListVM)
             }
             composable(
                 route = Screen.Favorite_and_BlackListScreen.name
@@ -161,9 +164,9 @@ fun Main(
                 )
             }
             composable(
-                route = Screen.ReservationScreen.name
+                route = Screen.Reservation.name
             ) {
-                ReservationScreen(navController = navController, reservationVM = reservationVM)
+                ReservationScreen(navController = navController, reservationVM = reservationVM, PostListVM())
             }
             composable(
                 route = Screen.ChatroomScreen.name
@@ -186,6 +189,9 @@ fun Main(
 
             composable(route = Screen.MemberScreen.name) {
                 MemberScreen(navController = navController, memberVM = viewModel())
+            }
+            composable(route = Screen.PostScreen.name){
+                PostScreen(navController = navController, postVM = postVM)
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {

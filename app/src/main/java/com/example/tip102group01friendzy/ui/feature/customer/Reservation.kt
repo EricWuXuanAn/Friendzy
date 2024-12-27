@@ -1,18 +1,23 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
-class Reservation(
-    var posterID: String = "",
+import com.example.tip102group01friendzy.R
+
+class Reservation (
+    var memberID: String = "",
+    var memberName: String = "",
+    var memberImg: Int = R.drawable.ic_launcher_foreground,
+    var title: String = "",
     var specialty: String = "",
-    var startTime: String = "",
-    var ecndTime: String = "",
-    var location: String = "",
+    var loaction: String = "",
     var price: Double
-) {
+//    var startTime: Long,
+//    var endTime: Long
+){
     override fun equals(other: Any?): Boolean {
-        return this.posterID == (other as Reservation).posterID
+        return this.memberID == (other as Reservation).memberID
     }
 
     override fun hashCode(): Int {
-        return this.posterID.hashCode()
+        return this.memberID.hashCode()
     }
 }
