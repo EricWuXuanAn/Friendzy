@@ -65,7 +65,7 @@ enum class Screen(@StringRes val title: Int) {
     CustomerScreen(title = R.string.CustomerScreen),
     EnterScreen(title = R.string.enterScreen),
     ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
-    PostScreen(title = R.string.Post)
+    PostScreen(title = R.string.post)
 }
 
 /**
@@ -81,7 +81,7 @@ fun Main(
     reservationVM: ReservationVM = ReservationVM(),
     favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
     postVM: PostVM = PostVM(),
-    postListVM: PostListVM = PostListVM()
+    postListVM: PostListVM = PostListVM(),
     tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
@@ -164,7 +164,7 @@ fun Main(
                 )
             }
             composable(
-                route = Screen.Reservation.name
+                route = Screen.ReservationScreen.name
             ) {
                 ReservationScreen(navController = navController, reservationVM = reservationVM, PostListVM())
             }
@@ -195,7 +195,7 @@ fun Main(
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
-                SearchWithMap()
+                SearchWithMap(navController = navController)
             }
 
 

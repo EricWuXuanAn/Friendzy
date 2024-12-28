@@ -324,6 +324,7 @@ fun PostScreen(
                         "Successfully Post Your Event!",
                         withDismissAction = true
                     )
+                    navController.popBackStack()
                 }
             }
         ) {

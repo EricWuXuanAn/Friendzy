@@ -3,7 +3,7 @@
     <string name="search">Search</string>
     <string name="account">Account(Email)</string>
     <string name="password">Password</string>
-    <string name="setUp">Set up</string>
+    <string name="signUp">Sign Up up</string>
     <string name="logIn">Log in</string>
     <string name="ForgotYourPassword">Forgot Your Password?</string>
     <string name="acc_pass_empty">Account and password cannot be empty!</string>
@@ -59,6 +59,9 @@
     <string name="post">Post</string>
     <string name="chat">Chat</string>
     <string name="information">Information</string>
+    <string name="reservationConfirmScreen">Reservation Confirm</string>
+    <string name="decline">Declined</string>
+    <string name="refuse">Refuse</string>
 
 
 </resources>
