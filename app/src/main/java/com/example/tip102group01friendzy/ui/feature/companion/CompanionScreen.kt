@@ -40,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -51,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
 import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
@@ -62,7 +64,7 @@ class Tabs(var name: String = "",var btIcon: Int = R.drawable.icon,var color:Int
 @Composable
 //陪伴者主頁
 fun CompanionScreen(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     companionVM: CompanionVM,
     tabVM: TabVM
     ){
@@ -76,18 +78,18 @@ fun CompanionScreen(
 
     val tabs :List<Tabs> =listOf(//tab選項內容
         Tabs("訂單管理",R.drawable.order_manage,R.color.teal_700),
-        Tabs("可約時間",R.drawable.date_range,R.color.teal_700),
-        Tabs(),
+//        Tabs("可約時間",R.drawable.date_range,R.color.teal_700),
+//        Tabs(),
 //        Tabs("申請項目",R.drawable.check_list)
     )
     Column (
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(5.dp),
+                .padding(4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -106,7 +108,9 @@ fun CompanionScreen(
             IconButton(
                 onClick = {},
             ) { Icon(Icons.Filled.Notifications, contentDescription = "Notification") }
-        }//↑保留
+        }
+        /*
+        //↑保留
         Column {
             //tab選項點擊功能
             when(tabIndex){
@@ -126,17 +130,19 @@ fun CompanionScreen(
             }
         }
         // ↓點tab隱藏
+        */
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp),
+                .fillMaxWidth()
+                .padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(//搜尋輸入框
                 value = inputText,
                 onValueChange = {inputText = it},
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(4.dp),
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search,
                         contentDescription = "Search",
@@ -151,72 +157,108 @@ fun CompanionScreen(
                 singleLine = true,
                 shape = RoundedCornerShape(15.dp),
             )
-//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-            Spacer(modifier = Modifier.padding(4.dp))
-            ScrollableTabRow(//按鈕列
-                selectedTabIndex = tabIndex,
-                //目前選擇選項的底線
-                indicator = {tabPositions ->
-                    TabRowDefaults.SecondaryIndicator(
-                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                        color = Color.White
+        }
+        //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        HorizontalDivider(
+            modifier = Modifier.padding(top = 4.dp ,bottom = 10.dp), color = colorResource(R.color.teal_700)
+        )
+        Row (//按鈕列
+            modifier = Modifier.fillMaxWidth()
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            tabs.forEachIndexed{index, tabsList ->
+                Column (
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .clickable {
+                            when(index){
+                                0 ->{
+                                    navController.navigate(route = Screen.OrderScreen.name)
+                                }
+                            }
+                        },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ){
+                    Icon(
+                        painter = painterResource(tabsList.btIcon),
+                        contentDescription = tabs[index].name,
                     )
-                }, //分隔線屬性
-                divider = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(2.dp)
+                    Text(
+                        text = tabs[index].name
                     )
-                },
-            ) {
-                tabs.forEachIndexed{index,tabList ->
-                    Tab(
-                        modifier = Modifier
+                }
+            }
+        }
+        /*
+        ScrollableTabRow(//按鈕列
+            selectedTabIndex = tabIndex,
+            //目前選擇選項的底線
+            indicator = {tabPositions ->
+                TabRowDefaults.SecondaryIndicator(
+                    Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                    color = Color.White
+                )
+            }, //分隔線屬性
+            divider = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(2.dp)
+                )
+            },
+        ) {
+            tabs.forEachIndexed{index,tabList ->
+                Tab(
+                    modifier = Modifier
 //                        .wrapContentHeight()
-                            .size(width =65.dp , height = 65.dp )//單個選項的格子大小
-                            .width(65.dp)
+                        .size(width =65.dp , height = 65.dp )//單個選項的格子大小
+                        .width(65.dp)
 //                        .padding(top = 6.dp)
 //                        .fillMaxHeight()
-                        ,
-                        selected = index == tabIndex,
-                        onClick = {tabIndex = index},
-                    ){//選項樣式
-                        Column (
-                            modifier = Modifier
-                                .fillMaxWidth(0.9f)//選項和選項之間保留空隙
-                                .fillMaxHeight(),//擴到最高才能置頂
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top,
-                        ){
-                            Icon(
-                                painter = painterResource(tabList.btIcon),
-                                contentDescription = tabs[index].name,
-                                tint = colorResource(id = tabList.color)
-                            )
-                            Text(
-                                text = tabs[index].name,
-                                textAlign = TextAlign.Center, //文字置中
-                                modifier = Modifier.wrapContentHeight(),
-                                color = colorResource(id = tabList.color)
-                            )
-                        }
+                    ,
+                    selected = index == tabIndex,
+                    onClick = {tabIndex = index},
+                ){//選項樣式
+                    Column (
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)//選項和選項之間保留空隙
+                            .fillMaxHeight(),//擴到最高才能置頂
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top,
+                    ){
+                        Icon(
+                            painter = painterResource(tabList.btIcon),
+                            contentDescription = tabs[index].name,
+                            tint = colorResource(id = tabList.color)
+                        )
+                        Text(
+                            text = tabs[index].name,
+                            textAlign = TextAlign.Center, //文字置中
+                            modifier = Modifier.wrapContentHeight(),
+                            color = colorResource(id = tabList.color)
+                        )
                     }
                 }
             }
-            HorizontalDivider()//分隔線
-//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text("推薦項目", fontSize = 28.sp)
-                Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = testIten)//測試tab功能用
-                ServicList(companions = companionState){
-                    companionVM.setCompanion(it)
+        }
+
+         */
+        HorizontalDivider(
+            modifier = Modifier.padding(top = 10.dp), color = colorResource(R.color.teal_700)
+        )
+        //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text("推薦項目", fontSize = 28.sp)
+            Spacer(modifier = Modifier.padding(4.dp))
+//            Text(text = testIten)//測試tab功能用
+            //服務項目清單
+            ServicList(companions = companionState){
+                companionVM.setCompanion(it)
 //                    navController.navigate(Screen.CompanionLookPublish.name)
-                }
             }
         }
     }

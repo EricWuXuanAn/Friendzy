@@ -42,12 +42,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.TabVM
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter.ofPattern
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //陪伴者刊登畫面
 fun CompanionPublishScreen(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     skillVM: SkillVM,
     tabVM: TabVM
 ) {
@@ -59,6 +62,11 @@ fun CompanionPublishScreen(
     //結束日期時間
     var inputDateEnd by remember { mutableStateOf("") }
     var inputTimeEnd by remember { mutableStateOf("") }
+    //設定日期格式
+    val dateFormat = ofPattern("yyyy-MM-dd")
+    //DatePickDialog顯示控制
+    var shortStartDatePick by remember { mutableStateOf(false) }
+    var shortEndDatePick by remember { mutableStateOf(false) }
     //預算文字
     var inputBudget by remember { mutableStateOf("") }
     //專長下拉選單文字
@@ -87,7 +95,7 @@ fun CompanionPublishScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "刊登", fontSize = 28.sp)
-        HorizontalDivider(modifier = Modifier.padding(top = 6.dp , bottom = 6.dp))
+        HorizontalDivider(modifier = Modifier.padding(top = 6.dp, bottom = 6.dp))
         Column(
             horizontalAlignment = Alignment.Start
         ) {
@@ -129,6 +137,7 @@ fun CompanionPublishScreen(
                     }
                 }
             }
+            //新增刪除專長按鈕
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,7 +150,7 @@ fun CompanionPublishScreen(
                         .padding(end = 6.dp),
                     onClick = {
                         //判斷文字方塊是否有這個詞，有就不變 沒有就新增
-                        when(inputSkillText.contains(inputDropdownMenu)){
+                        when (inputSkillText.contains(inputDropdownMenu)) {
                             true -> {}
                             false -> inputSkillText += "$inputDropdownMenu "
                         }
@@ -150,7 +159,7 @@ fun CompanionPublishScreen(
                 Button(
                     modifier = Modifier.fillMaxWidth(1f),
                     onClick = {
-                        inputSkillText = inputSkillText.replace("$inputDropdownMenu ","")
+                        inputSkillText = inputSkillText.replace("$inputDropdownMenu ", "")
                     }
                 ) { Text("刪除選擇專長") }
                 /*
@@ -179,7 +188,7 @@ fun CompanionPublishScreen(
                 */
             }
             Spacer(modifier = Modifier.size(8.dp))//間隔
-            //專長
+            //專長顯示
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,17 +209,17 @@ fun CompanionPublishScreen(
             //開始時間
             Spacer(modifier = Modifier.size(8.dp))//間隔
             Text(text = "開始時間：", fontSize = 24.sp)
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
 //                Text(text = "日期：", fontSize = 16.sp)
-                //開始日期
+                //開始日期輸入方塊
                 OutlinedTextField(
                     value = inputDateStart,
-                    onValueChange = {  },
+                    onValueChange = { inputDateStart = it },
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
                         .padding(end = 6.dp),
@@ -220,11 +229,29 @@ fun CompanionPublishScreen(
                     enabled = false, //禁止打字
                     trailingIcon = {
                         Icon(painter = painterResource(R.drawable.date_range),
-                            contentDescription ="Clear",
-                            modifier = Modifier.clickable {  }
+                            contentDescription = "Clear",
+                            modifier = Modifier.clickable {
+                                shortStartDatePick = true
+                            }
                         )
                     }
                 )
+                //開始的DatePickDialog
+                if (shortStartDatePick) {
+                    PublishDatePicker(
+                        onConfirm = { startUtcTimeMillis ->
+                            inputDateStart = startUtcTimeMillis?.let {
+                                Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC"))
+                                    .toLocalDate()
+                                    .format(dateFormat)
+                            } ?: inputDateStart
+                            shortStartDatePick = false
+                        },
+                        onDismiss = {
+                            shortStartDatePick = false
+                        }
+                    )
+                }
                 //開始時間
                 ExposedDropdownMenuBox(
                     expanded = TimeStartExpanded,
@@ -233,6 +260,7 @@ fun CompanionPublishScreen(
                         inputTimeStart = ""
                     },
                 ) {
+                    //選時間文字輸入方塊
                     OutlinedTextField(
                         readOnly = true,
                         modifier = Modifier
@@ -284,17 +312,17 @@ fun CompanionPublishScreen(
             //結束時間
             Spacer(modifier = Modifier.size(8.dp))//間隔
             Text(text = "結束時間：", fontSize = 24.sp)
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
 //                Text(text = "日期：", fontSize = 16.sp)
                 //結束日期
                 OutlinedTextField(
                     value = inputDateEnd,
-                    onValueChange = {  },
+                    onValueChange = { inputDateEnd = it },
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
                         .padding(end = 6.dp),
@@ -304,11 +332,28 @@ fun CompanionPublishScreen(
                     enabled = false, //禁止打字
                     trailingIcon = {
                         Icon(painter = painterResource(R.drawable.date_range),
-                            contentDescription ="Clear",
-                            modifier = Modifier.clickable {  }
+                            contentDescription = "Clear",
+                            modifier = Modifier.clickable {
+                                shortEndDatePick = true
+                            }
                         )
                     }
                 )
+                if (shortEndDatePick) {
+                    PublishDatePicker(
+                        onConfirm = { startUtcTimeMillis ->
+                            inputDateEnd = startUtcTimeMillis?.let {
+                                Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC"))
+                                    .toLocalDate()
+                                    .format(dateFormat)
+                            } ?: inputDateEnd
+                            shortEndDatePick = false
+                        },
+                        onDismiss = {
+                            shortEndDatePick = false
+                        }
+                    )
+                }
                 //結束時間
                 ExposedDropdownMenuBox(
                     expanded = TimeEndExpanded,
@@ -434,11 +479,11 @@ fun CompanionPublishScreen(
             }
              */
         }
-        Column (
+        Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Bottom
         ) {
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
@@ -448,7 +493,7 @@ fun CompanionPublishScreen(
                         .fillMaxWidth(1f)
                         .padding(end = 6.dp),
                     onClick = {}
-                ) { Text("刊登")}
+                ) { Text("刊登") }
             }
         }
     }
@@ -457,5 +502,5 @@ fun CompanionPublishScreen(
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionPublishScreen() {
-    CompanionPublishScreen(skillVM = SkillVM(), tabVM = TabVM())
+    CompanionPublishScreen(rememberNavController(), skillVM = SkillVM(), tabVM = TabVM())
 }
