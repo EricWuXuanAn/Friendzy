@@ -44,7 +44,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostListVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
 import com.example.tip102group01friendzy.ui.feature.customer.PostVM
-import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
+
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
@@ -65,9 +65,9 @@ enum class Screen(@StringRes val title: Int) {
     CustomerScreen(title = R.string.CustomerScreen),
     EnterScreen(title = R.string.enterScreen),
     ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
-    PostScreen(title = R.string.Post)
+    PostScreen(title = R.string.post),
+    NoticeScreen(title = R.string.NoticeScreen),
 }
-
 /**
  * Main是一個頁面容器，其他頁面會依照使用者操作被加上來
  */
@@ -81,7 +81,7 @@ fun Main(
     reservationVM: ReservationVM = ReservationVM(),
     favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
     postVM: PostVM = PostVM(),
-    postListVM: PostListVM = PostListVM()
+    postListVM: PostListVM = PostListVM(),
     tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
@@ -163,11 +163,11 @@ fun Main(
                     favorite_and_bkacklistVM = favorite_and_bkacklistVM
                 )
             }
-            composable(
-                route = Screen.Reservation.name
-            ) {
-                ReservationScreen(navController = navController, reservationVM = reservationVM, PostListVM())
-            }
+//            composable(
+//                route = Screen.Reservation.name
+//            ) {
+//                ReservationScreen(navController = navController, reservationVM = reservationVM, PostListVM())
+//            }
             composable(
                 route = Screen.ChatroomScreen.name
             ) { backStackEntry ->
@@ -195,7 +195,11 @@ fun Main(
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
-                SearchWithMap()
+                SearchWithMap(navController = navController)
+            }
+
+            composable(route = Screen.NoticeScreen.name) {
+                SearchWithMap(navController = navController)
             }
 
 

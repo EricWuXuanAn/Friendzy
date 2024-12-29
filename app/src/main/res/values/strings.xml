@@ -29,7 +29,7 @@
     <string name="ChatroomScreen">ChatroomScreen</string>
     <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="RegisterScreen">RegisterScreen</string>
-
+    <string name="signUp">signUp</string>
     <string name="SearchResultScreen" />
     <string name="SearchWithMapRScreen" />
     <string name="chatroom">Chatroom</string>
@@ -59,6 +59,9 @@
     <string name="post">Post</string>
     <string name="chat">Chat</string>
     <string name="information">Information</string>
+    <string name="reservationConfirmScreen">Reservation Confirm Screen</string>
+    <string name="default_notification_channel_id">default_channel_id</string>
+    <string name="NoticeScreen">notice</string>
 
 
 </resources>
