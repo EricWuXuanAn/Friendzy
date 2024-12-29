@@ -1,28 +1,30 @@
 package com.example.tip102group01friendzy.ui.feature.Memberpage
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.navigation.NavController
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 
 // 主通知頁面
@@ -50,12 +52,12 @@ fun Notices(navController: NavController) {
                 .fillMaxSize() // 佔滿螢幕
                 .padding(paddingValues) // 處理 Scaffold 提供的內邊距
         ) {
-            notifications.forEach { (title, content) -> // 遍歷通知列表
-                NotificationItem(title = title, content = content) // 顯示每條通知
+//            notifications.forEach { (title, content) -> // 遍歷通知列表
+//                NotificationItemonItem(title = title, content = content) // 顯示每條通知
             }
         }
     }
-}
+
 
 // 單條通知項目組件
 // 單條通知項目

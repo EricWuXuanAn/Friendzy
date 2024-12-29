@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.PopUpToBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -56,10 +55,10 @@ import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostListVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
 import com.example.tip102group01friendzy.ui.feature.customer.PostVM
+import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmScreen
+import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
-
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
-import com.example.tip102group01friendzy.ui.feature.search.SearchResultScreen
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
@@ -80,17 +79,14 @@ enum class Screen(@StringRes val title: Int) {
     EnterScreen(title = R.string.enterScreen),
     ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
     PostScreen(title = R.string.post),
-
     CompanionScreen(title = R.string.companionScreen),
     CompanionPublishScreen(title = R.string.CompanionPublishScreen),
     CompanionOrderListScreen(title = R.string.CompanionOrderListScreen),
     CompanionOrderDetailsScreen(title = R.string.CompanionOrderDetailsScreen),
     CompanionCheckAppointmentScreen(title = R.string.CompanionCheckAppointmentScreen),
     CompanionLookPublishScreen(title = R.string.CompanionLookPublishScreen),
-
     TabMainScreen(title = R.string.TabMainScreen),
-    ChatMessageScreen(title = R.string.ChatMessageScreen),
-
+    ChatMessageScreen(title = R.string.ChatMessageScreen)
 }
 /**
  * Main是一個頁面容器，其他頁面會依照使用者操作被加上來
@@ -106,8 +102,8 @@ fun Main(
     favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
     postVM: PostVM = PostVM(),
     postListVM: PostListVM = PostListVM(),
-
-    tabVM: TabVM = viewModel()
+    reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
+    tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -175,7 +171,8 @@ fun Main(
             composable(
                 route = Screen.OrderScreen.name
             ) {
-                OrderListScreen(navController = navController, orderlistVM = orderlistVM)
+
+               OrderListScreen(navController = navController, orderlistVM = orderlistVM)
             }
             composable(
                 route = Screen.CustomerScreen.name
@@ -183,7 +180,8 @@ fun Main(
                 CustomerScreen(
                     navController = navController,
                     customerVM = customerVM,
-                    postListVM = postListVM
+                    postListVM = postListVM,
+                    tabVM = tabVM
                 )
             }
             composable(
@@ -224,25 +222,17 @@ fun Main(
             }
 
             composable(route = Screen.MemberScreen.name) {
-                MemberScreen(navController = navController, memberVM = viewModel())
+                MemberScreen(navController = navController, memberVM = viewModel(), tabVM = tabVM)
             }
             composable(route = Screen.PostScreen.name) {
                 PostScreen(navController = navController, postVM = postVM)
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
-                SearchWithMap(navController = navController)
+                SearchWithMap(navController = navController, tabVM = tabVM)
             }
-            composable(route = Screen.TabMainScreen.name) {
-                TabMainScreen(navController = navController)
-            }
-            composable(
-                route = Screen.ChatMessageScreen.name
-            ) {
-                ChatMessageScreen()
-            }
-            composable(route = Screen.SearchResultScreen.name) {
-                SearchResultScreen(navController = navController)
+            composable(route = Screen.ReservationConfirmScreen.name){
+                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM)
             }
 
             //>>>陪伴者
@@ -297,8 +287,14 @@ fun Main(
                     companionVM = CompanionVM(),
                     tabVM = tabVM
                 )
-            }
             //<<<陪伴者
+            }
+            composable(route = Screen.TabMainScreen.name){
+                TabMainScreen(navController = navController, tabVM = tabVM)
+            }
+            composable(route = Screen.ChatMessageScreen.name){
+                ChatMessageScreen(navController = navController)
+            }
 
         }
     }

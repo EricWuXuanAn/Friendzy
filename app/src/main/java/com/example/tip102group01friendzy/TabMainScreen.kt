@@ -1,6 +1,5 @@
 package com.example.tip102group01friendzy
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -22,18 +21,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageScreen
+import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberSceernVM
+import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionPublishScreen
 import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
 import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
+import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
+import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
+import com.example.tip102group01friendzy.ui.feature.customer.PostListVM
+import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
 
 @Composable
 fun TabMainScreen(
@@ -41,7 +41,7 @@ fun TabMainScreen(
     tabVM: TabVM = viewModel()
 ) {
     val tabBarVisibility = tabVM.tabBarVisibility.collectAsState()
-    var tabIndex by remember { mutableStateOf(3) }
+    var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf(
         stringResource(id = R.string.home),
         stringResource(id = R.string.service),
@@ -60,13 +60,13 @@ fun TabMainScreen(
 
 
             when (tabIndex) {
-//                0 -> SearchWithMap(navController = navController,tabVM=tabVM)
-//                1 -> CustomerScreen(navController = navController,tabVM=tabVM)
-                2 -> CompanionPublishScreen(navController = navController, tabVM = tabVM, locationVM = LocationVM(), skillVM = SkillVM())
+                0 -> SearchWithMap(navController = navController,tabVM=tabVM)
+                1 -> CustomerScreen(navController = navController,tabVM=tabVM, customerVM = CustomerVM(), postListVM = PostListVM() )
+                2 -> CompanionPublishScreen(navController = navController, tabVM = tabVM, skillVM = SkillVM(), locationVM = LocationVM())
                 3 -> {
                     ChatroomScreen(navController = navController, tabVM = tabVM)
                 }
-//                4 -> MemberScreen(navController = navController,tabVM = tabVM)
+                4 -> MemberScreen(navController = navController,tabVM = tabVM, memberVM = MemberSceernVM())
             }
         }
         if (tabBarVisibility.value) {
