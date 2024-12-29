@@ -45,7 +45,7 @@ fun TabMainScreen(
         stringResource(id = R.string.service),
         stringResource(id = R.string.post),
         stringResource(id = R.string.chat),
-        stringResource(id = R.string.info)
+        stringResource(id = R.string.information)
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
