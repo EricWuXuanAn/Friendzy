@@ -64,9 +64,8 @@ enum class Screen(@StringRes val title: Int) {
     MemberScreen(title = R.string.Member),
     CustomerScreen(title = R.string.CustomerScreen),
     EnterScreen(title = R.string.enterScreen),
-    ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
-    PostScreen(title = R.string.post),
-    NoticeScreen(title = R.string.NoticeScreen),
+    ReservationConfirmScreen(title = R.string.ReservationConfirmScreen),
+    PostScreen(title = R.string.post)
 }
 /**
  * Main是一個頁面容器，其他頁面會依照使用者操作被加上來
@@ -195,10 +194,6 @@ fun Main(
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
-                SearchWithMap(navController = navController)
-            }
-
-            composable(route = Screen.NoticeScreen.name) {
                 SearchWithMap(navController = navController)
             }
 

@@ -28,7 +28,7 @@ import androidx.navigation.compose.rememberNavController
 // 主通知頁面
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Notices(navController: NavController, notifications: List<Pair<String, String>>) {
+fun Notices(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(

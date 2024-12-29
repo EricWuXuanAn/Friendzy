@@ -3,7 +3,6 @@
     <string name="search">Search</string>
     <string name="account">Account(Email)</string>
     <string name="password">Password</string>
-    <string name="setUp">Set up</string>
     <string name="logIn">Log in</string>
     <string name="ForgotYourPassword">Forgot Your Password?</string>
     <string name="acc_pass_empty">Account and password cannot be empty!</string>
@@ -58,10 +57,23 @@
     <string name="service">Service</string>
     <string name="post">Post</string>
     <string name="chat">Chat</string>
+<<<<<<< HEAD
     <string name="information">Information</string>
     <string name="reservationConfirmScreen">Reservation Confirm Screen</string>
     <string name="default_notification_channel_id">default_channel_id</string>
     <string name="NoticeScreen">notice</string>
+=======
+    <string name="information">Info</string>
+    <string name="reservationConfirmScreen">Reservation Confirm</string>
+    <string name="signUp">Sign Up</string>
+    <string name="TabMainScreen">TabMainScreen</string>
+    <string name="ChatMessageScreen">ChatMessageScreen</string>
+    <string name="CompanionScreen">CompanionScreen</string>
+    <string name="ReservationConfirmScreen" />
+    <string name="Post" />
+    <string name="info">Info</string>
+
+    >>>>>>> main
 
 
 </resources>
