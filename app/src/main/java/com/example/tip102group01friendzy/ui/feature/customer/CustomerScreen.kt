@@ -49,11 +49,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.TabVM
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerScreen(
-    navController: NavHostController, customerVM: CustomerVM, postListVM: PostListVM
+    navController: NavHostController, customerVM: CustomerVM, postListVM: PostListVM, tabVM:TabVM
 ) {
     var text by remember { mutableStateOf("") } //使用者的型態文字串
     var accountStatus by remember { mutableStateOf(false) } //設定要顯示什麼身份
@@ -81,15 +82,13 @@ fun CustomerScreen(
                 check = accountStatus
             ) {
                 accountStatus = it
+                if (accountStatus == false) {
+                } else {
+                    navController.navigate(Screen.CompanionScreen.name)
+                }
             }
-            if (accountStatus) {
-                text = "Customer"
-            } else {
-                text = "Companion"
-            }
-            Text(
-                text = "$text"
-            )
+
+            Text(text = "Customer")
 
             IconButton(
                 onClick = {},
@@ -120,9 +119,9 @@ fun CustomerScreen(
 
             )
         }
-        HorizontalDivider(
-            modifier = Modifier.padding(bottom = 10.dp), color = colorResource(R.color.teal_700)
-        )
+//        HorizontalDivider(
+//            modifier = Modifier.padding(bottom = 2.dp), color = colorResource(R.color.teal_700)
+//        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -149,16 +148,16 @@ fun CustomerScreen(
                 }
                 Text(text = stringResource(R.string.blackList))
             }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                IconButton(onClick = {
-                    navController.navigate(Screen.RegisterScreen.name)
-                }) {
-                    Icon(painter = painterResource(R.drawable.date_range), "reservation")
-                }
-                Text(text = stringResource(R.string.reservation))// 很奇怪 再討論
-            }
+//            Column(
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                IconButton(onClick = {
+//                    navController.navigate(Screen.ReservationScreen.name)
+//                }) {
+//                    Icon(painter = painterResource(R.drawable.date_range), "reservation")
+//                }
+//                Text(text = stringResource(R.string.reservation))// 很奇怪 再討論
+//            }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -172,7 +171,7 @@ fun CustomerScreen(
         }
 
         HorizontalDivider(
-            modifier = Modifier.padding(top = 10.dp), color = colorResource(R.color.teal_700)
+            modifier = Modifier.padding(top = 2.dp), color = colorResource(R.color.teal_700)
         )
         Text(
             modifier = Modifier
@@ -185,7 +184,7 @@ fun CustomerScreen(
         postList(
             postlist = postListState.filter { it.postTitle.contains(inputText, true) },
             onClick = {
-                navController.navigate(route = Screen.RegisterScreen.name)
+                navController.navigate(route = Screen.ReservationScreen.name)
             }
         )
     }
@@ -245,9 +244,9 @@ fun postList(
                         painter = painterResource(id = post.postImg),
                         contentDescription = "memberPhoto"
                     )
-                },
+                }
 
-                )
+            )
             HorizontalDivider(modifier = Modifier.padding(top = 5.dp))
         }
     }
@@ -257,5 +256,5 @@ fun postList(
 @Composable
 @Preview(showBackground = true)
 fun CustomerScreenPreview() {
-    CustomerScreen(rememberNavController(), customerVM = CustomerVM(), postListVM = PostListVM())
+    CustomerScreen(rememberNavController(), customerVM = CustomerVM(), postListVM = PostListVM(), tabVM = TabVM())
 }

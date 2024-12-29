@@ -18,14 +18,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
-import com.example.tip102group01friendzy.ui.feature.Memberpage.SettingVM
+
 
 
 @Composable
@@ -35,7 +33,6 @@ fun Settingpage(
 ) {
 // 狀態變數，用於管理各個可編輯內容的值
     var password by remember { mutableStateOf("**********") } // 預設密碼顯示為星號
-    var name by remember { mutableStateOf("Angel Huang") } // 預設姓名值
     var nickname by remember { mutableStateOf("暱稱是這裡") } // 預設暱稱
     var phoneNumber by remember { mutableStateOf("+886 912345678") } // 預設手機號碼
     var newPassword by remember { mutableStateOf("") } // 新密碼
@@ -44,7 +41,6 @@ fun Settingpage(
 
     // 狀態變數，用於控制是否處於編輯模式
     var isEditingPassword by remember { mutableStateOf(false) } // 密碼是否處於編輯模式
-    var isEditingName by remember { mutableStateOf(false) } // 姓名是否處於編輯模式
     var isEditingNickname by remember { mutableStateOf(false) } // 暱稱是否處於編輯模式
     var isEditingPhoneNumber by remember { mutableStateOf(false) } // 手機號碼是否處於編輯模式
 
@@ -107,28 +103,31 @@ fun Settingpage(
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
-            // 儲存按鈕（自訂圖示）
-            IconButton(
-                onClick = {
-                    if (newPassword == confirmPassword) {
-                        password = newPassword // 更新密碼
-                        isEditingPassword = false // 結束編輯模式
-                        passwordError = false // 清除錯誤狀態
-                    } else {
-                        passwordError = true // 顯示錯誤訊息
-                    }
-                },
-                modifier = Modifier.align(Alignment.End) // 將按鈕對齊到右側
+            // 儲存按鈕（文字按鈕）
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End // 將按鈕對齊到右側
             ) {
-                Text("變更密碼")
+                TextButton(
+                    onClick = {
+                        if (newPassword == confirmPassword) {
+                            password = newPassword // 更新密碼
+                            isEditingPassword = false // 結束編輯模式
+                            passwordError = false // 清除錯誤狀態
+                        } else {
+                            passwordError = true // 顯示錯誤訊息
+                        }
+                    }
+                ) {
+                    Text("變更密碼") // 按鈕文字
+                }
             }
         } else {
-            // 顯示密碼與編輯按鈕（自訂圖示）
+            // 顯示密碼與編輯按鈕
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
             ) {
-                Text(text = password, modifier = Modifier.weight(1f))
                 // 將密碼顯示為與字數相同的星號
                 Text(
                     text = "*".repeat(password.length), // 根據密碼長度生成星號
@@ -143,7 +142,6 @@ fun Settingpage(
                     )
                 }
             }
-
         }
 
 

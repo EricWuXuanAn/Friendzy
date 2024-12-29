@@ -35,7 +35,7 @@ import com.example.tip102group01friendzy.TabVM
 @Composable
 //陪伴者確認預約(確認訂單)
 fun CompanionCheckAppointmentScreen(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     tabVM: TabVM
     ) {
     Column(
@@ -139,5 +139,5 @@ fun CompanionCheckAppointmentScreen(
 @Preview(showBackground = true)
 fun PreviewCompanionCheckAppointmentScreen(
 ) {
-    CompanionCheckAppointmentScreen(tabVM = TabVM())
+    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM())
 }

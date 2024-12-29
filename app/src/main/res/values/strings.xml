@@ -28,7 +28,7 @@
     <string name="ChatroomScreen">ChatroomScreen</string>
     <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="RegisterScreen">RegisterScreen</string>
-
+<!--    <string name="signUp">signUp</string>-->
     <string name="SearchResultScreen" />
     <string name="SearchWithMapRScreen" />
     <string name="chatroom">Chatroom</string>
@@ -57,12 +57,24 @@
     <string name="service">Service</string>
     <string name="post">Post</string>
     <string name="chat">Chat</string>
-    <string name="information">Info</string>
-    <string name="reservationConfirmScreen">Reservation Confirm</string>
+    <string name="information">Information</string>
     <string name="signUp">Sign Up</string>
+    <string name="reservationConfirmScreen">Reservation Confirm</string>
+    <string name="companionScreen">companion Screen</string>
+    <string name="CompanionPublishScreen">Publish</string>
+    <string name="CompanionOrderListScreen">Order management</string>
+    <string name="CompanionOrderDetailsScreen">Order Details</string>
+    <string name="CompanionCheckAppointmentScreen">Confirm Appointment</string>
+    <string name="CompanionLookPublishScreen">Apply</string>
+    <string name="default_notification_channel_id">default_channel_id</string>
+    <string name="NoticeScreen">notice</string>
     <string name="TabMainScreen">TabMainScreen</string>
     <string name="ChatMessageScreen">ChatMessageScreen</string>
     <string name="CompanionScreen">CompanionScreen</string>
-
+    <string name="ReservationConfirmScreen" />
+    <string name="Post" />
+    <string name="info">Info</string>
+    <string name="decline">Decline</string>
+    <string name="my_request">My Request</string>
 
 </resources>

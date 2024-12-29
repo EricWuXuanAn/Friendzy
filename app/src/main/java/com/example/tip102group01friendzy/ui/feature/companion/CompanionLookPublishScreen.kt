@@ -38,7 +38,7 @@ import com.example.tip102group01friendzy.TabVM
 @Composable
 //陪伴者 看 顧客 刊登項目的頁面
 fun CompanionLookPublishScreen(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     companionVM : CompanionVM,
     tabVM: TabVM
     ){
@@ -142,5 +142,5 @@ fun CompanionLookPublishScreen(
 @Preview(showBackground = true)
 fun PreviewCompanionLookPublishScreen(
     ) {
-    CompanionLookPublishScreen(companionVM = CompanionVM(), tabVM = TabVM())
+    CompanionLookPublishScreen(rememberNavController(),companionVM = CompanionVM(), tabVM = TabVM())
 }
