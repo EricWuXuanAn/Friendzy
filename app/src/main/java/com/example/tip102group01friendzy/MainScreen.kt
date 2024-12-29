@@ -47,7 +47,6 @@ import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
 import com.example.tip102group01friendzy.ui.feature.customer.PostVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
-import com.example.tip102group01friendzy.ui.feature.search.SearchResult
 import com.example.tip102group01friendzy.ui.feature.search.SearchResultScreen
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
@@ -72,8 +71,6 @@ enum class Screen(@StringRes val title: Int) {
     TabMainScreen(title = R.string.TabMainScreen),
     ChatMessageScreen(title = R.string.ChatMessageScreen),
     CompanionScreen(title = R.string.CompanionScreen)
-    PostScreen(title = R.string.post)
-
 }
 
 /**
@@ -91,7 +88,6 @@ fun Main(
     postVM: PostVM = PostVM(),
     postListVM: PostListVM = PostListVM(),
     tabVM: TabVM = viewModel()
-    tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -194,9 +190,6 @@ fun Main(
                     navController = navController
                 )
             }
-
-
-
             composable(
                 route = Screen.EnterScreen.name
             ) {
@@ -221,15 +214,17 @@ fun Main(
             composable(route = Screen.TabMainScreen.name) {
                 TabMainScreen(navController = navController)
             }
-            composable(route = Screen.ChatMessageScreen.name
+            composable(
+                route = Screen.ChatMessageScreen.name
             ) {
                 ChatMessageScreen()
-
+            }
             composable(route = Screen.SearchResultScreen.name) {
                 SearchResultScreen(navController = navController)
             }
-        }
 
+
+        }
     }
 }
 
@@ -263,8 +258,6 @@ fun MainAppBar(
         scrollBehavior = scrollBehavior
     )
 }
-
-
 
 
 @Preview(showBackground = true)
