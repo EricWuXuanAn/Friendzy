@@ -52,13 +52,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
 ) {
     val snackbarMessage by loginViewModel.snackbarMessage.collectAsState()
     val snackberTrigger by loginViewModel.snackbarTrigger.collectAsState()
@@ -154,7 +155,9 @@ fun LoginScreen(
                 onClick = {
                     loginViewModel.onLoginClicked()
                     //TODO: 確認帳號正確才能登入(控制器到首頁)，測試直接跳轉
-                    navController.navigate(Screen.ChatroomScreen.name)
+                    navController.navigate(Screen.TabMainScreen.name){
+                        popUpTo(Screen.LoginScreen.name){inclusive=true}
+                    }
 
                 },
                 colors = ButtonDefaults.buttonColors(

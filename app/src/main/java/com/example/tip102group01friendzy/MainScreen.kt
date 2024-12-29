@@ -34,6 +34,7 @@ import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
 import com.example.tip102group01friendzy.ui.feature.account.RegisterViewModel
+import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
@@ -67,6 +68,10 @@ enum class Screen(@StringRes val title: Int) {
     CustomerScreen(title = R.string.CustomerScreen),
     EnterScreen(title = R.string.enterScreen),
     ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
+    PostScreen(title = R.string.post),
+    TabMainScreen(title = R.string.TabMainScreen),
+    ChatMessageScreen(title = R.string.ChatMessageScreen),
+    CompanionScreen(title = R.string.CompanionScreen)
     PostScreen(title = R.string.post)
 
 }
@@ -85,6 +90,7 @@ fun Main(
     favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
     postVM: PostVM = PostVM(),
     postListVM: PostListVM = PostListVM(),
+    tabVM: TabVM = viewModel()
     tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
@@ -100,6 +106,8 @@ fun Main(
     )
     // 設定內容向上捲動時，TopAppBar自動收起來；呼叫pinnedScrollBehavior()則不會收起來
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+
     Scaffold(
         // 設定則可追蹤捲動狀態，藉此調整畫面(例如內容向上捲動時，TopAppBar自動收起來)
         modifier = Modifier
@@ -120,7 +128,7 @@ fun Main(
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.LoginScreen.name,
+            startDestination = Screen.EnterScreen.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -129,7 +137,7 @@ fun Main(
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
                     navController = navController,
-                    loginViewModel = LoginViewModel()
+                    loginViewModel = LoginViewModel(),
                 )
             }
             composable(
@@ -156,7 +164,11 @@ fun Main(
             composable(
                 route = Screen.CustomerScreen.name
             ) {
-                CustomerScreen(navController = navController, customerVM = customerVM, postListVM = postListVM)
+                CustomerScreen(
+                    navController = navController,
+                    customerVM = customerVM,
+                    postListVM = postListVM
+                )
             }
             composable(
                 route = Screen.Favorite_and_BlackListScreen.name
@@ -169,16 +181,22 @@ fun Main(
             composable(
                 route = Screen.ReservationScreen.name
             ) {
-                ReservationScreen(navController = navController, reservationVM = reservationVM, PostListVM())
+                ReservationScreen(
+                    navController = navController,
+                    reservationVM = reservationVM,
+                    PostListVM()
+                )
             }
             composable(
                 route = Screen.ChatroomScreen.name
-            ) { backStackEntry ->
+            ) {
                 ChatroomScreen(
-                    navController = navController,
-                    tabVM = tabVM
+                    navController = navController
                 )
             }
+
+
+
             composable(
                 route = Screen.EnterScreen.name
             ) {
@@ -193,20 +211,25 @@ fun Main(
             composable(route = Screen.MemberScreen.name) {
                 MemberScreen(navController = navController, memberVM = viewModel())
             }
-            composable(route = Screen.PostScreen.name){
+            composable(route = Screen.PostScreen.name) {
                 PostScreen(navController = navController, postVM = postVM)
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
                 SearchWithMap(navController = navController)
             }
+            composable(route = Screen.TabMainScreen.name) {
+                TabMainScreen(navController = navController)
+            }
+            composable(route = Screen.ChatMessageScreen.name
+            ) {
+                ChatMessageScreen()
 
             composable(route = Screen.SearchResultScreen.name) {
                 SearchResultScreen(navController = navController)
             }
-
-
         }
+
     }
 }
 
@@ -240,6 +263,8 @@ fun MainAppBar(
         scrollBehavior = scrollBehavior
     )
 }
+
+
 
 
 @Preview(showBackground = true)

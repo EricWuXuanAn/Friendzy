@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -19,15 +20,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
-import com.example.tip102group01friendzy.TabVM
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
 
 @Composable
-fun ChatMessageScreen(
-    navController: NavHostController,
-) {
+fun ChatMessageScreen(navController: NavHostController = rememberNavController()) {
     var chatMessage by remember { mutableStateOf("") }
 
 
@@ -63,10 +63,10 @@ fun ChatMessageScreen(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun ChatMessageScreenPreview() {
-//    TIP102Group01FriendzyTheme {
-//        ChatMessageScreen(tabVM = TabVM)
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun ChatMessageScreenPreview() {
+    TIP102Group01FriendzyTheme {
+        ChatMessageScreen()
+    }
+}

@@ -57,11 +57,15 @@
     <string name="service">Service</string>
     <string name="post">Post</string>
     <string name="chat">Chat</string>
-    <string name="information">Information</string>
+    <string name="information">Info</string>
+    <string name="reservationConfirmScreen">Reservation Confirm</string>
+    <string name="signUp">Sign Up</string>
+    <string name="TabMainScreen">TabMainScreen</string>
+    <string name="ChatMessageScreen">ChatMessageScreen</string>
+    <string name="CompanionScreen">CompanionScreen</string>
     <string name="ReservationConfirmScreen" />
     <string name="Post" />
-    <string name="reservationConfirmScreen">TBD</string>
-    <string name="signUp">Sign up</string>
+    
 
 
 </resources>

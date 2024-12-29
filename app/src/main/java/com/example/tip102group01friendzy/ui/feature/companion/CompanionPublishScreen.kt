@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,9 +39,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,9 +51,10 @@ import com.example.tip102group01friendzy.TabVM
 //陪伴者刊登畫面
 fun CompanionPublishScreen(
     navController: NavHostController = rememberNavController(),
-    skillVM: SkillVM,
-    tabVM: TabVM
+    skillVM: SkillVM = SkillVM(),
+    tabVM: TabVM = TabVM()
 ) {
+    tabVM.tabBarState(true)
     //專長文字輸入方塊文字
     var inputSkillText by remember { mutableStateOf("") }
     //開始日期時間
