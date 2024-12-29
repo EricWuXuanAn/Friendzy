@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.PopUpToBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -34,7 +35,18 @@ import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
 import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
 import com.example.tip102group01friendzy.ui.feature.account.RegisterViewModel
+import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionCheckAppointmentScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionLookPublishScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderDetailsScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderListScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderVM
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionPublishScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionVM
+import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
+import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BkackListScreen
@@ -47,7 +59,9 @@ import com.example.tip102group01friendzy.ui.feature.customer.PostVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmScreen
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
+
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
+import com.example.tip102group01friendzy.ui.feature.search.SearchResultScreen
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
@@ -70,6 +84,15 @@ enum class Screen(@StringRes val title: Int) {
     PostScreen(title = R.string.post)
 }
 
+    CompanionScreen(title = R.string.companionScreen),
+    CompanionPublishScreen(title = R.string.CompanionPublishScreen),
+    CompanionOrderListScreen(title = R.string.CompanionOrderListScreen),
+    CompanionOrderDetailsScreen(title = R.string.CompanionOrderDetailsScreen),
+    CompanionCheckAppointmentScreen(title = R.string.CompanionCheckAppointmentScreen),
+    CompanionLookPublishScreen(title = R.string.CompanionLookPublishScreen),
+    TabMainScreen(title = R.string.TabMainScreen),
+    ChatMessageScreen(title = R.string.ChatMessageScreen)
+}
 /**
  * Main是一個頁面容器，其他頁面會依照使用者操作被加上來
  */
@@ -100,6 +123,8 @@ fun Main(
     )
     // 設定內容向上捲動時，TopAppBar自動收起來；呼叫pinnedScrollBehavior()則不會收起來
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+
     Scaffold(
         // 設定則可追蹤捲動狀態，藉此調整畫面(例如內容向上捲動時，TopAppBar自動收起來)
         modifier = Modifier
@@ -129,7 +154,7 @@ fun Main(
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
                     navController = navController,
-                    loginViewModel = LoginViewModel()
+                    loginViewModel = LoginViewModel(),
                 )
             }
             composable(
@@ -157,7 +182,11 @@ fun Main(
             composable(
                 route = Screen.CustomerScreen.name
             ) {
-                CustomerScreen(navController = navController, customerVM = customerVM, postListVM = postListVM)
+                CustomerScreen(
+                    navController = navController,
+                    customerVM = customerVM,
+                    postListVM = postListVM
+                )
             }
             composable(
                 route = Screen.Favorite_and_BlackListScreen.name
@@ -167,17 +196,22 @@ fun Main(
                     favorite_and_bkacklistVM = favorite_and_bkacklistVM
                 )
             }
+
             composable(
                 route = Screen.ReservationScreen.name
             ) {
-                ReservationScreen(navController = navController, reservationVM = reservationVM, PostListVM())
+                ReservationScreen(
+                    navController = navController,
+                    reservationVM = reservationVM,
+                    PostListVM()
+                )
             }
+
             composable(
                 route = Screen.ChatroomScreen.name
-            ) { backStackEntry ->
+            ) {
                 ChatroomScreen(
-                    navController = navController,
-                    tabVM = tabVM
+                    navController = navController
                 )
             }
             composable(
@@ -194,7 +228,7 @@ fun Main(
             composable(route = Screen.MemberScreen.name) {
                 MemberScreen(navController = navController, memberVM = viewModel())
             }
-            composable(route = Screen.PostScreen.name){
+            composable(route = Screen.PostScreen.name) {
                 PostScreen(navController = navController, postVM = postVM)
             }
 
@@ -205,6 +239,60 @@ fun Main(
                 ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM)
             }
 
+            //>>>陪伴者
+            composable(
+                route = Screen.CompanionScreen.name
+            ){
+                CompanionScreen(navController = navController, companionVM = CompanionVM(), tabVM = tabVM)
+            }
+            composable(
+                route = Screen.CompanionPublishScreen.name
+            ){
+                CompanionPublishScreen(
+                    navController = navController,
+                    skillVM = SkillVM(),
+                    locationVM = LocationVM(),
+                    tabVM = tabVM
+                )
+            }
+
+            composable(
+                route = Screen.CompanionOrderListScreen.name
+            ){
+                CompanionOrderListScreen(
+                    navController = navController,
+                    companionOrderVM = CompanionOrderVM(),
+                    tabVM = tabVM
+                )
+            }
+
+            composable(
+                route = Screen.CompanionOrderDetailsScreen.name
+            ){
+                CompanionOrderDetailsScreen(
+                    navController = navController,
+                    tabVM = tabVM
+                )
+            }
+
+            composable(
+                route = Screen.CompanionCheckAppointmentScreen.name
+            ){
+                CompanionCheckAppointmentScreen(
+                    navController = navController,
+                    tabVM = tabVM
+                )
+            }
+            composable(
+                route = Screen.CompanionLookPublishScreen.name
+            ){
+                CompanionLookPublishScreen(
+                    navController = navController,
+                    companionVM = CompanionVM(),
+                    tabVM = tabVM
+                )
+            }
+            //<<<陪伴者
 
         }
     }

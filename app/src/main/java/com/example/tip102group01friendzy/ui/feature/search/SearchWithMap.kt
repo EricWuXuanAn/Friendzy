@@ -69,23 +69,12 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
+import com.example.tip102group01friendzy.R
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.rememberCameraPositionState
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MaterialTheme {
-                val navController = rememberNavController()
-                NavigationComponent(navController)
-            }
-        }
-    }
-}
-
+// 預設導航組件，用於控制不同頁面的切換
 @Composable
 fun NavigationComponent(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "SearchWithMap") {
@@ -94,28 +83,32 @@ fun NavigationComponent(navController: NavHostController) {
     }
 }
 
+// 搜索與地圖頁面的主要布局
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchWithMap(navController: NavHostController) {
-    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
-    var address by remember { mutableStateOf(TextFieldValue("")) }
+    val turnOff:Boolean = false // 控制底部導航條是否顯示
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) } // 搜索欄的文字狀態
+    var address by remember { mutableStateOf(TextFieldValue("")) } // 地址欄的文字狀態
 
     Scaffold(
-        bottomBar = { BottomNavigationBar() },
+        bottomBar = { if(turnOff) {
+            BottomNavigationBar()
+        } },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Address and Search Bar in the same row
+                // 地址與搜索欄同排顯示
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    val barHeight = 56.dp // Set a consistent height for both bars
+                    val barHeight = 56.dp // 統一設定搜索欄與地址欄的高度
 
                     TextField(
                         value = address,
@@ -168,14 +161,14 @@ fun SearchWithMap(navController: NavHostController) {
                             .height(barHeight)
                             .background(Color(0xFFF4EAF5))
                             .padding(8.dp)
-                            .then(Modifier.padding(end = 16.dp)) // Additional padding
-                            .clickable { navController.navigate("SearchResult") } // Navigate to SearchResult
+                            .then(Modifier.padding(end = 16.dp))
+                            .clickable { navController.navigate("SearchResult") } // 點擊跳轉到搜索結果頁面
                     )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Map container that fills the remaining space
+                // 地圖容器，填充剩餘空間
                 MapViewContainer(
                     modifier = Modifier.weight(15f),
                     buddyMap = { BuddyMap() } // 傳遞 BuddyMap 作為參數
@@ -185,6 +178,7 @@ fun SearchWithMap(navController: NavHostController) {
     )
 }
 
+// 搜索結果頁面
 @Composable
 fun SearchResult() {
     Box(
@@ -197,6 +191,7 @@ fun SearchResult() {
     }
 }
 
+// 地圖外框容器
 @Composable
 fun MapViewContainer(modifier: Modifier = Modifier, buddyMap: @Composable () -> Unit) {
     Box(
@@ -209,6 +204,7 @@ fun MapViewContainer(modifier: Modifier = Modifier, buddyMap: @Composable () -> 
     }
 }
 
+// 底部導航欄
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationBar() {
@@ -246,79 +242,74 @@ fun BottomNavigationBar() {
     }
 }
 
+// 顯示 Buddy Map
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BuddyMap() {
-    // 獲取當前的 Context，用於 Toast 或其他與系統互動的操作
-    val context = LocalContext.current
-
-    // 目標位置的緯度與經度（台北市一個示例位置）
-    val target = LatLng(25.033964, 121.564468)
-
-    // 使用 rememberCameraPositionState 記住相機位置狀態
+    val context = LocalContext.current // 獲取當前的 Context
+    val target = LatLng(25.033964, 121.564468) // 台北市示例位置
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(target, 17f) // 設定目標座標和縮放級別
+        position = CameraPosition.fromLatLngZoom(target, 17f)
     }
 
-    // 定義位置權限的狀態管理
     val locationPermission = rememberPermissionState(
-        Manifest.permission.ACCESS_FINE_LOCATION // 定位權限
+        Manifest.permission.ACCESS_FINE_LOCATION
     )
 
-    // 在組件掛載時請求位置權限
     LaunchedEffect(Unit) {
         if (!locationPermission.status.isGranted) {
-            locationPermission.launchPermissionRequest() // 如果尚未授予，則請求權限
+            locationPermission.launchPermissionRequest()
         }
     }
 
-    // 使用 GoogleMap API 顯示地圖
+    val mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style_orange)
+
     GoogleMap(
-        modifier = Modifier.fillMaxSize(), // 地圖填滿整個容器
-        cameraPositionState = cameraPositionState, // 綁定相機位置狀態
+        modifier = Modifier.fillMaxSize(),
+        cameraPositionState = cameraPositionState,
         properties = MapProperties(
-            isMyLocationEnabled = locationPermission.status.isGranted, // 根據權限啟用定位
-            isTrafficEnabled = true, // 顯示即時交通資訊
-            mapType = MapType.NORMAL, // 地圖類型為標準地圖
-            latLngBoundsForCameraTarget = null // 不設置邊界限制
+            isMyLocationEnabled = locationPermission.status.isGranted,
+            isTrafficEnabled = false,
+            mapType = MapType.NORMAL,
+            mapStyleOptions = mapStyleOptions
         ),
         uiSettings = MapUiSettings(
-            compassEnabled = true, // 啟用指南針
-            myLocationButtonEnabled = locationPermission.status.isGranted, // 啟用我的位置按鈕
-            rotationGesturesEnabled = true, // 啟用旋轉手勢
-            scrollGesturesEnabled = true, // 啟用滾動手勢
-            scrollGesturesEnabledDuringRotateOrZoom = true, // 啟用滾動時的縮放或旋轉
-            tiltGesturesEnabled = true, // 啟用傾斜手勢
-            zoomControlsEnabled = true, // 啟用縮放控制
-            zoomGesturesEnabled = true // 啟用縮放手勢
+            compassEnabled = true,
+            myLocationButtonEnabled = locationPermission.status.isGranted,
+            rotationGesturesEnabled = true,
+            scrollGesturesEnabled = true,
+            scrollGesturesEnabledDuringRotateOrZoom = true,
+            tiltGesturesEnabled = true,
+            zoomControlsEnabled = true,
+            zoomGesturesEnabled = true
         ),
         onMapLoaded = {
-            // 地圖載入完成後顯示提示訊息
             Toast.makeText(context, "Map Loaded", Toast.LENGTH_SHORT).show()
         }
     )
 }
 
+// Buddy Map 預覽
 @Preview(showBackground = true)
 @Composable
 fun BuddyMapPreview() {
-    // 在預覽中顯示 Google Map（無需位置權限）
     GoogleMap(
-        modifier = Modifier.fillMaxSize(), // 填滿容器
+        modifier = Modifier.fillMaxSize(),
         cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(LatLng(25.0338352, 121.5644995), 15f) // 台北 101
+            position = CameraPosition.fromLatLngZoom(LatLng(25.0338352, 121.5644995), 15f)
         },
         properties = MapProperties(
-            isMyLocationEnabled = false, // 跳過位置權限
-            mapType = MapType.NORMAL // 使用標準地圖類型
+            isMyLocationEnabled = false,
+            mapType = MapType.NORMAL
         ),
         uiSettings = MapUiSettings(
-            compassEnabled = false, // 關閉指南針
-            myLocationButtonEnabled = true // 啟用我的位置按鈕
+            compassEnabled = false,
+            myLocationButtonEnabled = true
         )
     )
 }
 
+// 搜索地圖頁面預覽
 @Preview(showBackground = true)
 @Composable
 fun SearchWithMapPreview() {

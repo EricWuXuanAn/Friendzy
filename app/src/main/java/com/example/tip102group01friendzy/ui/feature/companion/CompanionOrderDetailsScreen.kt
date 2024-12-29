@@ -35,13 +35,13 @@ import com.example.tip102group01friendzy.TabVM
 @Composable
 //訂單明細頁面
 fun CompanionOrderDetailsScreen(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     tabVM: TabVM
     ) {
     //0:訂單待確認 1:訂單進行中  2:訂單已完成  3:訂單取消
-    var orderStatus by remember { mutableIntStateOf(0) }
+    var orderStatus by remember { mutableIntStateOf(0) }//訂單狀態
     var rating by remember { mutableIntStateOf(0) } // 評分輸入
-    var score by remember { mutableIntStateOf(0) }  //送出評分                var noScoreText by remember { mutableStateOf("") }
+    var score by remember { mutableIntStateOf(0) }  //送出評分
     var noScoreText by remember { mutableStateOf("") } //送出沒評分顯示的字
     var inputText by remember { mutableStateOf("") } //評論輸入
     var comment by remember { mutableStateOf("") }  //評論送出
@@ -174,5 +174,5 @@ fun CompanionOrderDetailsScreen(
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionOrderDetailsScreen() {
-    CompanionOrderDetailsScreen(tabVM = TabVM())
+    CompanionOrderDetailsScreen(rememberNavController(),tabVM = TabVM())
 }

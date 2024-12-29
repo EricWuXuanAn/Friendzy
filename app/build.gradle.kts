@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -76,6 +77,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.location)
     implementation(libs.accompanist.permissions)
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.messaging.ktx)
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.messaging.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -99,6 +104,8 @@ dependencies {
     implementation (libs.material3)
     implementation (libs.androidx.webkit)  // WebView 支援
     implementation(libs.coil.compose) // Coil 2.x 版本 支持從網路、文件、資源等多種來源加載圖片
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging.ktx)
 
 
 
@@ -110,4 +117,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }

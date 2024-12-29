@@ -1,12 +1,11 @@
 package com.example.tip102group01friendzy.ui.feature.chat
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,10 +18,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedTextField
@@ -39,18 +37,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
-import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
+import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
+import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
+import com.example.tip102group01friendzy.ui.feature.account.RegisterViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -58,10 +61,11 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatroomScreen(
-    navController: NavController = rememberNavController(),
+    navController: NavHostController,
     chatroomViewModel: ChatroomViewModel = viewModel(),
     tabVM: TabVM = TabVM()
 ) {
+
     tabVM.tabBarState(true)
     var searchChatroom by remember { mutableStateOf("") }
     val chatrooms by chatroomViewModel.chatroomState.collectAsState()
@@ -72,7 +76,14 @@ fun ChatroomScreen(
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
+        Row {
         Text(text = stringResource(R.string.chatroom))
+        Button(onClick = {
+            Log.d("tag_", "ChatroomScreen1")
+            navController.navigate(Screen.ChatMessageScreen.name)
+            Log.d("tag_", "ChatroomScreen2")
+        })
+         { Text(text = "test") }}
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
@@ -104,6 +115,7 @@ fun ChatroomScreen(
                 }
             )
         }
+
     }
 }
 
@@ -140,7 +152,6 @@ fun ChatroomLists(
                     Text(text = formatDatetime(chatroom.lastMessageTime))
                 }
             )
-// 水平線           HorizontalDivider()
         }
     }
 }

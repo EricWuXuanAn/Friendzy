@@ -421,29 +421,9 @@ fun MemberScreen(
 
     // 增加間距，讓內容向上排列
     Spacer(modifier = Modifier.weight(1f))
-}
-}
-
-@Composable
-fun generateStars(average: Double): String {
-    val fullStars = average.toInt() // 滿星數
-    val hasHalfStar = average - fullStars >= 0.5 // 是否有半星
-
-    var stars = "⭐".repeat(fullStars) // 重複顯示滿星
-    if (hasHalfStar) {
-        stars += "⭐" // 半星以額外一顆星表示
     }
-
-    return stars
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun ProfileScreenPreview() {
-//    val navController = rememberNavController()
-//    val ratings = listOf(5, 4, 5, 3, 4) // 模擬評價數據
-//    ProfileScreen(navController, ratings)
-//}
 
 @Composable
 @Preview(showBackground = true)
