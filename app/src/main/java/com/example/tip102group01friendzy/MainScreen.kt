@@ -189,9 +189,6 @@ fun Main(
                     navController = navController
                 )
             }
-
-
-
             composable(
                 route = Screen.EnterScreen.name
             ) {
