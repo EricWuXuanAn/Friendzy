@@ -79,8 +79,7 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.firebase.bom)
     implementation(libs.firebase.messaging.ktx)
-    implementation(libs.firebase.bom)
-    implementation(libs.firebase.messaging.ktx)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

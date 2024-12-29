@@ -49,11 +49,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.TabVM
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerScreen(
-    navController: NavHostController, customerVM: CustomerVM, postListVM: PostListVM
+    navController: NavHostController, customerVM: CustomerVM, postListVM: PostListVM, tabVM:TabVM
 ) {
     var text by remember { mutableStateOf("") } //使用者的型態文字串
     var accountStatus by remember { mutableStateOf(false) } //設定要顯示什麼身份
@@ -82,14 +83,12 @@ fun CustomerScreen(
             ) {
                 accountStatus = it
                 if (accountStatus == false) {
-                    text = "Customer"
                 } else {
-                    text = "Companion"
-//                    navController.navigate(Screen.OrderScreen.name)
+                    navController.navigate(Screen.CompanionScreen.name)
                 }
             }
 
-            Text(text = "$text")
+            Text(text = "Customer")
 
             IconButton(
                 onClick = {},
@@ -257,5 +256,5 @@ fun postList(
 @Composable
 @Preview(showBackground = true)
 fun CustomerScreenPreview() {
-    CustomerScreen(rememberNavController(), customerVM = CustomerVM(), postListVM = PostListVM())
+    CustomerScreen(rememberNavController(), customerVM = CustomerVM(), postListVM = PostListVM(), tabVM = TabVM())
 }

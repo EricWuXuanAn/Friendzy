@@ -28,7 +28,7 @@
     <string name="ChatroomScreen">ChatroomScreen</string>
     <string name="ForgetPasswordScreen">ForgetPasswordScreen</string>
     <string name="RegisterScreen">RegisterScreen</string>
-    <string name="signUp">signUp</string>
+<!--    <string name="signUp">signUp</string>-->
     <string name="SearchResultScreen" />
     <string name="SearchWithMapRScreen" />
     <string name="chatroom">Chatroom</string>
@@ -74,5 +74,7 @@
     <string name="ReservationConfirmScreen" />
     <string name="Post" />
     <string name="info">Info</string>
+    <string name="decline">Decline</string>
+    <string name="my_request">My Request</string>
 
 </resources>

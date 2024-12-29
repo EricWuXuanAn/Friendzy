@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.PopUpToBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -59,9 +58,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.PostVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmScreen
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
-
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
-import com.example.tip102group01friendzy.ui.feature.search.SearchResultScreen
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 
@@ -81,9 +78,7 @@ enum class Screen(@StringRes val title: Int) {
     CustomerScreen(title = R.string.CustomerScreen),
     EnterScreen(title = R.string.enterScreen),
     ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
-    PostScreen(title = R.string.post)
-}
-
+    PostScreen(title = R.string.post),
     CompanionScreen(title = R.string.companionScreen),
     CompanionPublishScreen(title = R.string.CompanionPublishScreen),
     CompanionOrderListScreen(title = R.string.CompanionOrderListScreen),
@@ -185,7 +180,8 @@ fun Main(
                 CustomerScreen(
                     navController = navController,
                     customerVM = customerVM,
-                    postListVM = postListVM
+                    postListVM = postListVM,
+                    tabVM = tabVM
                 )
             }
             composable(
@@ -226,14 +222,14 @@ fun Main(
             }
 
             composable(route = Screen.MemberScreen.name) {
-                MemberScreen(navController = navController, memberVM = viewModel())
+                MemberScreen(navController = navController, memberVM = viewModel(), tabVM = tabVM)
             }
             composable(route = Screen.PostScreen.name) {
                 PostScreen(navController = navController, postVM = postVM)
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
-                SearchWithMap(navController = navController)
+                SearchWithMap(navController = navController, tabVM = tabVM)
             }
             composable(route = Screen.ReservationConfirmScreen.name){
                 ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM)
@@ -291,8 +287,14 @@ fun Main(
                     companionVM = CompanionVM(),
                     tabVM = tabVM
                 )
-            }
             //<<<陪伴者
+            }
+            composable(route = Screen.TabMainScreen.name){
+                TabMainScreen(navController = navController, tabVM = tabVM)
+            }
+            composable(route = Screen.ChatMessageScreen.name){
+                ChatMessageScreen(navController = navController)
+            }
 
         }
     }
