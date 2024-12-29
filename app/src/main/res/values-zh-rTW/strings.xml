@@ -33,4 +33,6 @@
     <string name="CompanionOrderDetailsScreen">Order Details</string>
     <string name="CompanionCheckAppointmentScreen">Confirm Appointment</string>
     <string name="CompanionLookPublishScreen">Apply</string>
+    <string name="ReservationConfirmScreen" />
+    <string name="Post" />
 </resources>

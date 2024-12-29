@@ -61,10 +61,11 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
 
 @Composable
-fun getErrorMessage(errorCode: String?):String{
-    return when(errorCode){
+fun getErrorMessage(errorCode: String?): String {
+    return when (errorCode) {
         "Field cannot be empty." -> stringResource(R.string.columnIsEmpty)
         "Email Formatting Error." -> stringResource(R.string.errorEmail)
         "Password(at least 8 characters)" -> stringResource(R.string.passwordRule)
@@ -126,19 +127,29 @@ fun SetupErrorRequest(viewModel: RegisterViewModel) {
 @Composable
 fun successDialog(
     navController: NavHostController,
-    onConfirm: ()-> Unit,
+    onConfirm: () -> Unit,
     onDismissRequest: () -> Unit
-){
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = { Text("Registration completed!\nplease log in again.") },
-        //TODO: 多語
-        confirmButton = {
-            Button(
-                onClick = onConfirm
-            ) { Text("OK") }
-        }
-    )
+) {
+    var isDialogVisible by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
+    if (isDialogVisible) {
+        AlertDialog(
+            onDismissRequest = onDismissRequest,
+            text = { Text("Registration completed!\nplease log in again.") },
+            //TODO: 多語
+            confirmButton = {
+                Button(
+                    onClick = {
+                        isDialogVisible = false
+                        scope.launch {
+                            kotlinx.coroutines.delay(300)
+                            onConfirm()
+                        }
+                    }
+                ) { Text("OK") }
+            }
+        )
+    }
 }
 
 @Composable
@@ -159,12 +170,14 @@ fun RegisterScreen(
         }
     }
 
-    if (showDialog){
-        successDialog(navController= navController,
+    if (showDialog) {
+        successDialog(navController = navController,
             onConfirm = {
-                navController.navigate(Screen.LoginScreen.name){
-                    popUpTo(Screen.RegisterScreen.name){inclusive = true}
+
+                navController.navigate(Screen.LoginScreen.name) {
+                    popUpTo(Screen.RegisterScreen.name) { inclusive = true }
                 }
+
             }
         ) {}
     }
