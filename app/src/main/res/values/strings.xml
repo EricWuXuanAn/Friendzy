@@ -57,8 +57,6 @@
     <string name="service">Service</string>
     <string name="post">Post</string>
     <string name="chat">Chat</string>
-<<<<<<< HEAD
-<<<<<<< HEAD
     <string name="information">Information</string>
     <string name="signUp">Sign Up</string>
     <string name="reservationConfirmScreen">Reservation Confirm</string>
@@ -68,27 +66,13 @@
     <string name="CompanionOrderDetailsScreen">Order Details</string>
     <string name="CompanionCheckAppointmentScreen">Confirm Appointment</string>
     <string name="CompanionLookPublishScreen">Apply</string>
-    <string name="reservationConfirmScreen">Reservation Confirm Screen</string>
     <string name="default_notification_channel_id">default_channel_id</string>
     <string name="NoticeScreen">notice</string>
-=======
-=======
->>>>>>> main
-    <string name="information">Info</string>
-    <string name="reservationConfirmScreen">Reservation Confirm</string>
-    <string name="signUp">Sign Up</string>
     <string name="TabMainScreen">TabMainScreen</string>
     <string name="ChatMessageScreen">ChatMessageScreen</string>
     <string name="CompanionScreen">CompanionScreen</string>
     <string name="ReservationConfirmScreen" />
     <string name="Post" />
-<<<<<<< HEAD
     <string name="info">Info</string>
-
-    >>>>>>> main
-=======
-    
->>>>>>> main
-
 
 </resources>
