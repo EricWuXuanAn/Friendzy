@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.PopUpToBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -35,6 +36,16 @@ import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
 import com.example.tip102group01friendzy.ui.feature.account.RegisterViewModel
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionCheckAppointmentScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionLookPublishScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderDetailsScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderListScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderVM
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionPublishScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionVM
+import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
+import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BkackListScreen
@@ -65,7 +76,14 @@ enum class Screen(@StringRes val title: Int) {
     CustomerScreen(title = R.string.CustomerScreen),
     EnterScreen(title = R.string.enterScreen),
     ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
-    PostScreen(title = R.string.Post)
+    PostScreen(title = R.string.post),
+
+    CompanionScreen(title = R.string.companionScreen),
+    CompanionPublishScreen(title = R.string.CompanionPublishScreen),
+    CompanionOrderListScreen(title = R.string.CompanionOrderListScreen),
+    CompanionOrderDetailsScreen(title = R.string.CompanionOrderDetailsScreen),
+    CompanionCheckAppointmentScreen(title = R.string.CompanionCheckAppointmentScreen),
+    CompanionLookPublishScreen(title = R.string.CompanionLookPublishScreen),
 }
 
 /**
@@ -81,7 +99,7 @@ fun Main(
     reservationVM: ReservationVM = ReservationVM(),
     favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
     postVM: PostVM = PostVM(),
-    postListVM: PostListVM = PostListVM()
+    postListVM: PostListVM = PostListVM(),
     tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
@@ -117,7 +135,7 @@ fun Main(
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.LoginScreen.name,
+            startDestination = Screen.EnterScreen.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -164,7 +182,7 @@ fun Main(
                 )
             }
             composable(
-                route = Screen.Reservation.name
+                route = Screen.ReservationScreen.name
             ) {
                 ReservationScreen(navController = navController, reservationVM = reservationVM, PostListVM())
             }
@@ -195,9 +213,63 @@ fun Main(
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
-                SearchWithMap()
+                SearchWithMap(navController = navController)
             }
 
+            //>>>陪伴者
+            composable(
+                route = Screen.CompanionScreen.name
+            ){
+                CompanionScreen(navController = navController, companionVM = CompanionVM(), tabVM = tabVM)
+            }
+            composable(
+                route = Screen.CompanionPublishScreen.name
+            ){
+                CompanionPublishScreen(
+                    navController = navController,
+                    skillVM = SkillVM(),
+                    locationVM = LocationVM(),
+                    tabVM = tabVM
+                )
+            }
+
+            composable(
+                route = Screen.CompanionOrderListScreen.name
+            ){
+                CompanionOrderListScreen(
+                    navController = navController,
+                    companionOrderVM = CompanionOrderVM(),
+                    tabVM = tabVM
+                )
+            }
+
+            composable(
+                route = Screen.CompanionOrderDetailsScreen.name
+            ){
+                CompanionOrderDetailsScreen(
+                    navController = navController,
+                    tabVM = tabVM
+                )
+            }
+
+            composable(
+                route = Screen.CompanionCheckAppointmentScreen.name
+            ){
+                CompanionCheckAppointmentScreen(
+                    navController = navController,
+                    tabVM = tabVM
+                )
+            }
+            composable(
+                route = Screen.CompanionLookPublishScreen.name
+            ){
+                CompanionLookPublishScreen(
+                    navController = navController,
+                    companionVM = CompanionVM(),
+                    tabVM = tabVM
+                )
+            }
+            //<<<陪伴者
 
         }
     }

@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -60,15 +63,21 @@ fun CompanionScreen(
     val companionState by companionVM.companionState.collectAsState()
     var testIten by remember { mutableStateOf("") }//測試用
 
-    var accountStatus by remember { mutableStateOf(false) }
+    var accountStatus by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
 
+    val scenery = Color(red = 255, green = 244, blue = 212, alpha = 255)
     val tabs :List<ScreenTabsButton> =listOf(//tab選項內容
         ScreenTabsButton("訂單管理",R.drawable.order_manage,R.color.teal_700),
 //        Tabs("可約時間",R.drawable.date_range,R.color.teal_700),
 //        Tabs(),
 //        Tabs("申請項目",R.drawable.check_list)
     )
+
+    Column (
+        modifier = Modifier.fillMaxSize()
+            .background(scenery)
+    ){  }
     Column (
         modifier = Modifier.fillMaxSize().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -85,6 +94,14 @@ fun CompanionScreen(
                 check = accountStatus
             ) {
                 accountStatus = it
+                if (accountStatus){
+                }else{
+                    navController.navigate(Screen.CustomerScreen.name){
+                        popUpTo(Screen.CompanionScreen.name){inclusive = true}
+                    }
+                }
+
+
             }
             text = when(accountStatus){
                 true ->"Customer"
@@ -165,7 +182,7 @@ fun CompanionScreen(
                         .padding(start = 4.dp)
                         .clickable {
                             when(index){
-                                0 ->{ navController.navigate(route = Screen.OrderScreen.name) }
+                                0 ->{ navController.navigate(route = Screen.CompanionOrderListScreen.name) }
                             }
                         },
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -241,7 +258,7 @@ fun CompanionScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.Start
         ) {
-            Text("推薦項目", fontSize = 28.sp)
+            Text("我的刊登項目", fontSize = 28.sp)
             Spacer(modifier = Modifier.padding(4.dp))
             //服務項目清單
             ServicList(companions = companionState){
@@ -274,6 +291,18 @@ fun ServicList(
                         contentScale = ContentScale.FillBounds
                     )
                 },
+                //Color(red = 255, green = 244, blue = 212, alpha = 255)
+//                colors = ListItemColors(
+//                    containerColor = Color.Gray,
+//                    overlineColor = TODO(),
+//                    supportingTextColor = TODO(),
+//                    trailingIconColor = TODO(),
+//                    disabledHeadlineColor = TODO(),
+//                    disabledLeadingIconColor = TODO(),
+//                    disabledTrailingIconColor = TODO(),
+//                    headlineColor = TODO(),
+//                    leadingIconColor = TODO(),
+//                )
 //                trailingContent = {
 //                    Icon(
 //                        painter = painterResource(R.drawable.chat),

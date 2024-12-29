@@ -27,4 +27,10 @@
     <string name="SearchResultScreen" />
     <string name="SearchWithMapRScreen" />
     <string name="chatroom">聊天室</string>
+    <string name="companionScreen">companion Screen</string>
+    <string name="CompanionPublishScreen">Publish</string>
+    <string name="CompanionOrderListScreen">Order management</string>
+    <string name="CompanionOrderDetailsScreen">Order Details</string>
+    <string name="CompanionCheckAppointmentScreen">Confirm Appointment</string>
+    <string name="CompanionLookPublishScreen">Apply</string>
 </resources>

@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
 
 class OrderTabsButton(
@@ -41,11 +43,12 @@ class OrderTabsButton(
     var btIcon: Int = R.drawable.icon,
     var title: String = ""
 )
-
+//陪伴者訂單管理
 @Composable
 fun CompanionOrderListScreen(
     navController: NavController,
-    companionOrderVM: CompanionOrderVM
+    companionOrderVM: CompanionOrderVM,
+    tabVM: TabVM
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     var testText by remember { mutableStateOf("") }
@@ -110,57 +113,58 @@ fun CompanionOrderListScreen(
 
             Text(testText, fontSize = 24.sp)
             when (tabIndex) {
-                0 -> {
+                0 -> {//全部
                     testText = "0000"
                     CompanionOrderList(
                         orders = orderState,
                         onClick = {
+                            //要再判斷我預約和預約我的到另一頁
 
                         }
                     )
                 }
 
-                1 -> {
+                1 -> {//待確認
                     testText = "1111"
                     CompanionOrderList(
                         orders = uncomfirm,
                         onClick = {
-                            //要再判斷我預約和預約我的到另一頁
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
                 }
 
-                2 -> {
+                2 -> {//進行中
                     testText = "2222"
                     CompanionOrderList(
                         orders = inProfress,
                         onClick = {
-
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
                 }
 
-                3 -> {
+                3 -> {//已完成
                     testText = "3333"
                     CompanionOrderList(
                         orders = completed,
                         onClick = {
-
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
                 }
 
-                4 -> {
+                4 -> {//來應徵
                     testText = "4444"
                     CompanionOrderList(
                         orders = reservation,
                         onClick = {
-
+                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
                         }
                     )
                 }
 
-                5 -> {
+                5 -> {//我應徵
                     testText = "5555"
 //                    CompanionOrderList(
 //                        orders = reservation,
@@ -190,16 +194,7 @@ fun CompanionOrderList(
                         modifier = Modifier.fillMaxWidth()
                     ){
                         //0:訂單待確認 1:訂單進行中  2:訂單已完成  3:訂單取消
-                        Text(text = "開始時間:${order.order_Person}", modifier = Modifier.fillMaxWidth(0.8f))
-//                        Text(text = "狀態：${
-//                            when(order.order_Status){
-//                                0->"待確認"
-//                                1->"進行中"
-//                                2->"已完成"
-//                                3->"已取消"
-//                                else ->"null"
-//                            }}"
-//                        )
+                        Text(text = "開始時間:${order.order_Person}", modifier = Modifier.fillMaxWidth())
                     }
                 },
                 trailingContent = {
@@ -235,6 +230,6 @@ fun CompanionOrderList(
 fun PreviewCompanionOrderListScreen() {
     CompanionOrderListScreen(
         navController = rememberNavController(),
-        companionOrderVM = CompanionOrderVM()
+        companionOrderVM = CompanionOrderVM(),TabVM()
     )
 }
