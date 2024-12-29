@@ -27,4 +27,6 @@
     <string name="SearchResultScreen" />
     <string name="SearchWithMapRScreen" />
     <string name="chatroom">聊天室</string>
+    <string name="ReservationConfirmScreen" />
+    <string name="Post" />
 </resources>

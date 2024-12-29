@@ -153,7 +153,7 @@ fun CustomerScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 IconButton(onClick = {
-                    navController.navigate(Screen.Reservation.name)
+                    navController.navigate(Screen.ReservationScreen.name)
                 }) {
                     Icon(painter = painterResource(R.drawable.date_range), "reservation")
                 }
