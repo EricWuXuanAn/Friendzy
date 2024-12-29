@@ -369,5 +369,5 @@ fun getDatePicker(
 @Composable
 @Preview(showBackground = true)
 fun PostScreenPreview() {
-    PostScreen(rememberNavController(), PostVM())
+    PostScreen(rememberNavController(), postVM = PostVM())
 }

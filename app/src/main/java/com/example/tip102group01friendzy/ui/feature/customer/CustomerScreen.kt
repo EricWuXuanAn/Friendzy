@@ -245,9 +245,9 @@ fun postList(
                         painter = painterResource(id = post.postImg),
                         contentDescription = "memberPhoto"
                     )
-                },
+                }
 
-                )
+            )
             HorizontalDivider(modifier = Modifier.padding(top = 5.dp))
         }
     }
