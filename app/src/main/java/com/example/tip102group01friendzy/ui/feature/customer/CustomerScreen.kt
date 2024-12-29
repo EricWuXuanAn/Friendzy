@@ -81,15 +81,15 @@ fun CustomerScreen(
                 check = accountStatus
             ) {
                 accountStatus = it
+                if (accountStatus == false) {
+                    text = "Customer"
+                } else {
+                    text = "Companion"
+//                    navController.navigate(Screen.OrderScreen.name)
+                }
             }
-            if (accountStatus) {
-                text = "Customer"
-            } else {
-                text = "Companion"
-            }
-            Text(
-                text = "$text"
-            )
+
+            Text(text = "$text")
 
             IconButton(
                 onClick = {},
@@ -120,9 +120,9 @@ fun CustomerScreen(
 
             )
         }
-        HorizontalDivider(
-            modifier = Modifier.padding(bottom = 10.dp), color = colorResource(R.color.teal_700)
-        )
+//        HorizontalDivider(
+//            modifier = Modifier.padding(bottom = 2.dp), color = colorResource(R.color.teal_700)
+//        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -149,16 +149,16 @@ fun CustomerScreen(
                 }
                 Text(text = stringResource(R.string.blackList))
             }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                IconButton(onClick = {
-                    navController.navigate(Screen.ReservationScreen.name)
-                }) {
-                    Icon(painter = painterResource(R.drawable.date_range), "reservation")
-                }
-                Text(text = stringResource(R.string.reservation))// 很奇怪 再討論
-            }
+//            Column(
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                IconButton(onClick = {
+//                    navController.navigate(Screen.ReservationScreen.name)
+//                }) {
+//                    Icon(painter = painterResource(R.drawable.date_range), "reservation")
+//                }
+//                Text(text = stringResource(R.string.reservation))// 很奇怪 再討論
+//            }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -172,7 +172,7 @@ fun CustomerScreen(
         }
 
         HorizontalDivider(
-            modifier = Modifier.padding(top = 10.dp), color = colorResource(R.color.teal_700)
+            modifier = Modifier.padding(top = 2.dp), color = colorResource(R.color.teal_700)
         )
         Text(
             modifier = Modifier
@@ -185,7 +185,7 @@ fun CustomerScreen(
         postList(
             postlist = postListState.filter { it.postTitle.contains(inputText, true) },
             onClick = {
-                navController.navigate(route = Screen.RegisterScreen.name)
+                navController.navigate(route = Screen.ReservationScreen.name)
             }
         )
     }

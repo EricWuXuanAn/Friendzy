@@ -44,6 +44,8 @@ import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostListVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
 import com.example.tip102group01friendzy.ui.feature.customer.PostVM
+import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmScreen
+import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
@@ -82,6 +84,7 @@ fun Main(
     favorite_and_bkacklistVM: Favorite_and_Black_ListVM = Favorite_and_Black_ListVM(),
     postVM: PostVM = PostVM(),
     postListVM: PostListVM = PostListVM(),
+    reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
     tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
@@ -117,7 +120,7 @@ fun Main(
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.LoginScreen.name,
+            startDestination = Screen.EnterScreen.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -148,7 +151,8 @@ fun Main(
             composable(
                 route = Screen.OrderScreen.name
             ) {
-                OrderListScreen(navController = navController, orderlistVM = orderlistVM)
+
+               OrderListScreen(navController = navController, orderlistVM = orderlistVM)
             }
             composable(
                 route = Screen.CustomerScreen.name
@@ -196,6 +200,9 @@ fun Main(
 
             composable(route = Screen.SearchWithMapScreen.name) {
                 SearchWithMap(navController = navController)
+            }
+            composable(route = Screen.ReservationConfirmScreen.name){
+                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM)
             }
 
 

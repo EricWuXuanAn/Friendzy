@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,14 +41,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ofPattern
 
 
 @Composable
 fun ReservationConfirmScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    reservationConfirmVM:ReservationConfirmVM
 ) {
+    val scope = rememberCoroutineScope()
+    var snackbarHostState = remember { SnackbarHostState() }
     val dateFormat = ofPattern("YYYY-MM-dd")
     var startDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
     var endDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
@@ -87,7 +94,7 @@ fun ReservationConfirmScreen(
                         containerColor = colorResource(R.color.purple_200),
                         contentColor = Color.DarkGray
                     ),
-                    onClick = {}
+                    onClick = {navController.navigate(Screen.ChatroomScreen.name)}
                 ) {
                     Icon(
                         modifier = Modifier.size(25.dp),
@@ -146,7 +153,15 @@ fun ReservationConfirmScreen(
                     containerColor = colorResource(R.color.purple_200),
                     contentColor = Color.DarkGray
                 ),
-                onClick = {}
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Order Confirm !",
+                            withDismissAction = true
+                        )
+                        navController.popBackStack()
+                    }
+                }
             ) {
                 Text(text = stringResource(R.string.Confirm))
             }
@@ -156,7 +171,15 @@ fun ReservationConfirmScreen(
                     containerColor = colorResource(R.color.purple_200),
                     contentColor = Color.DarkGray
                 ),
-                onClick = {}
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Successfully Declined",
+                            withDismissAction = true
+                        )
+                        navController.popBackStack()
+                    }
+                }
             ) {
                 Text(text = "Decline")
             }
@@ -168,5 +191,5 @@ fun ReservationConfirmScreen(
 @Composable
 @Preview(showBackground = true)
 fun RSCpreview() {
-    ReservationConfirmScreen(rememberNavController())
+    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM())
 }

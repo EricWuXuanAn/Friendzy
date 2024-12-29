@@ -62,6 +62,7 @@
     <string name="reservationConfirmScreen">Reservation Confirm</string>
     <string name="decline">Declined</string>
     <string name="refuse">Refuse</string>
+    <string name="my_request">My Request</string>
 
 
 </resources>

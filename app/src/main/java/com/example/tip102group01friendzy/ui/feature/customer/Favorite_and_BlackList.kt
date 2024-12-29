@@ -71,8 +71,8 @@ fun Favorite_and_BkackListScreen(
 
         }
         when (tabIndex) {
-            0 -> getFavList(favaLists = favListState, onClick = {}, rememberNavController())
-            1 -> getBlackList(blackLists = blackListState, onClick = {})
+            0 -> getFavList(favaLists = favListState, onClick = {navController.navigate(Screen.ChatroomScreen.name)}, rememberNavController())
+            1 -> getBlackList(blackLists = blackListState, onClick = {/*發請求叫後端做動作刪除 VM要多刪除方法*/})
         }
     }
 }

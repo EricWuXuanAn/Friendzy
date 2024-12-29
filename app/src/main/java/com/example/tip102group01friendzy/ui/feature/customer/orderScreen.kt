@@ -38,6 +38,7 @@ import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
 
 
+
 @Composable
 fun OrderListScreen(
     orderlistVM: OrderVM,
@@ -48,14 +49,15 @@ fun OrderListScreen(
     val uncomfirm = ordeState.filter { it.order_Status == 0 }
     val inProfress = ordeState.filter { it.order_Status == 1 }
     val completed = ordeState.filter { it.order_Status == 2 }
-    val reservation = ordeState.filter { it.reservation == true }  //這個可以拿掉 現在用假資料所以參數設定多一個可以判斷 之後要用後端判斷回傳真實資料
+    val reservation =
+        ordeState.filter { it.reservation == true }  //這個可以拿掉 現在用假資料所以參數設定多一個可以判斷 之後要用後端判斷回傳真實資料
     val tab = listOf(
         stringResource(R.string.order_List),
         stringResource(R.string.unconfirm),
         stringResource(R.string.in_progress),
         stringResource(R.string.complete),
         stringResource(R.string.myreservation),
-//        stringResource(R.string.my_request)
+        stringResource(R.string.my_request)
     )
     val scope = rememberCoroutineScope()
     var snackbar = remember { SnackbarHostState() }
@@ -106,6 +108,11 @@ fun OrderListScreen(
                                     painter = painterResource(R.drawable.date_range),
                                     contentDescription = "Reservation"
                                 )
+
+                                5 -> Icon(
+                                    painter = painterResource(R.drawable.request_24),
+                                    contentDescription = "request"
+                                )
                             }
                         }
                     )
@@ -146,6 +153,8 @@ fun OrderListScreen(
             4 -> orderList(orders = reservation, onClick = {
                 navController.navigate(Screen.ReservationConfirmScreen.name)
             })
+
+            5 -> Text("到時候會有清單")
         }
         SnackbarHost(hostState = snackbar)
     }

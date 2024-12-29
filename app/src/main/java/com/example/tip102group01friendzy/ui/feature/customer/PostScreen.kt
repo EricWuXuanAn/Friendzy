@@ -65,7 +65,7 @@ fun PostScreen(
     var endExpendText by remember { mutableStateOf("HH") }
 
     var startExpended by remember { mutableStateOf(false) }
-    var endtExpended by remember { mutableStateOf(false) }
+    var endExpended by remember { mutableStateOf(false) }
 
     val options = listOf(
         "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
@@ -252,10 +252,10 @@ fun PostScreen(
                 )
                 ExposedDropdownMenuBox(
                     onExpandedChange = {
-                        endtExpended = it
-                        endtExpended = true
+                        endExpended = it
+                        endExpended = true
                     },
-                    expanded = endtExpended
+                    expanded = endExpended
                 ) {
                     OutlinedTextField(
                         value = endExpendText,
@@ -265,19 +265,19 @@ fun PostScreen(
                             .menuAnchor()
                             .padding(start = 10.dp),
                         shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = endtExpended) },
+                        trailingIcon = { TrailingIcon(expanded = endExpended) },
                         readOnly = true
                     )
                     ExposedDropdownMenu(
-                        expanded = endtExpended,
-                        onDismissRequest = { endtExpended = false }
+                        expanded = endExpended,
+                        onDismissRequest = { endExpended = false }
                     ) {
                         options.forEach { endopiton ->
                             DropdownMenuItem(
                                 text = { Text(endopiton) },
                                 onClick = {
                                     endExpendText = endopiton
-                                    endtExpended = false
+                                    endExpended = false
                                 }
                             )
                         }

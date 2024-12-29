@@ -1,15 +1,10 @@
 package com.example.tip102group01friendzy
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -27,13 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
-import com.example.tip102group01friendzy.ui.feature.Memberpage.memberScreenPreview
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
-import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
-import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
-import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
-import java.lang.reflect.Member
 
 @Composable
 fun tabMain(tabVM: TabVM = viewModel()){
