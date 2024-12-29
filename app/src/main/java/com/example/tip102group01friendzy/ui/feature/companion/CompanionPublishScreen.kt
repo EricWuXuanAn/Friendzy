@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,21 +11,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,8 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,14 +51,19 @@ import java.time.format.DateTimeFormatter.ofPattern
 fun CompanionPublishScreen(
     navController: NavHostController,
     skillVM: SkillVM,
+    locationVM: LocationVM,
     tabVM: TabVM
 ) {
-    //專長文字輸入方塊文字
+    //呼叫VM
+    val skillState by skillVM.skillState.collectAsState()
+    val locationState by locationVM.locationState.collectAsState()
+
+    //專長文字輸入文字
     var inputSkillText by remember { mutableStateOf("") }
-    //開始日期時間
+    //開始日期時間輸入文字
     var inputDateStart by remember { mutableStateOf("") }
     var inputTimeStart by remember { mutableStateOf("") }
-    //結束日期時間
+    //結束日期時間輸入文字
     var inputDateEnd by remember { mutableStateOf("") }
     var inputTimeEnd by remember { mutableStateOf("") }
     //設定日期格式
@@ -67,27 +71,31 @@ fun CompanionPublishScreen(
     //DatePickDialog顯示控制
     var shortStartDatePick by remember { mutableStateOf(false) }
     var shortEndDatePick by remember { mutableStateOf(false) }
-    //預算文字
-    var inputBudget by remember { mutableStateOf("") }
-    //專長下拉選單文字
-    var inputDropdownMenu by remember { mutableStateOf("") }
-    var inputLocationText by remember { mutableStateOf("") }
+    //預算輸入文字
+//    var inputBudget by remember { mutableStateOf("") }
+    //下拉選單輸入文字
+    var inputDropdownMenu by remember { mutableStateOf("") }//專長
+    var inputCityText by remember { mutableStateOf("") }//城市
+    var inputDistrictText by remember { mutableStateOf("") }//區
     //下拉選單的顯示
-    var skillExpanded by remember { mutableStateOf(false) }
-    var locationExpanded by remember { mutableStateOf(false) }
-    var TimeStartExpanded by remember { mutableStateOf(false) }
-    var TimeEndExpanded by remember { mutableStateOf(false) }
-
-    //時間用的小時數
+    var skillExpanded by remember { mutableStateOf(false) }//專長
+    var cityExpanded by remember { mutableStateOf(false) }//城市
+    var districtExpanded by remember { mutableStateOf(false) }//區
+    var TimeStartExpanded by remember { mutableStateOf(false) }//開始時間
+    var TimeEndExpanded by remember { mutableStateOf(false) }//結束時間
+    //選時間用的小時數
     val timeList = listOf(
         "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
         "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
         "20:00", "21:00", "22:00", "23:00", "24:00"
     )
-    //呼叫VM
-    val skillState by skillVM.skillState.collectAsState()
-
-
+    //過濾掉重複的城市
+    val cityList = locationState.map { it.city }.distinct()
+    //過濾出所選城市的所有區
+    val districtList = locationState.filter { it.city == inputCityText }.map { it.district }
+    //專長文字搜尋過濾
+    val skillFiltered = skillState.filter { it.skillName.startsWith(inputDropdownMenu, true) }
+    skillExpanded = skillExpanded && skillFiltered.isNotEmpty()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,25 +116,26 @@ fun CompanionPublishScreen(
                 },
             ) {
                 OutlinedTextField(
-                    readOnly = true,
+                    readOnly = false,
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth(),
                     value = inputDropdownMenu,
                     onValueChange = {
+                        Log.e("tag", it)
                         inputDropdownMenu = it
                         skillExpanded = true
                     },
                     placeholder = { Text("專長選項") },
                     shape = RoundedCornerShape(15.dp),
                     trailingIcon = { TrailingIcon(expanded = skillExpanded) },
-                    enabled = false
+//                    enabled = false
                 )
                 ExposedDropdownMenu(
                     expanded = skillExpanded,
                     onDismissRequest = { skillExpanded = false },
                 ) {
-                    skillState.forEach { skill ->
+                    skillFiltered.forEach { skill ->
                         DropdownMenuItem(
                             text = { Text(skill.skillName) },
                             onClick = {
@@ -145,6 +154,10 @@ fun CompanionPublishScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .padding(end = 6.dp),
@@ -157,6 +170,10 @@ fun CompanionPublishScreen(
                     }
                 ) { Text("加入選擇專長") }
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     modifier = Modifier.fillMaxWidth(1f),
                     onClick = {
                         inputSkillText = inputSkillText.replace("$inputDropdownMenu ", "")
@@ -222,17 +239,16 @@ fun CompanionPublishScreen(
                     onValueChange = { inputDateStart = it },
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
-                        .padding(end = 6.dp),
+                        .padding(end = 6.dp)
+                        .clickable { shortStartDatePick = true },
 //                    singleLine = false,
                     shape = RoundedCornerShape(15.dp),
                     placeholder = { Text("選日期") },
                     enabled = false, //禁止打字
                     trailingIcon = {
-                        Icon(painter = painterResource(R.drawable.date_range),
+                        Icon(
+                            painter = painterResource(R.drawable.date_range),
                             contentDescription = "Clear",
-                            modifier = Modifier.clickable {
-                                shortStartDatePick = true
-                            }
                         )
                     }
                 )
@@ -252,7 +268,7 @@ fun CompanionPublishScreen(
                         }
                     )
                 }
-                //開始時間
+                //開始時段選單
                 ExposedDropdownMenuBox(
                     expanded = TimeStartExpanded,
                     onExpandedChange = {
@@ -260,7 +276,6 @@ fun CompanionPublishScreen(
                         inputTimeStart = ""
                     },
                 ) {
-                    //選時間文字輸入方塊
                     OutlinedTextField(
                         readOnly = true,
                         modifier = Modifier
@@ -319,23 +334,22 @@ fun CompanionPublishScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 //                Text(text = "日期：", fontSize = 16.sp)
-                //結束日期
+                //結束日期選擇
                 OutlinedTextField(
                     value = inputDateEnd,
                     onValueChange = { inputDateEnd = it },
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
-                        .padding(end = 6.dp),
+                        .padding(end = 6.dp)
+                        .clickable { shortEndDatePick = true },
 //                    singleLine = false,
                     shape = RoundedCornerShape(15.dp),
                     placeholder = { Text("選日期") },
                     enabled = false, //禁止打字
                     trailingIcon = {
-                        Icon(painter = painterResource(R.drawable.date_range),
+                        Icon(
+                            painter = painterResource(R.drawable.date_range),
                             contentDescription = "Clear",
-                            modifier = Modifier.clickable {
-                                shortEndDatePick = true
-                            }
                         )
                     }
                 )
@@ -354,7 +368,7 @@ fun CompanionPublishScreen(
                         }
                     )
                 }
-                //結束時間
+                //結束時段選擇
                 ExposedDropdownMenuBox(
                     expanded = TimeEndExpanded,
                     onExpandedChange = {
@@ -410,7 +424,7 @@ fun CompanionPublishScreen(
                 )
                  */
             }
-            //地區
+            //選地區
             Spacer(modifier = Modifier.size(8.dp))//間隔
             Row(
                 modifier = Modifier
@@ -418,12 +432,57 @@ fun CompanionPublishScreen(
                     .padding(top = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                //選城市
+                Text(text = "城市：", fontSize = 16.sp)
+                ExposedDropdownMenuBox(
+                    expanded = cityExpanded,
+                    onExpandedChange = {
+                        cityExpanded = it
+                        inputCityText = ""
+                        inputDistrictText = ""
+                    },
+                ) {
+                    //選城市
+                    OutlinedTextField(
+                        readOnly = true,
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(0.43f)
+                            .padding(end = 4.dp),
+                        value = inputCityText,
+                        onValueChange = {
+                            inputCityText = it
+                            inputDistrictText = ""
+                            cityExpanded = true
+                        },
+                        placeholder = { Text("城市") },
+                        shape = RoundedCornerShape(15.dp),
+                        trailingIcon = { TrailingIcon(expanded = cityExpanded) },
+                        enabled = false,
+                    )
+                    ExposedDropdownMenu(
+                        expanded = cityExpanded,
+                        onDismissRequest = { cityExpanded = false },
+                    ) {
+                        cityList.forEach { citys ->
+                            DropdownMenuItem(
+                                text = { Text(citys) },
+                                onClick = {
+                                    inputCityText = citys
+                                    inputDistrictText = ""
+                                    cityExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+                //選地區
                 Text(text = "地區：", fontSize = 16.sp)
                 ExposedDropdownMenuBox(
-                    expanded = locationExpanded,
+                    expanded = districtExpanded,
                     onExpandedChange = {
-                        locationExpanded = it
-                        inputLocationText = ""
+                        districtExpanded = it
+                        inputDistrictText = ""
                     },
                 ) {
                     OutlinedTextField(
@@ -431,26 +490,26 @@ fun CompanionPublishScreen(
                         modifier = Modifier
                             .menuAnchor()
                             .fillMaxWidth(1f),
-                        value = inputLocationText,
+                        value = inputDistrictText,
                         onValueChange = {
-                            inputLocationText = it
-                            locationExpanded = true
+                            inputDistrictText = it
+                            districtExpanded = true
                         },
-                        placeholder = { Text("城市") },
+                        placeholder = { Text("區") },
                         shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = locationExpanded) },
+                        trailingIcon = { TrailingIcon(expanded = districtExpanded) },
                         enabled = false,
                     )
                     ExposedDropdownMenu(
-                        expanded = locationExpanded,
-                        onDismissRequest = { locationExpanded = false },
+                        expanded = districtExpanded,
+                        onDismissRequest = { districtExpanded = false },
                     ) {
-                        skillState.forEach { skill ->
+                        districtList.forEach { district ->
                             DropdownMenuItem(
-                                text = { Text(skill.skillName) },
+                                text = { Text(district) },
                                 onClick = {
-                                    inputLocationText = skill.skillName
-                                    locationExpanded = false
+                                    inputDistrictText = district
+                                    districtExpanded = false
                                 }
                             )
                         }
@@ -459,7 +518,6 @@ fun CompanionPublishScreen(
             }
             //金額
             /*
-            Spacer(modifier = Modifier.size(8.dp))//間隔
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -489,6 +547,10 @@ fun CompanionPublishScreen(
                     .padding(bottom = 16.dp)
             ) {
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     modifier = Modifier
                         .fillMaxWidth(1f)
                         .padding(end = 6.dp),
@@ -502,5 +564,10 @@ fun CompanionPublishScreen(
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionPublishScreen() {
-    CompanionPublishScreen(rememberNavController(), skillVM = SkillVM(), tabVM = TabVM())
+    CompanionPublishScreen(
+        rememberNavController(),
+        skillVM = SkillVM(),
+        locationVM = LocationVM(),
+        tabVM = TabVM()
+    )
 }

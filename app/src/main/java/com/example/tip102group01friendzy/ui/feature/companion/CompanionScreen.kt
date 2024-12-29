@@ -3,17 +3,13 @@ package com.example.tip102group01friendzy.ui.feature.companion
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,10 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,12 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,12 +43,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
-import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
-import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
 import com.example.tip102group01friendzy.ui.feature.customer.switch
 
 //tab選項內容格式
-class Tabs(var name: String = "",var btIcon: Int = R.drawable.icon,var color:Int = R.color.white)
+class ScreenTabsButton(var name: String = "", var btIcon: Int = R.drawable.icon, var color:Int = R.color.white)
 
 @Composable
 //陪伴者主頁
@@ -76,8 +63,8 @@ fun CompanionScreen(
     var accountStatus by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
 
-    val tabs :List<Tabs> =listOf(//tab選項內容
-        Tabs("訂單管理",R.drawable.order_manage,R.color.teal_700),
+    val tabs :List<ScreenTabsButton> =listOf(//tab選項內容
+        ScreenTabsButton("訂單管理",R.drawable.order_manage,R.color.teal_700),
 //        Tabs("可約時間",R.drawable.date_range,R.color.teal_700),
 //        Tabs(),
 //        Tabs("申請項目",R.drawable.check_list)
@@ -86,6 +73,7 @@ fun CompanionScreen(
         modifier = Modifier.fillMaxSize().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
+        //切換身分列
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -131,6 +119,7 @@ fun CompanionScreen(
         }
         // ↓點tab隱藏
         */
+        //搜尋框
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -146,6 +135,9 @@ fun CompanionScreen(
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search,
                         contentDescription = "Search",
+                        modifier = Modifier.clickable {
+
+                        }
                     )
                 },
                 trailingIcon = {
@@ -173,9 +165,7 @@ fun CompanionScreen(
                         .padding(start = 4.dp)
                         .clickable {
                             when(index){
-                                0 ->{
-                                    navController.navigate(route = Screen.OrderScreen.name)
-                                }
+                                0 ->{ navController.navigate(route = Screen.OrderScreen.name) }
                             }
                         },
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -211,11 +201,11 @@ fun CompanionScreen(
             tabs.forEachIndexed{index,tabList ->
                 Tab(
                     modifier = Modifier
-//                        .wrapContentHeight()
+        //                        .wrapContentHeight()
                         .size(width =65.dp , height = 65.dp )//單個選項的格子大小
                         .width(65.dp)
-//                        .padding(top = 6.dp)
-//                        .fillMaxHeight()
+        //                        .padding(top = 6.dp)
+        //                        .fillMaxHeight()
                     ,
                     selected = index == tabIndex,
                     onClick = {tabIndex = index},
@@ -242,8 +232,7 @@ fun CompanionScreen(
                 }
             }
         }
-
-         */
+ */
         HorizontalDivider(
             modifier = Modifier.padding(top = 10.dp), color = colorResource(R.color.teal_700)
         )
@@ -254,7 +243,6 @@ fun CompanionScreen(
         ) {
             Text("推薦項目", fontSize = 28.sp)
             Spacer(modifier = Modifier.padding(4.dp))
-//            Text(text = testIten)//測試tab功能用
             //服務項目清單
             ServicList(companions = companionState){
                 companionVM.setCompanion(it)
