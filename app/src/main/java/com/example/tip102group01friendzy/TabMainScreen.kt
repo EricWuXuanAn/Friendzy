@@ -32,6 +32,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionPublishScreen
+import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
+import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
 
 @Composable
 fun TabMainScreen(
@@ -60,7 +62,7 @@ fun TabMainScreen(
             when (tabIndex) {
 //                0 -> SearchWithMap(navController = navController,tabVM=tabVM)
 //                1 -> CustomerScreen(navController = navController,tabVM=tabVM)
-                2 -> CompanionPublishScreen(navController = navController, tabVM = tabVM)
+                2 -> CompanionPublishScreen(navController = navController, tabVM = tabVM, locationVM = LocationVM(), skillVM = SkillVM())
                 3 -> {
                     ChatroomScreen(navController = navController, tabVM = tabVM)
                 }

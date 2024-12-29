@@ -87,13 +87,9 @@ enum class Screen(@StringRes val title: Int) {
     CompanionOrderDetailsScreen(title = R.string.CompanionOrderDetailsScreen),
     CompanionCheckAppointmentScreen(title = R.string.CompanionCheckAppointmentScreen),
     CompanionLookPublishScreen(title = R.string.CompanionLookPublishScreen),
-}
 
-    ReservationConfirmScreen(title = R.string.reservationConfirmScreen),
-    PostScreen(title = R.string.post),
     TabMainScreen(title = R.string.TabMainScreen),
     ChatMessageScreen(title = R.string.ChatMessageScreen),
-    CompanionScreen(title = R.string.CompanionScreen)
 
 }
 /**
@@ -112,8 +108,6 @@ fun Main(
     postListVM: PostListVM = PostListVM(),
 
     tabVM: TabVM = viewModel()
-
-    tabVM: TabVM = TabVM()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
