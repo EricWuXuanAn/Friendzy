@@ -91,7 +91,9 @@ fun CustomerScreen(
             Text(text = "Customer")
 
             IconButton(
-                onClick = {},
+                onClick = {
+
+                },
             ) { Icon(Icons.Filled.Notifications, contentDescription = "Notification") }
         }
         Row(

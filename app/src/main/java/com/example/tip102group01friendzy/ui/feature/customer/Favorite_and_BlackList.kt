@@ -71,7 +71,7 @@ fun Favorite_and_BkackListScreen(
 
         }
         when (tabIndex) {
-            0 -> getFavList(favaLists = favListState, onClick = {navController.navigate(Screen.ChatroomScreen.name)}, rememberNavController())
+            0 -> getFavList(favaLists = favListState, onClick = {Screen.MemberScreen.name}, navController = navController)
             1 -> getBlackList(blackLists = blackListState, onClick = {/*發請求叫後端做動作刪除 VM要多刪除方法*/})
         }
     }
@@ -82,7 +82,7 @@ fun Favorite_and_BkackListScreen(
 fun getFavList(
     favaLists: List<Favorite_List>,
     onClick: (Favorite_List) -> Unit,
-    navController: NavHostController
+    navController:NavHostController
 ) {
     LazyColumn {
         items(favaLists) { favaList ->
@@ -102,13 +102,24 @@ fun getFavList(
                     )
                 },
                 trailingContent = {
-                    Icon(
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable { navController.navigate(Screen.ChatroomScreen.name) },
-                        painter = painterResource(id = R.drawable.chat),
-                        contentDescription = "chat"
-                    )
+                    IconButton(
+                        modifier = Modifier.size(20.dp),
+                        onClick = {
+                            navController.navigate(Screen.ChatMessageScreen.name)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.chat),
+                            contentDescription = "chat"
+                        )
+                    }
+//                    Icon(
+//                        modifier = Modifier
+//                            .size(20.dp)
+//                            .clickable { navController.navigate(Screen.ChatroomScreen.name) },
+//                        painter = painterResource(id = R.drawable.chat),
+//                        contentDescription = "chat"
+//                    )
                 }
             )
 
