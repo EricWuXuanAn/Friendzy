@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,10 +40,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 
 @Composable
-fun SearchScreen(onBackPressed: () -> Unit) {
+fun SearchResultScreen(
+    navController: NavHostController,
+
+) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedTab by remember { mutableStateOf(0) }
 
@@ -60,13 +64,13 @@ fun SearchScreen(onBackPressed: () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 20.dp)
         ) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "Back",
-                modifier = Modifier
-                    .size(30.dp)
-                    .clickable { onBackPressed() }
-            )
+//            Icon(
+//                imageVector = Icons.Filled.ArrowBack,
+//                contentDescription = "Back",
+//                modifier = Modifier
+//                    .size(30.dp)
+//                    .clickable { onBackPressed() }
+//            )
             Spacer(modifier = Modifier.width(2.dp))
             SearchBar(
                 placeholderText = "Enter your current address",
@@ -311,8 +315,8 @@ data class CompanionInfo(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SearchScreenPreview() {
+fun SearchResultScreenPreview() {
     MaterialTheme {
-        SearchScreen(onBackPressed = {})
+        SearchResultScreen(rememberNavController())
     }
 }
