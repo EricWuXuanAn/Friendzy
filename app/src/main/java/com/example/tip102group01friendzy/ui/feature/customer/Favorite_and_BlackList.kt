@@ -1,6 +1,5 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,17 +39,17 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 
 @Composable
-fun Favorite_and_BlackListScreen(
+fun Favorite_and_BkackListScreen(
     navController: NavHostController,
-    favorite_and_blacklistVM: Favorite_and_Black_ListVM
+    favorite_and_bkacklistVM: Favorite_and_Black_ListVM
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tab = listOf(
         stringResource(R.string.favotite),
         stringResource(R.string.blackList)
     )
-    val favListState by favorite_and_blacklistVM.favoriteListState.collectAsState()
-    val blackListState by favorite_and_blacklistVM.blackListState.collectAsState()
+    val favListState by favorite_and_bkacklistVM.favoriteListState.collectAsState()
+    val blackListState by favorite_and_bkacklistVM.blackListState.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,7 +71,7 @@ fun Favorite_and_BlackListScreen(
 
         }
         when (tabIndex) {
-            0 -> getFavList(favaLists = favListState, onClick = {navController.navigate(Screen.ChatroomScreen.name)}, rememberNavController())
+            0 -> getFavList(favaLists = favListState, onClick = {Screen.MemberScreen.name}, navController = navController)
             1 -> getBlackList(blackLists = blackListState, onClick = {/*發請求叫後端做動作刪除 VM要多刪除方法*/})
         }
     }
@@ -83,7 +82,7 @@ fun Favorite_and_BlackListScreen(
 fun getFavList(
     favaLists: List<Favorite_List>,
     onClick: (Favorite_List) -> Unit,
-    navController: NavHostController
+    navController:NavHostController
 ) {
     LazyColumn {
         items(favaLists) { favaList ->
@@ -103,17 +102,24 @@ fun getFavList(
                     )
                 },
                 trailingContent = {
-                    Icon(
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable {
-                                Log.d("tag_", "FavoriteScreen1")
-                                navController.navigate(Screen.ChatMessageScreen.name)
-                                Log.d("tag_", "FavoriteScreen2")
-                                       },
-                        painter = painterResource(id = R.drawable.chat),
-                        contentDescription = "chat"
-                    )
+                    IconButton(
+                        modifier = Modifier.size(20.dp),
+                        onClick = {
+                            navController.navigate(Screen.ChatMessageScreen.name)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.chat),
+                            contentDescription = "chat"
+                        )
+                    }
+//                    Icon(
+//                        modifier = Modifier
+//                            .size(20.dp)
+//                            .clickable { navController.navigate(Screen.ChatroomScreen.name) },
+//                        painter = painterResource(id = R.drawable.chat),
+//                        contentDescription = "chat"
+//                    )
                 }
             )
 
@@ -126,7 +132,7 @@ fun getFavList(
 @Composable
 fun getBlackList(
     blackLists: List<Black_List>,
-    onClick: (Black_List) -> Unit,
+    onClick: (Black_List) -> Unit
 ) {
     LazyColumn {
         items(blackLists) { balckList ->
@@ -172,5 +178,5 @@ fun getBlackList(
 @Composable
 @Preview(showBackground = true)
 fun Favorite_and_BlackListScreenPreview() {
-    Favorite_and_BlackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
+    Favorite_and_BkackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
 }
