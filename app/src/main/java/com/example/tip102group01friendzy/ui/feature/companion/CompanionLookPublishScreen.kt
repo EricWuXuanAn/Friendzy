@@ -2,6 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +48,11 @@ fun CompanionLookPublishScreen(
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
     val companion by companionVM.setCompanionState.collectAsState()
+
+    Column (
+        modifier = Modifier.fillMaxSize()
+            .background(companionScenery)
+    ){  }
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -127,11 +134,23 @@ fun CompanionLookPublishScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .padding(end = 6.dp),
-                    onClick = {}
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
+                    onClick = {
+
+                    }
                 ) { Text("預約", fontSize = 24.sp) }
                 Button(
                     modifier = Modifier.fillMaxWidth(1f),
-                    onClick = {}
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
+                    onClick = {
+
+                    }
                 ) { Text("再想想", fontSize = 24.sp) }
             }
         }

@@ -1,7 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,19 +48,26 @@ import com.example.tip102group01friendzy.TabVM
 //訂單明細頁面
 fun CompanionOrderDetailsScreen(
     navController: NavHostController,
+    companionOrder: CompanionOrder,
+    comOrderDtlVM: ComOrderDtlVM,
     tabVM: TabVM
 ) {
-    //0:訂單待確認 1:訂單進行中  2:訂單已完成  3:訂單取消
-    var orderStatus by remember { mutableIntStateOf(0) }//訂單狀態
-    var rating by remember { mutableIntStateOf(0) } // 評分輸入
+    val dtlState by comOrderDtlVM.OrderDtlSelectState.collectAsState()
+    var orderStatus by remember { mutableIntStateOf(dtlState.orderStatus) }//訂單狀態
+    var rating by remember { mutableIntStateOf(dtlState.comRate) } // 評分輸入
     var score by remember { mutableIntStateOf(0) }  //送出評分
     var noScoreText by remember { mutableStateOf("") } //送出沒評分顯示的字
     var inputText by remember { mutableStateOf("") } //評論輸入
-    var comment by remember { mutableStateOf("") }  //評論送出
+    var comment by remember { mutableStateOf(dtlState.comRateContent) }  //評論送出
     val statusList = listOf("待確認", "進行中", "已完成", "取消")
 
     val blank = 6.dp
     val testTrue = 1 == 1 //寫code方便看 全顯示用
+
+    Column (
+        modifier = Modifier.fillMaxSize()
+            .background(companionScenery)
+    ){  }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -85,7 +94,7 @@ fun CompanionOrderDetailsScreen(
                     .padding(start = 8.dp, top = 8.dp),
                 horizontalAlignment = Alignment.End
             ){
-                Text(text = "名字：${ "" }",
+                Text(text = "名字：${ dtlState.memberName }",
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp))
             }
@@ -96,15 +105,15 @@ fun CompanionOrderDetailsScreen(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Text(text = "訂單編號：", fontSize = 20.sp)
-            Text(text = "標題：", fontSize = 20.sp)
+            Text(text = "訂單編號：${dtlState.orderId}", fontSize = 20.sp)
+            Text(text = "標題：${dtlState.title}", fontSize = 20.sp)
 //            Text(text = "服務金額：",
 //                fontSize = 20.sp,
 //                modifier = Modifier.padding(bottom = blank))
-            Text(text = "刊登人：", fontSize = 20.sp)
-            Text(text = "訂購人：", fontSize = 20.sp)
-            Text(text = "開始時間：", fontSize = 20.sp)
-            Text(text = "結束時間：", fontSize = 20.sp)
+            Text(text = "刊登人：${dtlState.orderPoster}", fontSize = 20.sp)
+            Text(text = "訂購人：${dtlState.orderPerson}", fontSize = 20.sp)
+            Text(text = "開始時間：${dtlState.startTime}", fontSize = 20.sp)
+            Text(text = "結束時間：${dtlState.endTime}", fontSize = 20.sp)
             Text(text = "訂單狀態：${statusList[orderStatus]}", fontSize = 20.sp)
             if (orderStatus == 2 && score != 0 || testTrue) {
                 Row(
@@ -174,7 +183,11 @@ fun CompanionOrderDetailsScreen(
                         score = rating
                         comment = inputText
                         if (score == 0) noScoreText = "請選擇評分數"
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                 ) {
                     Text(
                         "送出",
@@ -196,6 +209,10 @@ fun CompanionOrderDetailsScreen(
                     modifier = Modifier
                         .padding(end = blank)
                         .fillMaxWidth(0.5f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     onClick = {
                         if (orderStatus != 2) {
                             orderStatus = 2
@@ -206,6 +223,10 @@ fun CompanionOrderDetailsScreen(
             if (orderStatus == 0) {
                 Button(
                     modifier = Modifier.fillMaxWidth(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     onClick = {
                         if (orderStatus != 3) {
                             orderStatus = 3
@@ -242,5 +263,5 @@ fun CompanionOrderDetailsScreen(
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionOrderDetailsScreen() {
-    CompanionOrderDetailsScreen(rememberNavController(), tabVM = TabVM())
+    CompanionOrderDetailsScreen(rememberNavController(), companionOrder = CompanionOrder(), comOrderDtlVM = ComOrderDtlVM(),tabVM = TabVM())
 }

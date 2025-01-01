@@ -34,10 +34,10 @@ class CompanionMyPublishVM(): ViewModel() {
 }
 
 data class MyPublish(
-    var serviceId: Int = 1,
-    var serviceTitle: String = "我是標題",
-    var serviceDetail: String = "我是內容123456",
-    var startTime:String = "2000/01/01 00:00",
+    var serviceId: Int = 1,//服務編號
+    var serviceTitle: String = "我是標題",//標題
+    var serviceDetail: String = "我是內容123456",//內容
+    var startTime:String = "2000/01/01 00:00",//開始時間
 ){
     override fun equals(other: Any?): Boolean {
         return this.serviceId == (other as MyPublish).serviceId

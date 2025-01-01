@@ -2,6 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,11 +19,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,6 +44,11 @@ fun CompanionCheckAppointmentScreen(
     companionAppointmentVM: CompanionAppointmentVM,
     tabVM: TabVM
     ) {
+    val appointmentState by companionAppointmentVM.appointmentState.collectAsState()
+    Column (
+        modifier = Modifier.fillMaxSize()
+            .background(companionScenery)
+    ){  }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +57,12 @@ fun CompanionCheckAppointmentScreen(
     ) {
         //預約人的資訊
         //預約人
-        Text(text = "預約人", fontSize = 24.sp, modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
+        Text(
+            text = "預約人",
+            fontSize = 24.sp,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            textAlign = TextAlign.Center
+        )
         Row(
             modifier = Modifier
                 .fillMaxHeight(0.15f)
@@ -123,12 +138,20 @@ fun CompanionCheckAppointmentScreen(
             ) {
                 Button(
                     modifier = Modifier.padding(end = 4.dp).fillMaxWidth(0.5f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     onClick = {
 
                     }
                 ) { Text("確認") }
                 Button(
                     modifier = Modifier.fillMaxWidth(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     onClick = {
 
                     },
