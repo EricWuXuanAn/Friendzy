@@ -59,8 +59,9 @@ fun CompanionPublishScreen(
     //呼叫VM
     val skillState by skillVM.skillState.collectAsState()
     val locationState by locationVM.locationState.collectAsState()
-
-    //專長文字輸入文字
+    //標題輸入文字
+    var inputTitleText by remember { mutableStateOf("") }
+    //專長輸入文字
     var inputSkillText by remember { mutableStateOf("") }
     //開始日期時間輸入文字
     var inputDateStart by remember { mutableStateOf("") }
@@ -109,6 +110,22 @@ fun CompanionPublishScreen(
         Column(
             horizontalAlignment = Alignment.Start
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "標題：", fontSize = 16.sp)
+                OutlinedTextField(
+                    value = inputTitleText,
+                    onValueChange = {inputTitleText = it},
+                    shape = RoundedCornerShape(15.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("輸入標題") },
+                )
+            }
+            Spacer(modifier = Modifier.size(8.dp))//間隔
             //專長下拉選單
             ExposedDropdownMenuBox(
                 expanded = skillExpanded,
@@ -181,30 +198,6 @@ fun CompanionPublishScreen(
                         inputSkillText = inputSkillText.replace("$inputDropdownMenu ", "")
                     }
                 ) { Text("刪除選擇專長") }
-                /*
-                IconButton(onClick = {
-                    //判斷文字方塊是否有這個詞，有就不變 沒有就新增
-                    when(inputSkillText.contains(inputDropdownMenu)){
-                        true -> {}
-                        false -> inputSkillText += "$inputDropdownMenu "
-                    }
-                },) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
-                        modifier = Modifier.size(60.dp)
-                    )
-                }
-                IconButton(onClick = {//刪除下拉選單選取的詞
-                    inputSkillText = inputSkillText.replace("$inputDropdownMenu ","")
-                },) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Minus",
-                        modifier = Modifier.size(60.dp)
-                    )
-                }
-                */
             }
             Spacer(modifier = Modifier.size(8.dp))//間隔
             //專長顯示
@@ -234,7 +227,6 @@ fun CompanionPublishScreen(
                     .padding(top = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-//                Text(text = "日期：", fontSize = 16.sp)
                 //開始日期輸入方塊
                 OutlinedTextField(
                     value = inputDateStart,

@@ -69,7 +69,7 @@ fun CompanionLookPublishScreen(
                     .padding(start = 8.dp, top = 8.dp),
                 horizontalAlignment = Alignment.End
             ){
-                Text(text = "名字：${ companion.memberName }",
+                Text(text = "名字：${ "" }",
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp))
                 Button(
@@ -98,7 +98,8 @@ fun CompanionLookPublishScreen(
             }
         }
         HorizontalDivider(modifier = Modifier.padding(6.dp))//分隔線
-        Text(text = "需求：${companion.serviceTitle}", fontSize = 24.sp)
+        Text(text = "標題：${ "" }", fontSize = 24.sp)
+        Text(text = "內容：${ "" }", fontSize = 24.sp)
         Image(//再設最大上限
             painter = painterResource(R.drawable.friendzy),
             contentDescription = "servicImage",

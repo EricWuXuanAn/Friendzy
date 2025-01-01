@@ -36,6 +36,7 @@ import com.example.tip102group01friendzy.TabVM
 //陪伴者確認預約(確認訂單)
 fun CompanionCheckAppointmentScreen(
     navController: NavHostController,
+    companionAppointmentVM: CompanionAppointmentVM,
     tabVM: TabVM
     ) {
     Column(
@@ -45,6 +46,8 @@ fun CompanionCheckAppointmentScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //預約人的資訊
+        //預約人
+        Text(text = "預約人", fontSize = 24.sp, modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
         Row(
             modifier = Modifier
                 .fillMaxHeight(0.15f)
@@ -139,5 +142,5 @@ fun CompanionCheckAppointmentScreen(
 @Preview(showBackground = true)
 fun PreviewCompanionCheckAppointmentScreen(
 ) {
-    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM())
+    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionAppointmentVM = CompanionAppointmentVM())
 }
