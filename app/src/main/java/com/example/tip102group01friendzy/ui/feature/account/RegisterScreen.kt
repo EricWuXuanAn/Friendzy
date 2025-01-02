@@ -57,9 +57,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.tip102group01friendzy.CreatMemberResponce
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.RequestVM
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
 
@@ -155,10 +158,12 @@ fun successDialog(
 @Composable
 fun RegisterScreen(
     navController: NavHostController,
-    registerViewModel: RegisterViewModel
+    registerViewModel: RegisterViewModel,
+    requestVM: RequestVM
 ) {
     SetupErrorRequest(registerViewModel)
-
+    var respones by remember { mutableStateOf<CreatMemberResponce?>(null) }
+    var scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
 
     val naviRequest by registerViewModel.naviRequest.collectAsState()
@@ -315,9 +320,15 @@ fun RegisterScreen(
         )
         Button(
             onClick = {
-                registerViewModel.onRegisterClicked()
-
-                //TODO:資料都輸入且符合規格回到登入頁
+                scope.launch {
+                    registerViewModel.onRegisterClicked()
+                    Log.d("tag_","register1")
+                    respones = requestVM.CreateMember(
+                        registerViewModel.account.value,
+                        registerViewModel.password.value,
+                        registerViewModel.username.value)
+                    Log.d("tag_","register2")
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
@@ -347,10 +358,10 @@ fun RegisterScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    TIP102Group01FriendzyTheme {
-        RegisterScreen(rememberNavController(), registerViewModel = RegisterViewModel())
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun RegisterScreenPreview() {
+//    TIP102Group01FriendzyTheme {
+//        RegisterScreen(rememberNavController(), registerViewModel = RegisterViewModel(), requestVM = RequestVM())
+//    }
+//}
