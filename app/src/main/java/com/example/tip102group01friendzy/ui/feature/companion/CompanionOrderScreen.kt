@@ -48,10 +48,12 @@ class OrderTabsButton(
 fun CompanionOrderListScreen(
     navController: NavController,
     companionOrderVM: CompanionOrderVM,
+    companionAppointmentVM: CompanionAppointmentVM,
     tabVM: TabVM
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     var testText by remember { mutableStateOf("") }
+    val appoState by companionAppointmentVM.setAppointment.collectAsState()
     val orderState by companionOrderVM.orderListState.collectAsState()
     val uncomfirm = orderState.filter { it.orderStatus == 0 }
     val inProfress = orderState.filter { it.orderStatus == 1 }
@@ -126,7 +128,14 @@ fun CompanionOrderListScreen(
                         orders = orderState,
                         onClick = {
                             //要再判斷我預約和預約我的到另一頁
+                            if (it.orderStatus < 1 && it.reservation){
+                                companionOrderVM.setSelectOrder(it)
+                                navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
+                            }else{
+                                companionOrderVM.setSelectOrder(it)
+                                navController.navigate(Screen.CompanionOrderDetailsScreen.name)
 
+                            }
                         }
                     )
                 }
@@ -261,6 +270,8 @@ fun CompanionOrderLazy(
 fun PreviewCompanionOrderListScreen() {
     CompanionOrderListScreen(
         navController = rememberNavController(),
-        companionOrderVM = CompanionOrderVM(),TabVM()
+        companionOrderVM = CompanionOrderVM(),
+        companionAppointmentVM = CompanionAppointmentVM(),
+        TabVM()
     )
 }

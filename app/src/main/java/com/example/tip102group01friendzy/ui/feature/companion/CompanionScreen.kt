@@ -51,7 +51,8 @@ import com.example.tip102group01friendzy.ui.feature.customer.switch
 //tab選項內容格式
 class ScreenTabsButton(var name: String = "", var btIcon: Int = R.drawable.icon, var color:Int = R.color.white)
 /**陪伴者背景色*/
-val companionScenery = Color(red = 243, green = 232, blue = 224, alpha = 255)
+val companionScenery = Color(red = 235, green = 243, blue = 250, alpha = 255)
+//val companionScenery = Color(red = 199, green = 238, blue = 234, alpha = 255)
 
 
 @Composable

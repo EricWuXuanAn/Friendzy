@@ -42,9 +42,10 @@ import com.example.tip102group01friendzy.TabVM
 fun CompanionCheckAppointmentScreen(
     navController: NavHostController,
     companionAppointmentVM: CompanionAppointmentVM,
+    comOrder: CompanionOrder,
     tabVM: TabVM
     ) {
-    val appointmentState by companionAppointmentVM.appointmentState.collectAsState()
+    val appoState by companionAppointmentVM.appointmentState.collectAsState()
     Column (
         modifier = Modifier.fillMaxSize()
             .background(companionScenery)
@@ -123,9 +124,9 @@ fun CompanionCheckAppointmentScreen(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ){
             Text(text = "我刊登的資訊", fontSize = 28.sp, modifier = Modifier.fillMaxWidth())
-            Text(text = "標題：", fontSize = 20.sp)
-            Text(text = "開始時間：", fontSize = 20.sp)
-            Text(text = "結束時間：", fontSize = 20.sp)
+            Text(text = "標題：${comOrder.orderTitle}", fontSize = 20.sp)
+            Text(text = "開始時間：${comOrder.startTime}", fontSize = 20.sp)
+            Text(text = "結束時間：${comOrder.endTime}", fontSize = 20.sp)
             Text(text = "服務地區：", fontSize = 20.sp)
         }
         Column (
@@ -165,5 +166,5 @@ fun CompanionCheckAppointmentScreen(
 @Preview(showBackground = true)
 fun PreviewCompanionCheckAppointmentScreen(
 ) {
-    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionAppointmentVM = CompanionAppointmentVM())
+    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionAppointmentVM = CompanionAppointmentVM(), comOrder = CompanionOrder())
 }

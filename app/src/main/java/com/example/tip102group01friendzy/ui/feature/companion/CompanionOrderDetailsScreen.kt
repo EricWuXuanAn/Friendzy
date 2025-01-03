@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +47,7 @@ import com.example.tip102group01friendzy.TabVM
 
 @Composable
 //訂單明細頁面
+//圖片要再改
 fun CompanionOrderDetailsScreen(
     navController: NavHostController,
     companionOrder: CompanionOrder,
@@ -54,15 +56,15 @@ fun CompanionOrderDetailsScreen(
 ) {
     val dtlState by comOrderDtlVM.OrderDtlSelectState.collectAsState()
     var orderStatus by remember { mutableIntStateOf(dtlState.orderStatus) }//訂單狀態
-    var rating by remember { mutableIntStateOf(dtlState.comRate) } // 評分輸入
-    var score by remember { mutableIntStateOf(0) }  //送出評分
+    var rating by remember { mutableIntStateOf(0) } // 評分輸入
+    var score by remember { mutableIntStateOf(dtlState.comRate) }  //送出評分
     var noScoreText by remember { mutableStateOf("") } //送出沒評分顯示的字
     var inputText by remember { mutableStateOf("") } //評論輸入
     var comment by remember { mutableStateOf(dtlState.comRateContent) }  //評論送出
     val statusList = listOf("待確認", "進行中", "已完成", "取消")
 
     val blank = 6.dp
-    val testTrue = 1 == 1 //寫code方便看 全顯示用
+    val testTrue = 1 == 2 //寫code方便看 全顯示用
 
     Column (
         modifier = Modifier.fillMaxSize()
@@ -76,6 +78,12 @@ fun CompanionOrderDetailsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //顧客資(頭像、名字、聊天鈕)
+        Text(
+            text = "對方",
+            fontSize = 24.sp,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            textAlign = TextAlign.Center
+        )
         Row (
             modifier = Modifier
                 .fillMaxHeight(0.15f)
@@ -125,7 +133,7 @@ fun CompanionOrderDetailsScreen(
                             Icon(
                                 imageVector = Icons.Filled.Star,
                                 contentDescription = "Star $i",
-                                tint = if (i <= rating) Color(0xFFFFD700) else Color.Gray, // 金色或灰色
+                                tint = if (i <= score) Color(0xFFFFD700) else Color.Gray, // 金色或灰色
                                 modifier = Modifier
                                     .size(40.dp)
                                     .padding(4.dp)
@@ -204,7 +212,7 @@ fun CompanionOrderDetailsScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            if (!(orderStatus == 2 || orderStatus == 3)) {
+            if (!(orderStatus == 2 || orderStatus == 3) || testTrue) {
                 Button(
                     modifier = Modifier
                         .padding(end = blank)
@@ -220,7 +228,7 @@ fun CompanionOrderDetailsScreen(
                     }
                 ) { Text("完成訂單") }
             }
-            if (orderStatus == 0) {
+            if (orderStatus == 0 || testTrue) {
                 Button(
                     modifier = Modifier.fillMaxWidth(1f),
                     colors = ButtonDefaults.buttonColors(

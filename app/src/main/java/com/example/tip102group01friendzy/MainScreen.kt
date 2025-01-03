@@ -36,8 +36,12 @@ import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
 import com.example.tip102group01friendzy.ui.feature.account.RegisterViewModel
 import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.companion.ComOrderDtlVM
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionAppointmentVM
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionCheckAppointmentScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionLookPublishScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionMyPublishVM
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderDetailsScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderListScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderVM
@@ -103,8 +107,13 @@ fun Main(
     postVM: PostVM = PostVM(),
     postListVM: PostListVM = PostListVM(),
     reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
-    tabVM: TabVM = TabVM()
-) {
+    tabVM: TabVM = TabVM(),
+    companionVM: CompanionVM = CompanionVM(),
+    companionMyPublishVM: CompanionMyPublishVM = CompanionMyPublishVM(),
+    companionAppointmentVM: CompanionAppointmentVM = CompanionAppointmentVM(),
+    companionOrderVM: CompanionOrderVM = CompanionOrderVM(),
+    comOrderDtlVM: ComOrderDtlVM = ComOrderDtlVM(),
+    ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
     // 取得當前頁面的名稱
@@ -239,8 +248,11 @@ fun Main(
             composable(
                 route = Screen.CompanionScreen.name
             ){
-                CompanionScreen(navController = navController, companionVM = CompanionVM(), tabVM = tabVM)
-            }
+                CompanionScreen(
+                    navController = navController,
+                    companionVM = companionVM,
+                    companionMyPublishVM = companionMyPublishVM,
+                    tabVM = tabVM)            }
             composable(
                 route = Screen.CompanionPublishScreen.name
             ){
@@ -257,7 +269,8 @@ fun Main(
             ){
                 CompanionOrderListScreen(
                     navController = navController,
-                    companionOrderVM = CompanionOrderVM(),
+                    companionOrderVM = companionOrderVM,
+                    companionAppointmentVM = companionAppointmentVM,
                     tabVM = tabVM
                 )
             }
@@ -267,6 +280,8 @@ fun Main(
             ){
                 CompanionOrderDetailsScreen(
                     navController = navController,
+                    companionOrder = CompanionOrder(),
+                    comOrderDtlVM = comOrderDtlVM,
                     tabVM = tabVM
                 )
             }
@@ -276,6 +291,8 @@ fun Main(
             ){
                 CompanionCheckAppointmentScreen(
                     navController = navController,
+                    companionAppointmentVM = companionAppointmentVM,
+                    comOrder = CompanionOrder(),
                     tabVM = tabVM
                 )
             }
@@ -284,7 +301,7 @@ fun Main(
             ){
                 CompanionLookPublishScreen(
                     navController = navController,
-                    companionVM = CompanionVM(),
+                    companionVM = companionVM,
                     tabVM = tabVM
                 )
             //<<<陪伴者
