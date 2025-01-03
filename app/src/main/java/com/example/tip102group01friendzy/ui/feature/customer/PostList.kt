@@ -2,7 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.customer
 
 import com.example.tip102group01friendzy.R
 
-class PostList(
+data class PostList(
     var postID: String = "",
     var postTitle: String = "",
     var postContent: String = "",

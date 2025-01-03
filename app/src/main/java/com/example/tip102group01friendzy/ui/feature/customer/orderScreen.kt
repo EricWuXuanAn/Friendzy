@@ -38,19 +38,18 @@ import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
 
 
-
 @Composable
 fun OrderListScreen(
     orderlistVM: OrderVM,
     navController: NavHostController
 ) {
+//    var list by remember { mutableStateOf<List<OrderList>>(emptyList()) }
     var tabIndex by remember { mutableStateOf(0) }
     val ordeState by orderlistVM.orderList.collectAsState()
-    val uncomfirm = ordeState.filter { it.order_Status == 0 }
-    val inProfress = ordeState.filter { it.order_Status == 1 }
-    val completed = ordeState.filter { it.order_Status == 2 }
-    val reservation =
-        ordeState.filter { it.reservation == true }  //這個可以拿掉 現在用假資料所以參數設定多一個可以判斷 之後要用後端判斷回傳真實資料
+    val uncomfirm = ordeState.filter { it.order_status == 0 }
+    val inProfress = ordeState.filter { it.order_status == 1 }
+    val completed = ordeState.filter { it.order_status == 2 }
+    val unknowcode = ordeState.filter { it.order_status == 3 }
     val tab = listOf(
         stringResource(R.string.order_List),
         stringResource(R.string.unconfirm),
@@ -61,6 +60,7 @@ fun OrderListScreen(
     )
     val scope = rememberCoroutineScope()
     var snackbar = remember { SnackbarHostState() }
+
 
     Column(
         modifier = Modifier
@@ -150,7 +150,7 @@ fun OrderListScreen(
                 }
             })
 
-            4 -> orderList(orders = reservation, onClick = {
+            4 -> orderList(orders = unknowcode, onClick = {
                 navController.navigate(Screen.ReservationConfirmScreen.name)
             })
 
@@ -169,12 +169,12 @@ fun orderList(
         items(orders) { order ->
             ListItem(
                 modifier = Modifier.clickable { onClick(order) },
-                headlineContent = { Text(text = "order Content: ${order.order_content}") },
-                overlineContent = { Text(text = "Order ID: ${order.orderID}", fontSize = 18.sp) },
-                supportingContent = { Text(text = "Order Person:${order.order_Person}") },
+                headlineContent = { Text(text = "order Content: ${order.order_person}") },
+                overlineContent = { Text(text = "Order ID: ${order.order_id}", fontSize = 18.sp) },
+                supportingContent = { Text(text = "Order Person:${order.member_name}") },
                 trailingContent = {
                     Text(
-                        text = "Order Price: \n${order.order_Pirce.toString()}",
+                        text = "Order Price: \n${order.order_pirce}",
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
