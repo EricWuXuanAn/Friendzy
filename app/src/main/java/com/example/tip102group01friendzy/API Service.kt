@@ -15,8 +15,7 @@ import retrofit2.http.Path
 import java.lang.reflect.Member
 
 interface APIService {
-    @Multipart
-//    @Multipart
+//    @Multipart 不要打開
     @POST("rest/member/register")
     suspend fun  createMember(@Body request: CreateMemberRequest): CreatMemberResponce
 
