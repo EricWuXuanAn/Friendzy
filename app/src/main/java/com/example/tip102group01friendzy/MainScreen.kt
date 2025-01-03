@@ -108,8 +108,7 @@ fun Main(
     postListVM: PostListVM = PostListVM(),
     reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
     tabVM: TabVM = TabVM(),
-    loginViewModel: LoginViewModel = LoginViewModel()
-) {
+    loginViewModel: LoginViewModel = LoginViewModel(),
     companionVM: CompanionVM = CompanionVM(),
     companionMyPublishVM: CompanionMyPublishVM = CompanionMyPublishVM(),
     companionAppointmentVM: CompanionAppointmentVM = CompanionAppointmentVM(),
