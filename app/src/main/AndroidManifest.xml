@@ -17,8 +17,10 @@
         android:icon="@drawable/group"
         android:label="@string/app_name"
         android:roundIcon="@drawable/group"
+        android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.TIP102Group01Friendzy"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <!-- benita 12/26在這加入 Google Maps API Key -->
@@ -27,11 +29,11 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAwlWik08IiqrnwI1KIk9mUD0wWDelYUD0" />
+            android:value="********" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAwlWik08IiqrnwI1KIk9mUD0wWDelYUD0" />
+            android:value="********" />
 
         <!-- 可以加上metadata標籤設定Notification的預設圖示、顏色與Channel ID (Android 8.0)，
              就無須使用程式建立Notification物件 -->

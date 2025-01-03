@@ -2,6 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 
 data class Companion(
+    /*
 //    var companionNO :String = "",//陪伴者(會員編號)
 //    var companionCity :String = "",//陪伴者所在城市
 
@@ -16,12 +17,18 @@ data class Companion(
 //    var //開始時間
 //    var //結束時間
 //    var budget: String = "" //金額
+     */
+    var userID: Int = 1,
+    var userName: String = "",
+    var userStatus:Boolean =true,
     ) {
     override fun equals(other: Any?): Boolean {
-        return this.memberNo == (other as Companion).memberNo
+//        return this.memberNo == (other as Companion).memberNo
+        return this.userID == (other as Companion).userID
     }
 
     override fun hashCode(): Int {
-        return memberNo.hashCode()
+//        return memberNo.hashCode()
+        return userID.hashCode()
     }
 }

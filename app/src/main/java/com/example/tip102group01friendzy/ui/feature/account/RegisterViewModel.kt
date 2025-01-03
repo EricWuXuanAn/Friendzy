@@ -3,20 +3,23 @@ package com.example.tip102group01friendzy.ui.feature.account
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.tip102group01friendzy.RequestVM
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class RegisterViewModel : ViewModel() {
-    var account = mutableStateOf("")
-    var password = mutableStateOf("")
+class RegisterViewModel (): ViewModel() {
+    var email = mutableStateOf("")
+    var mpassword = mutableStateOf("")
     var confirmPassword = mutableStateOf("")
-    var username = mutableStateOf("")
+    var member_name = mutableStateOf("")
 
     val emailRegex = Patterns.EMAIL_ADDRESS
     val isValidEmail: Boolean
-        get() = emailRegex.matcher(account.value).matches()
+        get() = emailRegex.matcher(email.value).matches()
 
     private val _errorRequest = MutableStateFlow<List<String>>(emptyList())
     val errorRequest: StateFlow<List<String>> = _errorRequest.asStateFlow()
@@ -24,8 +27,11 @@ class RegisterViewModel : ViewModel() {
     private val _naviRequest = MutableStateFlow<Boolean?>(null)
     val naviRequest = _naviRequest.asStateFlow()
 
+
+
     fun onRegisterClicked() {
-        if (account.value.isBlank() || password.value.isBlank() || confirmPassword.value.isBlank() || username.value.isBlank()) {
+
+        if (email.value.isBlank() || mpassword.value.isBlank() || confirmPassword.value.isBlank() || member_name.value.isBlank()) {
             _errorRequest.update { currentList ->
                 currentList + "Field cannot be empty."
             }
@@ -35,12 +41,12 @@ class RegisterViewModel : ViewModel() {
                 currentList + "Email Formatting Error."
             }
         }
-        if (password.value.isNotBlank() && password.value.count() < 8) {
+        if (mpassword.value.isNotBlank() && mpassword.value.count() < 8) {
             _errorRequest.update { currentList ->
                 currentList + "Password(at least 8 characters)"
             }
         }
-        if (password.value != confirmPassword.value) {
+        if (mpassword.value != confirmPassword.value) {
             _errorRequest.update { currentList ->
                 currentList + "Password do not match."
             }
@@ -48,6 +54,8 @@ class RegisterViewModel : ViewModel() {
         if (!_errorRequest.value.any()){
             _naviRequest.update { true }
         }
+
+
     }
 
     fun consumeErrorRequest() {
@@ -58,4 +66,19 @@ class RegisterViewModel : ViewModel() {
         _naviRequest.update { null }
     }
 
+    fun onRegisterButtonClicked(requestVM: RequestVM){
+        viewModelScope.launch {
+            onRegisterClicked()
+            if (!_errorRequest.value.any()){
+                val response = requestVM.CreateMember(
+                    email.value,
+                    mpassword.value,
+                    member_name.value
+                )
+                if (response != null){
+                    _naviRequest.update { true }
+                }
+            }
+        }
+    }
 }

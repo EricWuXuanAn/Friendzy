@@ -2,6 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +48,11 @@ fun CompanionLookPublishScreen(
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
     val companion by companionVM.setCompanionState.collectAsState()
+
+    Column (
+        modifier = Modifier.fillMaxSize()
+            .background(companionScenery)
+    ){  }
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -69,7 +76,7 @@ fun CompanionLookPublishScreen(
                     .padding(start = 8.dp, top = 8.dp),
                 horizontalAlignment = Alignment.End
             ){
-                Text(text = "名字：${ companion.memberName }",
+                Text(text = "名字：${ "" }",
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp))
                 Button(
@@ -98,7 +105,8 @@ fun CompanionLookPublishScreen(
             }
         }
         HorizontalDivider(modifier = Modifier.padding(6.dp))//分隔線
-        Text(text = "需求：${companion.serviceTitle}", fontSize = 24.sp)
+        Text(text = "標題：${ "" }", fontSize = 24.sp)
+        Text(text = "內容：${ "" }", fontSize = 24.sp)
         Image(//再設最大上限
             painter = painterResource(R.drawable.friendzy),
             contentDescription = "servicImage",
@@ -126,11 +134,23 @@ fun CompanionLookPublishScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .padding(end = 6.dp),
-                    onClick = {}
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
+                    onClick = {
+
+                    }
                 ) { Text("預約", fontSize = 24.sp) }
                 Button(
                     modifier = Modifier.fillMaxWidth(1f),
-                    onClick = {}
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
+                    onClick = {
+
+                    }
                 ) { Text("再想想", fontSize = 24.sp) }
             }
         }

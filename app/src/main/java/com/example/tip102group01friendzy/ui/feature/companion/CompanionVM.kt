@@ -25,11 +25,14 @@ class CompanionVM :ViewModel(){
     }
     private fun fetchCompanion() :List<Companion>{
         return listOf(
-            Companion("001","名字01", R.drawable.friendzy,"需求項目01"),
+            /*
+            Companion("001","名字01", R.drawable.friendzy,"需求項目01"),//刊登者編號、名字、頭像、服務項目
             Companion("002","名字02", R.drawable.friendzy,"需求項目02"),
             Companion("003","名字03", R.drawable.friendzy,"需求項目03"),
             Companion("004","名字04", R.drawable.friendzy,"需求項目04"),
             Companion("005","名字05", R.drawable.friendzy,"需求項目05"),
+             */
+            Companion(1,"名字01",true)
         )
     }
 

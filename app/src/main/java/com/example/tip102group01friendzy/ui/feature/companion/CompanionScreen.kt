@@ -1,6 +1,5 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,10 +17,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,9 +35,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,23 +50,29 @@ import com.example.tip102group01friendzy.ui.feature.customer.switch
 
 //tab選項內容格式
 class ScreenTabsButton(var name: String = "", var btIcon: Int = R.drawable.icon, var color:Int = R.color.white)
+/**陪伴者背景色*/
+val companionScenery = Color(red = 235, green = 243, blue = 250, alpha = 255)
+//val companionScenery = Color(red = 199, green = 238, blue = 234, alpha = 255)
+
 
 @Composable
 //陪伴者主頁
 fun CompanionScreen(
     navController: NavHostController,
     companionVM: CompanionVM,
+    companionMyPublishVM: CompanionMyPublishVM,
     tabVM: TabVM
     ){
     var inputText by remember { mutableStateOf("") }//搜尋內容
     var tabIndex by remember { mutableIntStateOf(2) }//使用tabs的index編號
     val companionState by companionVM.companionState.collectAsState()
+    val MyPublishState by companionMyPublishVM.publishListState.collectAsState()
     var testIten by remember { mutableStateOf("") }//測試用
 
     var accountStatus by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
 
-    val scenery = Color(red = 255, green = 244, blue = 212, alpha = 255)
+
     val tabs :List<ScreenTabsButton> =listOf(//tab選項內容
         ScreenTabsButton("訂單管理",R.drawable.order_manage,R.color.teal_700),
 //        Tabs("可約時間",R.drawable.date_range,R.color.teal_700),
@@ -75,7 +82,7 @@ fun CompanionScreen(
 
     Column (
         modifier = Modifier.fillMaxSize()
-            .background(scenery)
+            .background(companionScenery)
     ){  }
     Column (
         modifier = Modifier.fillMaxSize().padding(20.dp),
@@ -93,8 +100,7 @@ fun CompanionScreen(
                 check = accountStatus
             ) {
                 accountStatus = it
-                if (accountStatus){
-                }else{
+                if (!accountStatus){
                     navController.navigate(Screen.CustomerScreen.name){
                         popUpTo(Screen.CompanionScreen.name){inclusive = true}
                     }
@@ -260,55 +266,54 @@ fun CompanionScreen(
             Text("我的刊登項目", fontSize = 28.sp)
             Spacer(modifier = Modifier.padding(4.dp))
             //服務項目清單
-            ServicList(companions = companionState){
-                companionVM.setCompanion(it)
+            MyPublishList(
+                publishs = MyPublishState.filter { it.startTime.contains(inputText,true) },
+                onClick = {
+                    companionMyPublishVM.setMyPublish(it)
 //                    navController.navigate(Screen.CompanionLookPublish.name)
-            }
+                },
+                iconOnClick = {
+
+                }
+            )
         }
     }
 }
 ///*
 //推薦的顧客項目列表
 @Composable
-fun ServicList(
-    companions:List<Companion>,
-    onClick:(Companion) ->Unit
+fun MyPublishList(
+    publishs:List<MyPublish>,
+    onClick:(MyPublish) ->Unit,
+    iconOnClick:() ->Unit,
 ){
     LazyColumn (
         modifier = Modifier.fillMaxSize()
     ){
-        items(companions) {companion ->
+        items(publishs) { publish ->
             ListItem(
-                modifier = Modifier.clickable { onClick(companion) },
-                headlineContent = { Text(text = companion.serviceTitle)},
-                supportingContent = { Text(text = companion.memberName)},
-                leadingContent = {
-                    Image(
-                        modifier = Modifier.size(80.dp),
-                        painter = painterResource(id = companion.memberImg),
-                        contentDescription = "memberPhoto",
-                        contentScale = ContentScale.FillBounds
-                    )
-                },
-                //Color(red = 255, green = 244, blue = 212, alpha = 255)
-//                colors = ListItemColors(
-//                    containerColor = Color.Gray,
-//                    overlineColor = TODO(),
-//                    supportingTextColor = TODO(),
-//                    trailingIconColor = TODO(),
-//                    disabledHeadlineColor = TODO(),
-//                    disabledLeadingIconColor = TODO(),
-//                    disabledTrailingIconColor = TODO(),
-//                    headlineColor = TODO(),
-//                    leadingIconColor = TODO(),
-//                )
-//                trailingContent = {
-//                    Icon(
-//                        painter = painterResource(R.drawable.chat),
-//                        contentDescription = "",
-//                        modifier = Modifier.padding(8.dp).size(40.dp)
+                modifier = Modifier.clickable { onClick(publish) },
+                overlineContent = { Text(text = publish.serviceTitle, fontSize = 18.sp)},
+                headlineContent = { Text(text = publish.serviceDetail, fontFamily = FontFamily.Default)},
+                supportingContent = { Text(text = publish.startTime)},
+                colors =  ListItemDefaults.colors(
+                    containerColor = companionScenery),
+//                leadingContent = {
+//                    Image(
+//                        modifier = Modifier.size(80.dp),
+//                        painter = painterResource(id = companion.memberImg),
+//                        contentDescription = "memberPhoto",
+//                        contentScale = ContentScale.FillBounds
 //                    )
-//                }
+//                },
+                trailingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.delete),
+                        contentDescription = "delete",
+                        modifier = Modifier.padding(8.dp).size(40.dp)
+                            .clickable { iconOnClick }
+                    )
+                }
             )
             HorizontalDivider()//分隔線
         }
@@ -317,8 +322,9 @@ fun ServicList(
 // */
 
 
+
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionScreen(){
-    CompanionScreen(rememberNavController(), companionVM = CompanionVM(), tabVM = TabVM())
+    CompanionScreen(rememberNavController(), companionVM = CompanionVM(), companionMyPublishVM = CompanionMyPublishVM(),tabVM = TabVM())
 }

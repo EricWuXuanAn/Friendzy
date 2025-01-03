@@ -1,22 +1,22 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
+import android.content.Context
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
-import com.example.tip102group01friendzy.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 //VM :管理UI狀態及邏輯
 class LoginViewModel : ViewModel() {
-    var account = mutableStateOf("")
-    var password = mutableStateOf("")
+    var email = mutableStateOf("")
+    var mpassword = mutableStateOf("")
 
     val emailRegex = Patterns.EMAIL_ADDRESS
     val isValidEmail: Boolean
-        get() = emailRegex.matcher(account.value).matches()
+        get() = emailRegex.matcher(email.value).matches()
 
     private val _snackbarTrigger = MutableStateFlow(0)
     val snackbarTrigger: StateFlow<Int> = _snackbarTrigger.asStateFlow()
@@ -26,7 +26,7 @@ class LoginViewModel : ViewModel() {
 
 
     fun onLoginClicked() {
-        if (account.value.isBlank() || password.value.isBlank()) {
+        if (email.value.isBlank() || mpassword.value.isBlank()) {
             _snackbarMessage.value = "empty_fields"
             _snackbarTrigger.value += 1
         } else if (!isValidEmail) {
@@ -39,6 +39,6 @@ class LoginViewModel : ViewModel() {
     }
 
     fun clearPassword() {
-        password.value = ""
+        mpassword.value = ""
     }
 }

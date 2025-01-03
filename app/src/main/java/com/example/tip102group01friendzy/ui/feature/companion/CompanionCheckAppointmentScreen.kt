@@ -2,6 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,11 +19,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,8 +41,15 @@ import com.example.tip102group01friendzy.TabVM
 //陪伴者確認預約(確認訂單)
 fun CompanionCheckAppointmentScreen(
     navController: NavHostController,
+    companionAppointmentVM: CompanionAppointmentVM,
+    comOrder: CompanionOrder,
     tabVM: TabVM
     ) {
+    val appoState by companionAppointmentVM.appointmentState.collectAsState()
+    Column (
+        modifier = Modifier.fillMaxSize()
+            .background(companionScenery)
+    ){  }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,6 +57,13 @@ fun CompanionCheckAppointmentScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //預約人的資訊
+        //預約人
+        Text(
+            text = "預約人",
+            fontSize = 24.sp,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            textAlign = TextAlign.Center
+        )
         Row(
             modifier = Modifier
                 .fillMaxHeight(0.15f)
@@ -105,9 +124,9 @@ fun CompanionCheckAppointmentScreen(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ){
             Text(text = "我刊登的資訊", fontSize = 28.sp, modifier = Modifier.fillMaxWidth())
-            Text(text = "標題：", fontSize = 20.sp)
-            Text(text = "開始時間：", fontSize = 20.sp)
-            Text(text = "結束時間：", fontSize = 20.sp)
+            Text(text = "標題：${comOrder.orderTitle}", fontSize = 20.sp)
+            Text(text = "開始時間：${comOrder.startTime}", fontSize = 20.sp)
+            Text(text = "結束時間：${comOrder.endTime}", fontSize = 20.sp)
             Text(text = "服務地區：", fontSize = 20.sp)
         }
         Column (
@@ -120,12 +139,20 @@ fun CompanionCheckAppointmentScreen(
             ) {
                 Button(
                     modifier = Modifier.padding(end = 4.dp).fillMaxWidth(0.5f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     onClick = {
 
                     }
                 ) { Text("確認") }
                 Button(
                     modifier = Modifier.fillMaxWidth(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.purple_200),
+                        contentColor = Color.DarkGray
+                    ),
                     onClick = {
 
                     },
@@ -139,5 +166,5 @@ fun CompanionCheckAppointmentScreen(
 @Preview(showBackground = true)
 fun PreviewCompanionCheckAppointmentScreen(
 ) {
-    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM())
+    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionAppointmentVM = CompanionAppointmentVM(), comOrder = CompanionOrder())
 }
