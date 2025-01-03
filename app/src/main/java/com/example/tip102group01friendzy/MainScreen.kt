@@ -48,7 +48,7 @@ import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
 import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
-import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BkackListScreen
+import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BlackListScreen
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_Black_ListVM
 import com.example.tip102group01friendzy.ui.feature.customer.OrderListScreen
 import com.example.tip102group01friendzy.ui.feature.customer.OrderVM
@@ -187,9 +187,9 @@ fun Main(
             composable(
                 route = Screen.Favorite_and_BlackListScreen.name
             ) {
-                Favorite_and_BkackListScreen(
+                Favorite_and_BlackListScreen (
                     navController = navController,
-                    favorite_and_bkacklistVM = favorite_and_bkacklistVM
+                    favorite_and_blacklistVM = favorite_and_bkacklistVM
                 )
             }
 

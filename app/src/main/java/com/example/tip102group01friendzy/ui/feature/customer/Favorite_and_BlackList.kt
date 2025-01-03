@@ -39,17 +39,17 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 
 @Composable
-fun Favorite_and_BkackListScreen(
+fun Favorite_and_BlackListScreen(
     navController: NavHostController,
-    favorite_and_bkacklistVM: Favorite_and_Black_ListVM
+    favorite_and_blacklistVM: Favorite_and_Black_ListVM
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tab = listOf(
         stringResource(R.string.favotite),
         stringResource(R.string.blackList)
     )
-    val favListState by favorite_and_bkacklistVM.favoriteListState.collectAsState()
-    val blackListState by favorite_and_bkacklistVM.blackListState.collectAsState()
+    val favListState by favorite_and_blacklistVM.favoriteListState.collectAsState()
+    val blackListState by favorite_and_blacklistVM.blackListState.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -178,5 +178,5 @@ fun getBlackList(
 @Composable
 @Preview(showBackground = true)
 fun Favorite_and_BlackListScreenPreview() {
-    Favorite_and_BkackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
+    Favorite_and_BlackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
 }
