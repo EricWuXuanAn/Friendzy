@@ -160,30 +160,7 @@ fun MemberScreen(
                 fontWeight = FontWeight.Bold, // 粗體字
                 fontSize = 20.sp // 字體大小
             )
-            // 聊聊按鈕區塊
-            // 聊聊按鈕
-            Button(
-                onClick = {
-                    navController.navigate(Screen.ChatroomScreen.name) // 跳轉到聊聊頁面
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
-                modifier = Modifier.padding(horizontal = 8.dp) // 增加按鈕間距
-            ) {
-                // 圖標
-                Image(
-                    painter = painterResource(id = R.drawable.chat), // 自訂圖標資源
-                    contentDescription = "Chat", // 無障礙說明
-                    modifier = Modifier
-                        .size(25.dp) // 設定圖標大小
-                        .padding(end = 7.dp) // 圖標和文字間距
-                )
-                // 文字
-                Text(
-                    text = "聊聊", // 按鈕文字
-                    color = Color.Black, // 文字顏色
-                    fontSize = 18.sp // 文字大小
-                )
-            }
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))

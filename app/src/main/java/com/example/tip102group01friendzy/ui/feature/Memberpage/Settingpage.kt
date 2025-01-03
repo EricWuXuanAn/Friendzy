@@ -1,6 +1,7 @@
 
 package com.example.tip102group01friendzy.ui.feature.Memberpage
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.layout.*
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
@@ -73,10 +75,17 @@ fun Settingpage(
         }
 
         Spacer(modifier = Modifier.height(16.dp)) // 添加垂直間距
+       
 
         // 會員帳號部分
         Text(text = "會員帳號", fontWeight = FontWeight.Bold) // 顯示標籤文字
         Text(text = "angelhuang@cw.com.tw", modifier = Modifier.padding(vertical = 8.dp)) // 顯示帳號內容
+        CustomDivider()
+
+        // 姓名部分
+        Text(text = "姓名", fontWeight = FontWeight.Bold) // 顯示標籤文字
+        Text(text = "Angle Huang", modifier = Modifier.padding(vertical = 8.dp)) // 顯示姓名內容
+        CustomDivider()
 
         Text(text = "會員密碼", fontWeight = FontWeight.Bold)
         if (isEditingPassword) {
@@ -143,12 +152,7 @@ fun Settingpage(
                 }
             }
         }
-
-
-        // 姓名部分
-        Text(text = "姓名", fontWeight = FontWeight.Bold) // 顯示標籤文字
-        Text(text = "Angle Huang", modifier = Modifier.padding(vertical = 8.dp)) // 顯示姓名內容
-        Text(text = "angelhuang@cw.com.tw", modifier = Modifier.padding(vertical = 8.dp)) // 顯示帳號內容
+        CustomDivider()
 
 
         // 暱稱部分
@@ -160,6 +164,7 @@ fun Settingpage(
             onSaveClick = { isEditingNickname = false }, // 點擊完成保存
             onValueChange = { nickname = it } // 更新暱稱值
         )
+        CustomDivider()
 
         // 手機號碼部分
         EditableRow(
@@ -170,6 +175,7 @@ fun Settingpage(
             onSaveClick = { isEditingPhoneNumber = false }, // 點擊完成保存
             onValueChange = { phoneNumber = it } // 更新手機號碼值
         )
+        CustomDivider()
 
         Spacer(modifier = Modifier.weight(1f)) // 添加一個可彈性填充的空間
 
@@ -184,6 +190,22 @@ fun Settingpage(
             Text(text = "登出帳號", color = Color.Red, fontWeight = FontWeight.Bold) // 顯示登出文字，紅色加粗
         }
     }
+}
+
+//分隔線
+@Composable
+fun CustomDivider(
+    color: Color = Color.Gray, // 分隔線顏色，預設為灰色
+    thickness: Dp = 1.dp,     // 分隔線厚度，預設為 1dp
+    padding: PaddingValues = PaddingValues(0.dp) // 分隔線上下的邊距
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth() // 分隔線寬度佔滿整行
+            .padding(padding) // 設定上下邊距
+            .height(thickness) // 設定分隔線的厚度
+            .background(color) // 設定分隔線的顏色
+    )
 }
 
 // 可編輯行的通用組件
