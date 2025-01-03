@@ -3,21 +3,18 @@ package com.example.tip102group01friendzy
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
-import android.accounts.Account
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.Path
 import java.lang.reflect.Member
 
 interface APIService {
 //    @Multipart 不要打開
     @POST("rest/member/register")
-    suspend fun  createMember(@Body request: CreateMemberRequest): CreatMemberResponce
+    suspend fun  createMember(@Body request: CreateMemberRequest): CreatMemberResponse
 
     @POST("rest/member/forget")
     suspend fun forgetPassword(@Body member: Member) //FIXME
@@ -36,8 +33,8 @@ interface APIService {
 
     
 
-    @GET("rest/member/login/{email}/{mpassword}")
-    suspend fun login(@Path("email") account: String, @Path("mpassword")mpasswod: String):Response<Unit>
+    @POST("rest/member/login")
+    suspend fun login(@Body member: com.example.tip102group01friendzy.Member): Response<Result>
 }
 
 object RetrofitInstance{

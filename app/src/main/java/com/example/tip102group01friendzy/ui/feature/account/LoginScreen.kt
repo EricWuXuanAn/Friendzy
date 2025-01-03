@@ -58,8 +58,8 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     navController: NavHostController,
     loginViewModel: LoginViewModel,
-    requestVM: RequestVM= viewModel(),
-    onLoginSuccess:(String) -> Unit
+//    requestVM: RequestVM= viewModel(),
+//    onLoginSuccess:(String) -> Unit
 ) {
 //    //設置偏好設定
 //    val context = LocalContext.current
@@ -69,11 +69,11 @@ fun LoginScreen(
     val snackbarTrigger by loginViewModel.snackbarTrigger.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val coroutineScope = rememberCoroutineScope()
+
+    val loginState by loginViewModel.loginState.collectAsState()
 
     val accountOrPasswordEmptyMessage = stringResource(R.string.acc_pass_empty)
     val emailFormatErrorMessage = stringResource(R.string.errorEmail)
-    val tag = "tag_Main"
 
 //    LaunchedEffect(Unit) {
 //        Log.d(tag,"LaunchedEffect")
@@ -81,6 +81,21 @@ fun LoginScreen(
 //        loginViewModel.email.value = preferences.getString("email", "")!!
 //        loginViewModel.mpassword.value = preferences.getString("mpassword", "")!!
 //    }
+
+    LaunchedEffect(snackbarMessage) {
+        snackbarMessage?.let{
+            snackbarHostState.showSnackbar(message = it)
+        }
+    }
+
+    LaunchedEffect(loginState) {
+        if(loginState is LoginResponse.Success &&
+            (loginState as LoginResponse.Success).result.statu){
+            navController.navigate(Screen.TabMainScreen.name){
+                popUpTo(Screen.LoginScreen.name){inclusive = true}
+            }
+        }
+    }
 
     Log.d("tag_", "LoginScreen")
     Column(
@@ -166,6 +181,9 @@ fun LoginScreen(
 
             Button(
                 onClick = {
+                    scope.launch {
+                        loginViewModel.login()
+                    }
 //                    coroutineScope.launch {
 //                        val logged = requestVM.login(loginViewModel.email.value, loginViewModel.mpassword.value)
 //                        if(logged ){

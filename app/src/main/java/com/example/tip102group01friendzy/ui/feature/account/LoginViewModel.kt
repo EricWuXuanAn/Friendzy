@@ -8,11 +8,56 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.buffer
 
 //VM :管理UI狀態及邏輯
-class LoginViewModel : ViewModel() {
-    var email = mutableStateOf("")
-    var mpassword = mutableStateOf("")
+class LoginViewModel(private val context: Context) : ViewModel() {
+    private val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    private val repository = LoginRepository()
+
+    var email = mutableStateOf(preferences.getString("saved_email","")?:"")
+    var mpassword = mutableStateOf(preferences.getString("saved_password","")?:"")
+
+    var isLoggedIn = mutableStateOf(preferences.getBoolean("is_logged_in",false))
+
+    private val _loginState = MutableStateFlow<LoginResponse?>(null)
+    val loginState :StateFlow<LoginResponse?> = _loginState.asStateFlow()
+
+    suspend fun login() {
+        if (email.value.isBlank() || mpassword.value.isBlank()) {
+            _snackbarMessage.value = "empty_fields"
+            return
+        }
+
+
+        val response = repository.login(email.value, mpassword.value)
+        _loginState.value = response
+
+        when(response){
+            is LoginResponse.Success -> {
+                if(response.result.statu){
+                    saveLoginState()
+                    isLoggedIn.value =true
+                    _snackbarMessage.value = response.result.message
+                }else{
+                    _snackbarMessage.value = response.result.message
+                }
+            }
+            is LoginResponse.Error -> {
+                _snackbarMessage.value = response.message
+            }
+        }
+
+    }
+
+    private fun saveLoginState(){
+        preferences.edit().apply{
+            putString("saved_email", email.value)
+            putString("saved_password", mpassword.value)
+            putBoolean("is_logged_in", true)
+            apply()
+        }
+    }
 
     val emailRegex = Patterns.EMAIL_ADDRESS
     val isValidEmail: Boolean

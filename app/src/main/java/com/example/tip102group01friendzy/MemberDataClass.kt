@@ -6,11 +6,13 @@ data class CreateMemberRequest(
     val member_name: String
 )
 
-data class CreatMemberResponce(
+data class CreatMemberResponse(
     val statu: Boolean,
     val message: String
 )
 
 data class Member(
-    val email: String
+    val email: String,
+    val mpassword: String
 )
+

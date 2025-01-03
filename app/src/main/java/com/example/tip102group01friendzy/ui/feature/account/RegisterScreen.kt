@@ -42,7 +42,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.tip102group01friendzy.CreatMemberResponce
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.RequestVM
 import com.example.tip102group01friendzy.Screen
@@ -144,14 +143,11 @@ fun RegisterScreen(
     requestVM: RequestVM
 ) {
     SetupErrorRequest(registerViewModel)
-    var response by remember { mutableStateOf<CreatMemberResponce?>(null) }
-    val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
 
     val naviRequest by registerViewModel.naviRequest.collectAsState()
     LaunchedEffect(naviRequest) {
         if (naviRequest == true) {
-            //TODO:與資料庫比對是否曾註冊過，無註冊過才通過
             showDialog = true
             registerViewModel.consumeNaviRequest()
         }
@@ -303,15 +299,6 @@ fun RegisterScreen(
         Button(
             onClick = {
                 registerViewModel.onRegisterButtonClicked(requestVM)
-//                scope.launch {
-//                    registerViewModel.onRegisterClicked()
-//                    Log.d("tag_","register1")
-//                    response = requestVM.CreateMember(
-//                        registerViewModel.email.value,
-//                        registerViewModel.mpassword.value,
-//                        registerViewModel.member_name.value)
-//                    Log.d("tag_","register2")
-//                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),

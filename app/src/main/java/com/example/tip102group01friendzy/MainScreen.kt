@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -108,7 +109,7 @@ fun Main(
     postListVM: PostListVM = PostListVM(),
     reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
     tabVM: TabVM = TabVM(),
-    loginViewModel: LoginViewModel = LoginViewModel(),
+    loginViewModel: LoginViewModel = LoginViewModel(context = LocalContext.current),
     companionVM: CompanionVM = CompanionVM(),
     companionMyPublishVM: CompanionMyPublishVM = CompanionMyPublishVM(),
     companionAppointmentVM: CompanionAppointmentVM = CompanionAppointmentVM(),
@@ -128,6 +129,7 @@ fun Main(
     )
     // 設定內容向上捲動時，TopAppBar自動收起來；呼叫pinnedScrollBehavior()則不會收起來
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val context = LocalContext.current
 
 
     Scaffold(
@@ -159,12 +161,12 @@ fun Main(
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
                     navController = navController,
-                    loginViewModel = LoginViewModel(),
-                    requestVM = RequestVM(),
-                    onLoginSuccess = {
-                        loginViewModel.email.value = it
-
-                    }
+                    loginViewModel = LoginViewModel(context = context),
+//                    requestVM = RequestVM(),
+//                    onLoginSuccess = {
+//                        loginViewModel.email.value = it
+//
+//                    }
                 )
             }
             composable(

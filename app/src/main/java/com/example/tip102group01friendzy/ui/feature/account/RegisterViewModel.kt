@@ -70,7 +70,7 @@ class RegisterViewModel (): ViewModel() {
         viewModelScope.launch {
             onRegisterClicked()
             if (!_errorRequest.value.any()){
-                val response = requestVM.CreateMember(
+                val response = requestVM.createMember(
                     email.value,
                     mpassword.value,
                     member_name.value
