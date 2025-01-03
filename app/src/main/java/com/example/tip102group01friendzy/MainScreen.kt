@@ -157,7 +157,8 @@ fun Main(
             ) {
                 RegisterScreen(
                     navController = navController,
-                    registerViewModel = RegisterViewModel()
+                    registerViewModel = RegisterViewModel(),
+                    requestVM = RequestVM()
                 )
             }
             composable(

@@ -19,6 +19,7 @@
         android:roundIcon="@drawable/group"
         android:supportsRtl="true"
         android:theme="@style/Theme.TIP102Group01Friendzy"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <!-- benita 12/26在這加入 Google Maps API Key -->
