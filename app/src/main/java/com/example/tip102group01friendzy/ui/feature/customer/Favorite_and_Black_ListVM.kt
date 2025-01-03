@@ -1,9 +1,12 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.tip102group01friendzy.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class Favorite_and_Black_ListVM():ViewModel() {
     //收集收藏名單資料
@@ -14,8 +17,13 @@ class Favorite_and_Black_ListVM():ViewModel() {
    val blackListState = _blackListState.asStateFlow()
 
    init {
-       _favoriteListState.value = getfavListInfo()
-       _blackListState.value = getBlackListInfo()
+       //CoroutineScope
+       viewModelScope.launch {
+           _blackListState.value = getBlacList()
+           _favoriteListState.value = getfavList()
+       }
+
+
    }
     //新增收藏名單的函式
     fun addFav(favList:Favorite_List){
@@ -44,32 +52,28 @@ class Favorite_and_Black_ListVM():ViewModel() {
     }
 
     //移除黑名單的函式
-    fun removeBlackList(blackList:Black_List){
-        _blackListState.update {
-            val block = it.toMutableList()
-            block.remove(blackList)
-            block
-        }
-    }
 
 
     //建立一個函式可以拿到收藏名單的資料
-    fun getfavListInfo():List<Favorite_List>{
-        return listOf(
-            Favorite_List(1, "毛安", 3),
-            Favorite_List(2, "阿俊", 1),
-            Favorite_List(3, "阿MIU",  5),
-            Favorite_List(4, "Nita", 2)
-        )
-    }
+   suspend fun getfavList():List<Favorite_List>{
+       try {
+           val list = RetrofitInstance.api.showAllFavoriteList()
+           return list
+       }
+       catch (e:Exception){
+           return emptyList()
+       }
+   }
 
     //建立一個函式可以拿到黑名單資料
-    fun getBlackListInfo():List<Black_List>{
-        return listOf(
-            Black_List(3, 2, content = "遲到且服務態度不佳"),
-            Black_List(1,5, content = "服務與公告程度不符"),
-            Black_List(4, 1, content = "服務期間不告知就早退")
-        )
-    }
+   suspend fun getBlacList(): List<Black_List>{
+       try {
+           val list = RetrofitInstance.api.showAllBlackList()
+           return list
+       }
+       catch (e:Exception){
+           return emptyList()
+       }
+   }
 
 }

@@ -39,17 +39,17 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 
 @Composable
-fun Favorite_and_BkackListScreen(
+fun Favorite_and_BlackListScreen(
     navController: NavHostController,
-    favorite_and_bkacklistVM: Favorite_and_Black_ListVM
+    favorite_and_blacklistVM: Favorite_and_Black_ListVM
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tab = listOf(
         stringResource(R.string.favotite),
         stringResource(R.string.blackList)
     )
-    val favListState by favorite_and_bkacklistVM.favoriteListState.collectAsState()
-    val blackListState by favorite_and_bkacklistVM.blackListState.collectAsState()
+    val favListState by favorite_and_blacklistVM.favoriteListState.collectAsState()
+    val blackListState by favorite_and_blacklistVM.blackListState.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,14 +90,14 @@ fun getFavList(
                 modifier = Modifier.clickable { onClick(favaList) },
                 headlineContent = {
                     Text(
-                        text = "memberID: ${favaList.beHuntedID}\n member Name: ${favaList.hunterName}",
+                        text = "memberID: ${favaList.be_hunted}\n member Name: ${favaList.be_hunted_name}",
                         fontSize = 14.sp
                     )
                 },
                 leadingContent = {
                     Image(
                         modifier = Modifier.size(70.dp),
-                        painter = painterResource(favaList.beHuntedImg),
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
                         contentDescription = "Image"
                     )
                 },
@@ -141,16 +141,16 @@ fun getBlackList(
                 modifier = Modifier.clickable { onClick(balckList) },
                 headlineContent = {
                     Text(
-                        text = "memberID: ${balckList.black_account} \n Being block reason: \n${balckList.content}",
+                        text = "memberID: ${balckList.user_id} \n Being block reason: \n${balckList.blacklist_reason}",
                         fontSize = 14.sp
                     )
                 },
                 leadingContent = {
-                    Image(
-                        modifier = Modifier.size(70.dp),
-                        painter = painterResource(id = balckList.black_accountImg),
-                        contentDescription = "Image"
-                    )
+                   Image(
+                       modifier = Modifier.size(70.dp),
+                       painter = painterResource(R.drawable.ic_launcher_foreground),
+                       contentDescription = "image"
+                   )
                 },
                 trailingContent = {
                     Column(
@@ -178,5 +178,5 @@ fun getBlackList(
 @Composable
 @Preview(showBackground = true)
 fun Favorite_and_BlackListScreenPreview() {
-    Favorite_and_BkackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
+    Favorite_and_BlackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
 }

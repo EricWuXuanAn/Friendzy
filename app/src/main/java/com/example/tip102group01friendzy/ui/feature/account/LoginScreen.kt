@@ -46,28 +46,41 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.RequestVM
 import com.example.tip102group01friendzy.Screen
-import com.example.tip102group01friendzy.TabVM
-import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
     loginViewModel: LoginViewModel,
+    requestVM: RequestVM= viewModel(),
+    onLoginSuccess:(String) -> Unit
 ) {
+//    //設置偏好設定
+//    val context = LocalContext.current
+//    val preferences = context.getSharedPreferences("setting", Context.MODE_PRIVATE)
+
     val snackbarMessage by loginViewModel.snackbarMessage.collectAsState()
-    val snackberTrigger by loginViewModel.snackbarTrigger.collectAsState()
+    val snackbarTrigger by loginViewModel.snackbarTrigger.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
     val accountOrPasswordEmptyMessage = stringResource(R.string.acc_pass_empty)
     val emailFormatErrorMessage = stringResource(R.string.errorEmail)
+    val tag = "tag_Main"
+
+//    LaunchedEffect(Unit) {
+//        Log.d(tag,"LaunchedEffect")
+//        // 取出當初儲存資料，如果沒有儲存則回傳空字串
+//        loginViewModel.email.value = preferences.getString("email", "")!!
+//        loginViewModel.mpassword.value = preferences.getString("mpassword", "")!!
+//    }
 
     Log.d("tag_", "LoginScreen")
     Column(
@@ -97,15 +110,15 @@ fun LoginScreen(
                 contentScale = ContentScale.Crop
             )
             TextField(
-                value = loginViewModel.account.value,
-                onValueChange = { loginViewModel.account.value = it },
+                value = loginViewModel.email.value,
+                onValueChange = { loginViewModel.email.value = it },
                 label = { Text(text = stringResource(R.string.account)) },
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = colorResource(R.color.teal_700),
                     unfocusedIndicatorColor = colorResource(R.color.purple_200)
                 ),
-                isError = loginViewModel.account.value.isNotBlank() && !loginViewModel.isValidEmail,
+                isError = loginViewModel.email.value.isNotBlank() && !loginViewModel.isValidEmail,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
@@ -113,8 +126,8 @@ fun LoginScreen(
             )
 
             TextField(
-                value = loginViewModel.password.value,
-                onValueChange = { loginViewModel.password.value = it },
+                value = loginViewModel.mpassword.value,
+                onValueChange = { loginViewModel.mpassword.value = it },
                 label = { Text(text = stringResource(R.string.password)) },
                 leadingIcon = {
                     Icon(
@@ -122,7 +135,7 @@ fun LoginScreen(
                         contentDescription = "password"
                     )
                 },
-                isError = loginViewModel.password.value.isNotBlank() && loginViewModel.password.value.count() <8,
+                isError = loginViewModel.mpassword.value.isNotBlank() && loginViewModel.mpassword.value.count() <8,
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Clear,
@@ -153,11 +166,23 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    loginViewModel.onLoginClicked()
-                    //TODO: 確認帳號正確才能登入(控制器到首頁)，測試直接跳轉
-                    navController.navigate(Screen.TabMainScreen.name){
-                        popUpTo(Screen.LoginScreen.name){inclusive=true}
-                    }
+//                    coroutineScope.launch {
+//                        val logged = requestVM.login(loginViewModel.email.value, loginViewModel.mpassword.value)
+//                        if(logged ){
+//                            Log.d("tag_","Login1")
+//                            loginViewModel.onLoginClicked()
+//                            Log.d("tag_","Login2")
+//                            onLoginSuccess(loginViewModel.email.value)
+//                            Log.d("tag_","Login3")
+//                        }else{
+//                        }
+//                    }
+
+//                    loginViewModel.onLoginClicked()
+//                    //TODO: 確認帳號正確才能登入(控制器到首頁)，測試直接跳轉
+//                    navController.navigate(Screen.TabMainScreen.name){
+//                        popUpTo(Screen.LoginScreen.name){inclusive=true}
+//                    }
 
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -177,7 +202,7 @@ fun LoginScreen(
             ) {
                 TextButton(
                     onClick = {
-                        loginViewModel.password.value = ""
+                        loginViewModel.mpassword.value = ""
                         navController.navigate(Screen.ForgetPasswordScreen.name)
                     } //跳轉畫面到忘記密碼頁
                 ) {
@@ -202,7 +227,7 @@ fun LoginScreen(
 
             }
         }
-        LaunchedEffect (snackberTrigger){
+        LaunchedEffect (snackbarTrigger){
             if (snackbarMessage != null){
                 scope.launch {
                     snackbarHostState.showSnackbar(
@@ -230,10 +255,10 @@ fun LoginScreen(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    TIP102Group01FriendzyTheme {
-        LoginScreen(rememberNavController(), loginViewModel = LoginViewModel())
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun LoginScreenPreview() {
+//    TIP102Group01FriendzyTheme {
+//        LoginScreen(rememberNavController(), loginViewModel = LoginViewModel())
+//    }
+//}
