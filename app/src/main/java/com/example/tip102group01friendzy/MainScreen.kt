@@ -103,7 +103,8 @@ fun Main(
     postVM: PostVM = PostVM(),
     postListVM: PostListVM = PostListVM(),
     reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
-    tabVM: TabVM = TabVM()
+    tabVM: TabVM = TabVM(),
+    loginViewModel: LoginViewModel = LoginViewModel()
 ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -150,6 +151,11 @@ fun Main(
                 LoginScreen(
                     navController = navController,
                     loginViewModel = LoginViewModel(),
+                    requestVM = RequestVM(),
+                    onLoginSuccess = {
+                        loginViewModel.email.value = it
+
+                    }
                 )
             }
             composable(

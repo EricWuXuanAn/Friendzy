@@ -1,38 +1,26 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
-import android.app.AlertDialog
-import android.os.Message
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -45,26 +33,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.CreatMemberResponce
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.RequestVM
 import com.example.tip102group01friendzy.Screen
-import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.time.delay
 
 @Composable
 fun getErrorMessage(errorCode: String?): String {
@@ -162,8 +144,8 @@ fun RegisterScreen(
     requestVM: RequestVM
 ) {
     SetupErrorRequest(registerViewModel)
-    var respones by remember { mutableStateOf<CreatMemberResponce?>(null) }
-    var scope = rememberCoroutineScope()
+    var response by remember { mutableStateOf<CreatMemberResponce?>(null) }
+    val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
 
     val naviRequest by registerViewModel.naviRequest.collectAsState()
@@ -208,8 +190,8 @@ fun RegisterScreen(
             )
         }
         OutlinedTextField(
-            value = registerViewModel.account.value,
-            onValueChange = { registerViewModel.account.value = it },
+            value = registerViewModel.email.value,
+            onValueChange = { registerViewModel.email.value = it },
             placeholder = { Text(text = stringResource(R.string.account)) },
             leadingIcon = {
                 Icon(
@@ -219,7 +201,7 @@ fun RegisterScreen(
             },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            isError = registerViewModel.account.value.isNotBlank() && !registerViewModel.isValidEmail,
+            isError = registerViewModel.email.value.isNotBlank() && !registerViewModel.isValidEmail,
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = colorResource(R.color.teal_700),
                 unfocusedIndicatorColor = colorResource(R.color.purple_200),
@@ -231,10 +213,10 @@ fun RegisterScreen(
                 .background(colorResource(R.color.purple_200))
         )
         OutlinedTextField(
-            value = registerViewModel.password.value,
+            value = registerViewModel.mpassword.value,
             onValueChange = {
                 Log.d("tag", "New password value: $it")
-                registerViewModel.password.value = it
+                registerViewModel.mpassword.value = it
             },
             placeholder = { Text(text = stringResource(R.string.password)) },
             leadingIcon = {
@@ -248,14 +230,14 @@ fun RegisterScreen(
                     imageVector = Icons.Default.Clear,
                     contentDescription = "clear",
                     modifier = Modifier.clickable {
-                        registerViewModel.password.value = ""
+                        registerViewModel.mpassword.value = ""
                     }
                 )
             },
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            isError = registerViewModel.password.value.isNotBlank() && registerViewModel.password.value.count() < 8,
+            isError = registerViewModel.mpassword.value.isNotBlank() && registerViewModel.mpassword.value.count() < 8,
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = colorResource(R.color.teal_700),
                 unfocusedIndicatorColor = colorResource(R.color.purple_200),
@@ -298,8 +280,8 @@ fun RegisterScreen(
                 .background(colorResource(R.color.purple_200))
         )
         OutlinedTextField(
-            value = registerViewModel.username.value,
-            onValueChange = { registerViewModel.username.value = it },
+            value = registerViewModel.member_name.value,
+            onValueChange = { registerViewModel.member_name.value = it },
             placeholder = { Text(text = stringResource(R.string.name)) },
             leadingIcon = {
                 Icon(
@@ -320,15 +302,16 @@ fun RegisterScreen(
         )
         Button(
             onClick = {
-                scope.launch {
-                    registerViewModel.onRegisterClicked()
-                    Log.d("tag_","register1")
-                    respones = requestVM.CreateMember(
-                        registerViewModel.account.value,
-                        registerViewModel.password.value,
-                        registerViewModel.username.value)
-                    Log.d("tag_","register2")
-                }
+                registerViewModel.onRegisterButtonClicked(requestVM)
+//                scope.launch {
+//                    registerViewModel.onRegisterClicked()
+//                    Log.d("tag_","register1")
+//                    response = requestVM.CreateMember(
+//                        registerViewModel.email.value,
+//                        registerViewModel.mpassword.value,
+//                        registerViewModel.member_name.value)
+//                    Log.d("tag_","register2")
+//                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
