@@ -156,8 +156,9 @@ fun RegisterScreen(
     if (showDialog) {
         successDialog(navController = navController,
             onConfirm = {
-
-                navController.navigate(Screen.LoginScreen.name) {
+                navController.navigate(Screen.LoginScreen.name)
+                {
+                    launchSingleTop = true
                     popUpTo(Screen.RegisterScreen.name) { inclusive = true }
                 }
 

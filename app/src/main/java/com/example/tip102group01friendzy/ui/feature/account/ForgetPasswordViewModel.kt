@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 class ForgetPasswordViewModel : ViewModel(){
     var email = mutableStateOf("")
 
+    var OTP = mutableStateOf("")
+
     val emailRegex = Patterns.EMAIL_ADDRESS
     val isValidEmail: Boolean
         get() = emailRegex.matcher(email.value).matches()

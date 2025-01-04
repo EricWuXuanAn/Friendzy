@@ -110,7 +110,42 @@ fun ForgetPasswordScreen(
             Button(
                 onClick = {
                     forgetPasswordViewModel.onForgetPasswordClecked()
-                    //TODO:else{}電子信箱正確且曾註冊過發送郵件，點連結回登入後的首頁
+                    //TODO:else{}電子信箱正確且曾註冊過發送驗證碼
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.purple_200),
+                    contentColor = Color.DarkGray
+                )
+            ) { Text(text = stringResource(R.string.submit)) }
+
+            OutlinedTextField(
+                value = forgetPasswordViewModel.OTP.value,
+                onValueChange = {
+                    forgetPasswordViewModel.OTP.value = it
+                },
+                placeholder = { Text(text = "OTP") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.key),
+                        contentDescription = "OTP"
+                    )
+                },
+                singleLine = true,
+                isError = forgetPasswordViewModel.OTP.value.isNotBlank(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = colorResource(R.color.teal_700),
+                    unfocusedIndicatorColor = colorResource(R.color.purple_200)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .background(colorResource(R.color.purple_200))
+            )
+
+            Button(
+                onClick = {
+                    //TODO:傳送驗證碼到後端確認，沒問題之後導到修改密碼頁
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),
