@@ -54,6 +54,7 @@ fun getErrorMessage(errorCode: String?): String {
         "Email Formatting Error." -> stringResource(R.string.errorEmail)
         "Password(at least 8 characters)" -> stringResource(R.string.passwordRule)
         "Password do not match" -> stringResource(R.string.passwordDifferent)
+        "Email already registered." -> stringResource(R.string.alreadyRegistered)
         else -> errorCode.toString()
     }
 }

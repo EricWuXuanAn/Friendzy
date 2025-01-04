@@ -15,6 +15,9 @@ class RequestVM: ViewModel(){
                 CreateMemberRequest(email, mpassword, member_name)
             )
             Log.d(tag, "response: $response")
+            if(response?.message =="該帳戶已註冊過，請確認後再執行"){
+                return null //註冊過返回null
+            }
             return response
         }catch (e: Exception){
             Log.e(tag, "error: ${e.message}")
