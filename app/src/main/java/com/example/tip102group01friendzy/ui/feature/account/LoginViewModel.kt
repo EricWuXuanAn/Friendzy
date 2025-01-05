@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
@@ -17,6 +18,7 @@ class LoginViewModel(private val context: Context) : ViewModel() {
 
     var email = mutableStateOf(preferences.getString("saved_email","")?:"")
     var mpassword = mutableStateOf(preferences.getString("saved_password","")?:"")
+    var token = mutableStateOf(preferences.getString("session_token", "") ?: "")
 
     var isLoggedIn = mutableStateOf(preferences.getBoolean("is_logged_in",false))
 
@@ -29,14 +31,19 @@ class LoginViewModel(private val context: Context) : ViewModel() {
             return
         }
 
-
         val response = repository.login(email.value, mpassword.value)
         _loginState.value = response
 
         when(response){
             is LoginResponse.Success -> {
                 if(response.result.statu){
-                    saveLoginState()
+                    val token =response.result.token
+                    if (!token.isNullOrEmpty()){
+                        saveLoginState(token)
+                        isLoggedIn.value = true
+                        _snackbarMessage.value = response.result.message
+                    }
+                    Log.d("tag_","email: ${email}, password: ${mpassword}, session: ${token}")
                     isLoggedIn.value =true
                     _snackbarMessage.value = response.result.message
                 }else{
@@ -50,13 +57,15 @@ class LoginViewModel(private val context: Context) : ViewModel() {
 
     }
 
-    private fun saveLoginState(){
+    private fun saveLoginState(token:String){
         preferences.edit().apply{
             putString("saved_email", email.value)
             putString("saved_password", mpassword.value)
+            putString("session_token", token)
             putBoolean("is_logged_in", true)
             apply()
         }
+        Log.d("tag_","email: ${email}, password: ${mpassword}, session: ${token}")
     }
 
     val emailRegex = Patterns.EMAIL_ADDRESS

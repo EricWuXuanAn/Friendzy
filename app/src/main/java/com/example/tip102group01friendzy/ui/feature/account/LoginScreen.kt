@@ -172,6 +172,7 @@ fun LoginScreen(
                     .padding(12.dp)
             )
         }
+
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,

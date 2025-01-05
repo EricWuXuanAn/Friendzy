@@ -8,6 +8,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import okhttp3.CookieJar
+import okhttp3.JavaNetCookieJar
+import java.net.CookieManager
+import java.net.CookiePolicy
 
 
 class MainActivity : ComponentActivity() {
