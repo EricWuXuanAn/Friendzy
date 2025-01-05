@@ -59,9 +59,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    loginViewModel: LoginViewModel,
-//    requestVM: RequestVM= viewModel(),
-//    onLoginSuccess:(String) -> Unit
+    loginViewModel: LoginViewModel
 ) {
 //    //設置偏好設定
 //    val context = LocalContext.current
@@ -77,12 +75,14 @@ fun LoginScreen(
     val accountOrPasswordEmptyMessage = stringResource(R.string.acc_pass_empty)
     val emailFormatErrorMessage = stringResource(R.string.errorEmail)
 
-//    LaunchedEffect(Unit) {
-//        Log.d("tag_","LaunchedEffect")
-//        // 取出當初儲存資料，如果沒有儲存則回傳空字串
-//        loginViewModel.email.value = preferences.getString("email", "")!!
-//        loginViewModel.mpassword.value = preferences.getString("mpassword", "")!!
-//    }
+    LaunchedEffect(Unit) {
+        Log.d("tag_","LaunchedEffect_login")
+        if (loginState != null){
+            navController.navigate(Screen.TabMainScreen.name){
+                popUpTo(Screen.LoginScreen.name){inclusive=true}
+            }
+        }
+    }
 
     LaunchedEffect(snackbarMessage) {
         snackbarMessage?.let{
@@ -185,24 +185,6 @@ fun LoginScreen(
                     scope.launch {
                         loginViewModel.login()
                     }
-//                    coroutineScope.launch {
-//                        val logged = requestVM.login(loginViewModel.email.value, loginViewModel.mpassword.value)
-//                        if(logged ){
-//                            Log.d("tag_","Login1")
-//                            loginViewModel.onLoginClicked()
-//                            Log.d("tag_","Login2")
-//                            onLoginSuccess(loginViewModel.email.value)
-//                            Log.d("tag_","Login3")
-//                        }else{
-//                        }
-//                    }
-
-//                    loginViewModel.onLoginClicked()
-//                    //TODO: 確認帳號正確才能登入(控制器到首頁)，測試直接跳轉
-//                    navController.navigate(Screen.TabMainScreen.name){
-//                        popUpTo(Screen.LoginScreen.name){inclusive=true}
-//                    }
-
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),

@@ -5,25 +5,43 @@ import android.util.Log
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 //VM :管理UI狀態及邏輯
 class LoginViewModel(private val context: Context) : ViewModel() {
     private val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     private val repository = LoginRepository()
 
-    var email = mutableStateOf(preferences.getString("saved_email", "") ?: "")
-    var mpassword = mutableStateOf(preferences.getString("saved_password", "") ?: "")
-
-//    var token = mutableStateOf(preferences.getString("session_token", "") ?: "")
-//
-//    var isLoggedIn = mutableStateOf(preferences.getBoolean("is_logged_in",false))
+    var email = mutableStateOf(preferences.getString("email", "") ?: "")
+    var mpassword = mutableStateOf(preferences.getString("password", "") ?: "")
 
     private val _loginState = MutableStateFlow<MemberInfo?>(null)
     val loginState: StateFlow<MemberInfo?> = _loginState.asStateFlow()
+
+    init {
+        val savedToken = preferences.getString("member_token",null)
+        val savedEmail = preferences.getString("email",null)
+        val savedPassword = preferences.getString("password",null)
+
+        if(
+            savedToken != null && savedEmail !=null && savedPassword != null
+        ){
+            email.value = savedEmail
+            mpassword.value = savedPassword
+            try {
+                viewModelScope.launch {
+                    login()
+                }
+            }catch (e: Exception){
+                Log.e("LoginViewModel", "Auto login failed", e)
+            }
+        }
+    }
 
     suspend fun login() {
         if (email.value.isBlank() || mpassword.value.isBlank()) {
@@ -56,6 +74,7 @@ class LoginViewModel(private val context: Context) : ViewModel() {
             putString("phone",memberInfo.phone)
             putString("introduction",memberInfo.introduction)
             putBoolean("member_status",memberInfo.member_status)
+            putString("member_token",memberInfo.member_token)
             apply()
         }
     }
@@ -85,6 +104,17 @@ class LoginViewModel(private val context: Context) : ViewModel() {
     }
 
     fun clearPassword() {
+        mpassword.value = ""
+    }
+
+    // 登出方法
+    fun logout() {
+        with(preferences.edit()) {
+            clear()  // 清除所有儲存的資料
+            apply()
+        }
+        _loginState.value = null
+        email.value = ""
         mpassword.value = ""
     }
 }

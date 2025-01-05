@@ -99,6 +99,7 @@ enum class Screen(@StringRes val title: Int) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Main(
+    startDestination: String,
     //導覽式頁面控制器
     navController: NavHostController = rememberNavController(),
     customerVM: CustomerVM = CustomerVM(),
