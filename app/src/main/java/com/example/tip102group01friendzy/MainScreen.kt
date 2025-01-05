@@ -109,11 +109,11 @@ fun Main(
     reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
     tabVM: TabVM = TabVM(),
     loginViewModel: LoginViewModel = LoginViewModel(),
-    companionVM: CompanionVM = CompanionVM(),
-    companionMyPublishVM: CompanionMyPublishVM = CompanionMyPublishVM(),
-    companionAppointmentVM: CompanionAppointmentVM = CompanionAppointmentVM(),
-    companionOrderVM: CompanionOrderVM = CompanionOrderVM(),
-    comOrderDtlVM: ComOrderDtlVM = ComOrderDtlVM(),
+    companionVM: CompanionVM = viewModel(),
+    companionMyPublishVM: CompanionMyPublishVM = viewModel(),
+    companionAppointmentVM: CompanionAppointmentVM = viewModel(),
+    companionOrderVM: CompanionOrderVM = viewModel(),
+    comOrderDtlVM: ComOrderDtlVM = viewModel(),
     ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -287,7 +287,7 @@ fun Main(
             ){
                 CompanionOrderDetailsScreen(
                     navController = navController,
-                    companionOrder = CompanionOrder(),
+                    companionOrderVM = companionOrderVM,
                     comOrderDtlVM = comOrderDtlVM,
                     tabVM = tabVM
                 )
@@ -299,7 +299,7 @@ fun Main(
                 CompanionCheckAppointmentScreen(
                     navController = navController,
                     companionAppointmentVM = companionAppointmentVM,
-                    comOrder = CompanionOrder(),
+                    comOrderVM = companionOrderVM,
                     tabVM = tabVM
                 )
             }

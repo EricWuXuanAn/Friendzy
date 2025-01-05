@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
+import kotlinx.coroutines.launch
 
 class OrderTabsButton(
     var name: String = "",
@@ -58,7 +61,9 @@ fun CompanionOrderListScreen(
     val uncomfirm = orderState.filter { it.orderStatus == 0 }
     val inProfress = orderState.filter { it.orderStatus == 1 }
     val completed = orderState.filter { it.orderStatus == 2 }
-    val reservation = orderState.filter { it.reservation == true }
+    val reservation = orderState.filter { it.serviceStatus == 0 }
+
+    val coroutineScope = rememberCoroutineScope()
 
     //tab列資訊
     val tabList = listOf(
@@ -69,6 +74,10 @@ fun CompanionOrderListScreen(
         OrderTabsButton(stringResource(R.string.myreservation), R.drawable.date_range, "來應徵"),
         OrderTabsButton(stringResource(R.string.my_request), R.drawable.request_24, "我應徵"),//要再改
     )
+
+    //log用
+//    val orderDetail by companionOrderVM.orderDetailsSelectState.collectAsState()
+
     Column (
         modifier = Modifier.fillMaxSize().background(companionScenery)
     ){  }
@@ -123,18 +132,21 @@ fun CompanionOrderListScreen(
             Text(testText, fontSize = 24.sp)
             when (tabIndex) {
                 0 -> {//全部
-                    testText = "0000"
+//                    testText = "0000"
                     CompanionOrderLazy(
                         orders = orderState,
                         onClick = {
                             //要再判斷我預約和預約我的到另一頁
-                            if (it.orderStatus < 1 && it.reservation){
-                                companionOrderVM.setSelectOrder(it)
-                                navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
+                            if (it.orderStatus < 1 && it.serviceStatus == 0){
+                                coroutineScope.launch {
+                                    companionOrderVM.setSelectOrder(it.orderId)
+                                    navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
+                                }
                             }else{
-                                companionOrderVM.setSelectOrder(it)
-                                navController.navigate(Screen.CompanionOrderDetailsScreen.name)
-
+                                coroutineScope.launch {
+                                    companionOrderVM.setSelectOrder(it.orderId)
+                                    navController.navigate(Screen.CompanionOrderDetailsScreen.name)
+                                }
                             }
                         }
                     )
@@ -145,7 +157,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = uncomfirm,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it)
+                            companionOrderVM.setSelectOrder(it.orderId)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
@@ -156,7 +168,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = inProfress,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it)
+                            companionOrderVM.setSelectOrder(it.orderId)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
@@ -167,7 +179,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = completed,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it)
+                            companionOrderVM.setSelectOrder(it.orderId)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
@@ -178,8 +190,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = reservation,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it)
-                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
+
                         }
                     )
                 }
@@ -208,14 +219,14 @@ fun CompanionOrderLazy(
             ListItem(
                 modifier = Modifier.clickable { onClick(order) },
                 colors = ListItemDefaults.colors(containerColor = companionScenery),
-                headlineContent = { Text(text = "訂單標題: ${order.orderTitle}") },
+                headlineContent = { Text(text = "訂單標題: ${order.service}") },
                 overlineContent = {
                     Row (
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
-                        Text(text = "訂單編號: ${order.orderID}", fontSize = 18.sp)
+                        Text(text = "訂單編號: ${order.orderId}", fontSize = 18.sp)
                         Text(text = "狀態：${
                             when(order.orderStatus){
                                 0->"待確認"
@@ -230,10 +241,11 @@ fun CompanionOrderLazy(
                 },
                 supportingContent = {
                     Row (
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ){
-                        Text(text = "訂購人:${order.orderPerson}", modifier = Modifier.fillMaxWidth(0.4f))
-                        Text(text = "開始時間：${order.startTime}", modifier = Modifier.fillMaxWidth())
+                        Text(text = "訂購人:${order.orderPersonName}")
+                        Text(text = "開始時間：${formatTimestamp(order.startTime!!)}")
                     }
                 },/*
                 trailingContent = {
@@ -263,6 +275,7 @@ fun CompanionOrderLazy(
         }
     }
 }
+
 
 
 @Composable

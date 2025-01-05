@@ -4,6 +4,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
 import android.accounts.Account
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -38,6 +39,15 @@ interface APIService {
 
     @GET("rest/member/login/{email}/{mpassword}")
     suspend fun login(@Path("email") account: String, @Path("mpassword")mpasswod: String):Response<Unit>
+
+
+    //陪伴者訂單管理
+    @GET("rest/companion/order/showAll")
+    suspend fun comShowAllOrder():List<CompanionOrder>
+
+    //陪伴者訂單明細
+    @GET("rest/companion/order/showId/{id}")
+    suspend fun comOrderDetails(@Path("id") account: Int):CompanionOrder
 }
 
 object RetrofitInstance{
