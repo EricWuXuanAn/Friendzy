@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -76,7 +78,7 @@ fun LoginScreen(
     val emailFormatErrorMessage = stringResource(R.string.errorEmail)
 
 //    LaunchedEffect(Unit) {
-//        Log.d(tag,"LaunchedEffect")
+//        Log.d("tag_","LaunchedEffect")
 //        // 取出當初儲存資料，如果沒有儲存則回傳空字串
 //        loginViewModel.email.value = preferences.getString("email", "")!!
 //        loginViewModel.mpassword.value = preferences.getString("mpassword", "")!!
@@ -89,8 +91,7 @@ fun LoginScreen(
     }
 
     LaunchedEffect(loginState) {
-        if(loginState is LoginResponse.Success &&
-            (loginState as LoginResponse.Success).result.statu){
+        if(loginState != null){
             navController.navigate(Screen.TabMainScreen.name){
                 popUpTo(Screen.LoginScreen.name){inclusive = true}
             }
@@ -172,7 +173,6 @@ fun LoginScreen(
                     .padding(12.dp)
             )
         }
-
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy
 
+import com.example.tip102group01friendzy.ui.feature.account.MemberInfo
 import com.example.tip102group01friendzy.ui.feature.chat.Chatroom
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
@@ -17,9 +18,9 @@ import java.net.CookieManager
 import java.net.CookiePolicy
 
 interface APIService {
-//    @Multipart 不要打開
+    //    @Multipart 不要打開
     @POST("rest/member/register")
-    suspend fun  createMember(@Body request: CreateMemberRequest): CreatMemberResponse
+    suspend fun createMember(@Body request: CreateMemberRequest): CreatMemberResponse
 
     @POST("rest/member/forget")
     suspend fun forgetPassword(@Body member: Member) //FIXME
@@ -29,19 +30,19 @@ interface APIService {
     suspend fun showAllOrderList(): List<OrderList>
 
     @GET("rest/customer/blackList")
-    suspend fun showAllBlackList():List<Black_List>
+    suspend fun showAllBlackList(): List<Black_List>
 
     @GET("rest/customer/favoriteList")
-    suspend fun showAllFavoriteList():List<Favorite_List>
+    suspend fun showAllFavoriteList(): List<Favorite_List>
 
     @POST("rest/member/login")
-    suspend fun login(@Body member: com.example.tip102group01friendzy.Member): Response<Result>
+    suspend fun login(@Body member: com.example.tip102group01friendzy.Member): MemberInfo
 
     @GET("rest/chatrooms")
-    suspend fun showAllChatrooms():List<Chatroom>
+    suspend fun showAllChatrooms(): List<Chatroom>
 }
 
-object RetrofitInstance{
+object RetrofitInstance {
     val client = OkHttpClient.Builder()
         .cookieJar(JavaNetCookieJar(CookieManager().apply {
             setCookiePolicy(CookiePolicy.ACCEPT_ALL)

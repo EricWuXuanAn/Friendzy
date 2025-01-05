@@ -2,7 +2,6 @@ package com.example.tip102group01friendzy
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.tip102group01friendzy.ui.feature.account.LoginResponse
 
 
 class RequestVM: ViewModel(){

@@ -1,30 +1,28 @@
 package com.example.tip102group01friendzy.ui.feature.account
 
+import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import com.example.tip102group01friendzy.Member
 import com.example.tip102group01friendzy.RetrofitInstance
+import com.google.gson.Gson
+
 
 class LoginRepository {
     private val tag = "tag_RequestVM"
 
-    suspend fun login(email: String, mpassword: String):LoginResponse {
-        return try {
+    suspend fun login(email: String, mpassword: String): MemberInfo? {
+        try {
             Log.d(tag, "email: $email, mpassword: $mpassword")
             val response = RetrofitInstance.api.login(Member(email, mpassword))
             Log.d(tag, "response: $response")
-            if (response.isSuccessful) {
-                val result = response.body()
-                if (result != null) {
-                    LoginResponse.Success(result)
-                } else {
-                    LoginResponse.Error("回應資料為空")
-                }
-            } else {
-                LoginResponse.Error("登入失敗: ${response.message()}")
-            }
+            return response
         } catch (e: Exception) {
             Log.e(tag, "error: ${e.message}")
-            LoginResponse.Error("網路錯誤: ${e.message}")
+            return null
         }
     }
+
+
 }

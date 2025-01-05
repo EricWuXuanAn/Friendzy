@@ -4,68 +4,60 @@ import android.content.Context
 import android.util.Log
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.update
 
 //VM :管理UI狀態及邏輯
 class LoginViewModel(private val context: Context) : ViewModel() {
     private val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     private val repository = LoginRepository()
 
-    var email = mutableStateOf(preferences.getString("saved_email","")?:"")
-    var mpassword = mutableStateOf(preferences.getString("saved_password","")?:"")
-    var token = mutableStateOf(preferences.getString("session_token", "") ?: "")
+    var email = mutableStateOf(preferences.getString("saved_email", "") ?: "")
+    var mpassword = mutableStateOf(preferences.getString("saved_password", "") ?: "")
 
-    var isLoggedIn = mutableStateOf(preferences.getBoolean("is_logged_in",false))
+//    var token = mutableStateOf(preferences.getString("session_token", "") ?: "")
+//
+//    var isLoggedIn = mutableStateOf(preferences.getBoolean("is_logged_in",false))
 
-    private val _loginState = MutableStateFlow<LoginResponse?>(null)
-    val loginState :StateFlow<LoginResponse?> = _loginState.asStateFlow()
+    private val _loginState = MutableStateFlow<MemberInfo?>(null)
+    val loginState: StateFlow<MemberInfo?> = _loginState.asStateFlow()
 
     suspend fun login() {
         if (email.value.isBlank() || mpassword.value.isBlank()) {
             _snackbarMessage.value = "empty_fields"
+            _snackbarTrigger.value += 1
             return
         }
 
-        val response = repository.login(email.value, mpassword.value)
-        _loginState.value = response
-
-        when(response){
-            is LoginResponse.Success -> {
-                if(response.result.statu){
-                    val token =response.result.token
-                    if (!token.isNullOrEmpty()){
-                        saveLoginState(token)
-                        isLoggedIn.value = true
-                        _snackbarMessage.value = response.result.message
-                    }
-                    Log.d("tag_","email: ${email}, password: ${mpassword}, session: ${token}")
-                    isLoggedIn.value =true
-                    _snackbarMessage.value = response.result.message
-                }else{
-                    _snackbarMessage.value = response.result.message
-                }
-            }
-            is LoginResponse.Error -> {
-                _snackbarMessage.value = response.message
-            }
+        val memberInfo = repository.login(email.value, mpassword.value)
+        if (memberInfo != null) {
+            _loginState.update { memberInfo }
+            onLoginClicked()
+            // user 資料儲存
+            saveMemberInfoToPreferences(memberInfo)
+            _snackbarMessage.value = "Login success"
+            _snackbarTrigger.value +=1
+        } else {
+            _snackbarMessage.value = "使用者帳號或密碼錯誤"
+            _snackbarTrigger.value += 1
         }
-
     }
 
-    private fun saveLoginState(token:String){
-        preferences.edit().apply{
-            putString("saved_email", email.value)
-            putString("saved_password", mpassword.value)
-            putString("session_token", token)
-            putBoolean("is_logged_in", true)
+    private fun saveMemberInfoToPreferences(memberInfo: MemberInfo){
+        with(preferences.edit()){
+            putString("email",memberInfo.email)
+            putString("password",memberInfo.mpassword)
+            putString("member_name",memberInfo.member_name)
+            putInt("member_no",memberInfo.member_no)
+            putString("member_nick_name",memberInfo.member_nick_name)
+            putString("phone",memberInfo.phone)
+            putString("introduction",memberInfo.introduction)
+            putBoolean("member_status",memberInfo.member_status)
             apply()
         }
-        Log.d("tag_","email: ${email}, password: ${mpassword}, session: ${token}")
     }
 
     val emailRegex = Patterns.EMAIL_ADDRESS
