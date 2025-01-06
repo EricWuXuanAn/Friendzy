@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -67,7 +68,7 @@ fun CustomerScreen(
     var inputText by remember { mutableStateOf("") } //搜尋功能使用的
     val postListState by customerVM.recommendPostListState.collectAsState()
     val postlists = postListState.filter { it.poster_status == 1 }
-
+    Log.d("tag_custmerScreen","${postlists}")
 
     Column(
         modifier = Modifier

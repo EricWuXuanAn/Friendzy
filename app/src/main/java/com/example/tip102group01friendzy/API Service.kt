@@ -55,7 +55,6 @@ interface APIService {
     suspend fun selectedPostList(
         @Body request: selectedPostList
     ):Post
-    suspend fun showAllFavoriteList(): List<Favorite_List>
 
     @POST("rest/member/login")
     suspend fun login(@Body member: com.example.tip102group01friendzy.Member): MemberInfo

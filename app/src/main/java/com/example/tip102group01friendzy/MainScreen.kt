@@ -112,18 +112,12 @@ fun Main(
     postListVM: PostListVM = PostListVM(),
     reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
     tabVM: TabVM = TabVM(),
-    loginViewModel: LoginViewModel = LoginViewModel(),
     companionVM: CompanionVM = viewModel(),
     companionMyPublishVM: CompanionMyPublishVM = viewModel(),
     companionAppointmentVM: CompanionAppointmentVM = viewModel(),
     companionOrderVM: CompanionOrderVM = viewModel(),
     comOrderDtlVM: ComOrderDtlVM = viewModel(),
-    loginViewModel: LoginViewModel = LoginViewModel(context = LocalContext.current),
-    companionVM: CompanionVM = CompanionVM(),
-    companionMyPublishVM: CompanionMyPublishVM = CompanionMyPublishVM(),
-    companionAppointmentVM: CompanionAppointmentVM = CompanionAppointmentVM(),
-    companionOrderVM: CompanionOrderVM = CompanionOrderVM(),
-    comOrderDtlVM: ComOrderDtlVM = ComOrderDtlVM(),
+    loginViewModel: LoginViewModel = LoginViewModel(context = LocalContext.current)
     ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
