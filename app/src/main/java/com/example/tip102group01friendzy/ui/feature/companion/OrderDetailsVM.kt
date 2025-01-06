@@ -44,6 +44,7 @@ data class ComOrderDtl(
     var memberId:Int = 0,//對方編號
     var title:String = "我是標題",//標題
     var orderPoster: String = "刊登人A",//刊登者
+    var posterStatus:Boolean = true,//刊登者身分 T陪伴者 F顧客
     var orderPerson: String = "訂購人A",//訂購人
     var startTime: String = "yyyy-MM-dd hh:mm",//開始時間
     var endTime: String = "yyyy-MM-dd hh:mm",//結束時間

@@ -50,18 +50,20 @@ import com.example.tip102group01friendzy.TabVM
 //圖片要再改
 fun CompanionOrderDetailsScreen(
     navController: NavHostController,
-    companionOrder: CompanionOrder,
+    companionOrderVM: CompanionOrderVM,
     comOrderDtlVM: ComOrderDtlVM,
     tabVM: TabVM
-) {
-    val dtlState by comOrderDtlVM.OrderDtlSelectState.collectAsState()
-    var orderStatus by remember { mutableIntStateOf(dtlState.orderStatus) }//訂單狀態
+) {//評論評分要在處裡
+    val orderDtl by companionOrderVM.orderDetailsSelectState.collectAsState()
+//    Log.d("_tagDetails","$orderDtl")
+    var orderStatus by remember { mutableIntStateOf(orderDtl?.orderStatus ?:0) }//訂單狀態
     var rating by remember { mutableIntStateOf(0) } // 評分輸入
-    var score by remember { mutableIntStateOf(dtlState.comRate) }  //送出評分
+    var score by remember { mutableIntStateOf(orderDtl?.comRate ?: 0) }  //送出評分
     var noScoreText by remember { mutableStateOf("") } //送出沒評分顯示的字
     var inputText by remember { mutableStateOf("") } //評論輸入
-    var comment by remember { mutableStateOf(dtlState.comRateContent) }  //評論送出
+    var comment by remember { mutableStateOf(orderDtl?.comRateContent ?:"") }  //評論送出
     val statusList = listOf("待確認", "進行中", "已完成", "取消")
+
 
     val blank = 6.dp
     val testTrue = 1 == 2 //寫code方便看 全顯示用
@@ -102,7 +104,7 @@ fun CompanionOrderDetailsScreen(
                     .padding(start = 8.dp, top = 8.dp),
                 horizontalAlignment = Alignment.End
             ){
-                Text(text = "名字：${ dtlState.memberName }",
+                Text(text = "名字：${ orderDtl?.theirName }",
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp))
             }
@@ -113,15 +115,15 @@ fun CompanionOrderDetailsScreen(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Text(text = "訂單編號：${dtlState.orderId}", fontSize = 20.sp)
-            Text(text = "標題：${dtlState.title}", fontSize = 20.sp)
+            Text(text = "訂單編號：${orderDtl?.orderId}", fontSize = 20.sp)
+            Text(text = "標題：${orderDtl?.service}", fontSize = 20.sp)
 //            Text(text = "服務金額：",
 //                fontSize = 20.sp,
 //                modifier = Modifier.padding(bottom = blank))
-            Text(text = "刊登人：${dtlState.orderPoster}", fontSize = 20.sp)
-            Text(text = "訂購人：${dtlState.orderPerson}", fontSize = 20.sp)
-            Text(text = "開始時間：${dtlState.startTime}", fontSize = 20.sp)
-            Text(text = "結束時間：${dtlState.endTime}", fontSize = 20.sp)
+            Text(text = "刊登人：${orderDtl?.orderPosterName}", fontSize = 20.sp)
+            Text(text = "訂購人：${orderDtl?.orderPersonName}", fontSize = 20.sp)
+            Text(text = "開始時間：${formatTimestamp(orderDtl?.startTime)}", fontSize = 20.sp)
+            Text(text = "結束時間：${formatTimestamp(orderDtl?.endTime)}", fontSize = 20.sp)
             Text(text = "訂單狀態：${statusList[orderStatus]}", fontSize = 20.sp)
             if (orderStatus == 2 && score != 0 || testTrue) {
                 Row(
@@ -224,6 +226,7 @@ fun CompanionOrderDetailsScreen(
                     onClick = {
                         if (orderStatus != 2) {
                             orderStatus = 2
+                            companionOrderVM.setOrderStatus(orderDtl?.orderId!!,orderStatus)
                         }
                     }
                 ) { Text("完成訂單") }
@@ -271,5 +274,5 @@ fun CompanionOrderDetailsScreen(
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionOrderDetailsScreen() {
-    CompanionOrderDetailsScreen(rememberNavController(), companionOrder = CompanionOrder(), comOrderDtlVM = ComOrderDtlVM(),tabVM = TabVM())
+    CompanionOrderDetailsScreen(rememberNavController(), companionOrderVM = CompanionOrderVM(), comOrderDtlVM = ComOrderDtlVM(),tabVM = TabVM())
 }

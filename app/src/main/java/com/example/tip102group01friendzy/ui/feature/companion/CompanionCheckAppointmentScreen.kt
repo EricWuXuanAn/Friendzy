@@ -42,10 +42,11 @@ import com.example.tip102group01friendzy.TabVM
 fun CompanionCheckAppointmentScreen(
     navController: NavHostController,
     companionAppointmentVM: CompanionAppointmentVM,
-    comOrder: CompanionOrder,
+    comOrderVM: CompanionOrderVM,
     tabVM: TabVM
     ) {
     val appoState by companionAppointmentVM.appointmentState.collectAsState()
+    val order by comOrderVM.orderDetailsSelectState.collectAsState()
     Column (
         modifier = Modifier.fillMaxSize()
             .background(companionScenery)
@@ -99,6 +100,7 @@ fun CompanionCheckAppointmentScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
+                        .fillMaxHeight(0.6f)
                         .padding(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent,//背景顏色
@@ -124,9 +126,9 @@ fun CompanionCheckAppointmentScreen(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ){
             Text(text = "我刊登的資訊", fontSize = 28.sp, modifier = Modifier.fillMaxWidth())
-            Text(text = "標題：${comOrder.orderTitle}", fontSize = 20.sp)
-            Text(text = "開始時間：${comOrder.startTime}", fontSize = 20.sp)
-            Text(text = "結束時間：${comOrder.endTime}", fontSize = 20.sp)
+            Text(text = "標題：${order?.service}", fontSize = 20.sp)
+            Text(text = "開始時間：${order?.startTime}", fontSize = 20.sp)
+            Text(text = "結束時間：${order?.endTime}", fontSize = 20.sp)
             Text(text = "服務地區：", fontSize = 20.sp)
         }
         Column (
@@ -166,5 +168,5 @@ fun CompanionCheckAppointmentScreen(
 @Preview(showBackground = true)
 fun PreviewCompanionCheckAppointmentScreen(
 ) {
-    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionAppointmentVM = CompanionAppointmentVM(), comOrder = CompanionOrder())
+    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionAppointmentVM = CompanionAppointmentVM(), comOrderVM = CompanionOrderVM())
 }

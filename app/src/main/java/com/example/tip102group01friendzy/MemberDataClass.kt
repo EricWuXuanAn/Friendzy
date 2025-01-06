@@ -16,3 +16,7 @@ data class Member(
     val mpassword: String
 )
 
+data class Result(
+    val statu: Boolean,    // 操作状态
+    val message: String?   // 消息
+)

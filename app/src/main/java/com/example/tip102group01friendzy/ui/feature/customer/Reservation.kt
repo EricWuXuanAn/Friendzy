@@ -2,7 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.customer
 
 import com.example.tip102group01friendzy.R
 
-class Reservation (
+ class Reservation (
     var memberID: String = "",
     var memberName: String = "",
     var memberImg: Int = R.drawable.ic_launcher_foreground,

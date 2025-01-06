@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +61,20 @@ fun PublishDatePicker(
     }
 
 }
+
+/**JSON時間轉換String*/
+fun formatTimestamp(timestamp: Long?): String {
+    // 將 Timestamp 轉為 LocalDateTime
+    val dateTime = Instant.ofEpochMilli(timestamp ?: return "")
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+
+    // 格式化為 yyyy/MM/dd HH:mm
+    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+    return dateTime.format(formatter)
+}
+
+
 //時間的TimePickerDialog 先不使用
 /*
 fun MyTimePickerDialog(

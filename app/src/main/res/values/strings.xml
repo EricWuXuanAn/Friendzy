@@ -76,6 +76,7 @@
     <string name="info">Info</string>
     <string name="decline">Decline</string>
     <string name="my_request">My Request</string>
+    <string name="cancle">Cancle</string>
     <string name="alreadyRegistered">\"Email already registered.\"</string>
 
 </resources>

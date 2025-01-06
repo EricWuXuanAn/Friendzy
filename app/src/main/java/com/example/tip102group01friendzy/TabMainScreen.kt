@@ -32,7 +32,8 @@ import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
 import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
-import com.example.tip102group01friendzy.ui.feature.customer.PostListVM
+import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
+import com.example.tip102group01friendzy.ui.feature.customer.PostVM
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
 
 @Composable
@@ -40,6 +41,7 @@ fun TabMainScreen(
     navController: NavHostController = rememberNavController(),
     tabVM: TabVM = viewModel()
 ) {
+    var switchState by remember { mutableStateOf(false) }
     val tabBarVisibility = tabVM.tabBarVisibility.collectAsState()
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf(
@@ -60,13 +62,34 @@ fun TabMainScreen(
 
 
             when (tabIndex) {
-                0 -> SearchWithMap(navController = navController,tabVM=tabVM)
-                1 -> CustomerScreen(navController = navController,tabVM=tabVM, customerVM = CustomerVM(), postListVM = PostListVM() )
-                2 -> CompanionPublishScreen(navController = navController, tabVM = tabVM, skillVM = SkillVM(), locationVM = LocationVM())
+                0 -> SearchWithMap(navController = navController, tabVM = tabVM)
+                1 -> CustomerScreen(
+                    navController = navController,
+                    tabVM = tabVM,
+                    customerVM = CustomerVM(),
+                    postVM = PostVM()
+                )
+
+                2 -> if (switchState == false) {
+                    PostScreen(navController = navController, postVM = PostVM(), tabVM = tabVM)
+                } else {
+                    CompanionPublishScreen(
+                        navController = navController,
+                        skillVM = SkillVM(),
+                        locationVM = LocationVM(),
+                        tabVM = tabVM
+                    )
+                }
+
                 3 -> {
                     ChatroomScreen(navController = navController, tabVM = tabVM)
                 }
-                4 -> MemberScreen(navController = navController,tabVM = tabVM, memberVM = MemberSceernVM())
+
+                4 -> MemberScreen(
+                    navController = navController,
+                    tabVM = tabVM,
+                    memberVM = MemberSceernVM()
+                )
             }
         }
         if (tabBarVisibility.value) {
