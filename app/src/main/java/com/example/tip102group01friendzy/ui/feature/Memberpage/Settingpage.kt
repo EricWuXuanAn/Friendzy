@@ -29,82 +29,91 @@ import com.example.tip102group01friendzy.Screen
 
 
 @Composable
-fun Settingpage(
+fun SettingPage(
     navController: NavHostController,
-    settingVM: SettingVM
+    settingVM: SettingViewModel
 ) {
-// 狀態變數，用於管理各個可編輯內容的值
-    var password by remember { mutableStateOf("**********") } // 預設密碼顯示為星號
-    var nickname by remember { mutableStateOf("暱稱是這裡") } // 預設暱稱
-    var phoneNumber by remember { mutableStateOf("+886 912345678") } // 預設手機號碼
-    var newPassword by remember { mutableStateOf("") } // 新密碼
-    var confirmPassword by remember { mutableStateOf("") } // 確認密碼
-    var passwordError by remember { mutableStateOf(false) } // 是否有密碼不一致錯誤
+    // 觀察 ViewModel 的會員資料
+    val memberInfo by settingVM.memberInfo.collectAsState()
 
-    // 狀態變數，用於控制是否處於編輯模式
-    var isEditingPassword by remember { mutableStateOf(false) } // 密碼是否處於編輯模式
-    var isEditingNickname by remember { mutableStateOf(false) } // 暱稱是否處於編輯模式
-    var isEditingPhoneNumber by remember { mutableStateOf(false) } // 手機號碼是否處於編輯模式
+    // 編輯狀態與輸入框的值
+    var password by remember { mutableStateOf("**********") } // 顯示用的密碼
+    var nickname by remember { mutableStateOf(memberInfo.nickname) } // 暱稱
+    var phoneNumber by remember { mutableStateOf(memberInfo.phone) } // 手機號碼
+    var newPassword by remember { mutableStateOf("") } // 新密碼輸入框的值
+    var confirmPassword by remember { mutableStateOf("") } // 確認密碼輸入框的值
+    var passwordError by remember { mutableStateOf(false) } // 密碼錯誤狀態
+
+    // 編輯狀態的控制變數
+    var isEditingPassword by remember { mutableStateOf(false) }
+    var isEditingNickname by remember { mutableStateOf(false) }
+    var isEditingPhoneNumber by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        // 初始化時從後端抓取會員資料
+        settingVM.fetchMemberInfo()
+    }
 
     Column(
         modifier = Modifier
-            .fillMaxSize() // 填滿可用空間
-            .padding(16.dp) // 設置整體內邊距
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         // 返回按鈕與標題
         Row(
-            verticalAlignment = Alignment.CenterVertically, // 垂直方向置中
-            modifier = Modifier.fillMaxWidth() // 填滿寬度
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
             IconButton(
-                onClick = {
-                    navController.navigate(Screen.MemberScreen.name) // 返回 MemberScreen
-                }
+                onClick = { navController.navigate(Screen.MemberScreen.name) }
             ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack, // 使用返回箭頭圖標
-                    contentDescription = "Back" // 無障礙描述文字
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back"
                 )
             }
             Text(
-                text = "設定", // 設定標題文字
-                fontSize = 20.sp, // 字體大小
-                fontWeight = FontWeight.Bold, // 粗體字
-                modifier = Modifier.padding(start = 8.dp) // 與圖標間距
+                text = "設定",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 8.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp)) // 添加垂直間距
-       
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // 會員帳號部分
-        Text(text = "會員帳號", fontWeight = FontWeight.Bold) // 顯示標籤文字
-        Text(text = "angelhuang@cw.com.tw", modifier = Modifier.padding(vertical = 8.dp)) // 顯示帳號內容
+        // 會員帳號
+        Text(text = "會員帳號", fontWeight = FontWeight.Bold)
+        Text(text = memberInfo.email, modifier = Modifier.padding(vertical = 8.dp))
+        CustomDivider() // 使用自定義的分隔線
+
+        // 姓名
+        Text(text = "姓名", fontWeight = FontWeight.Bold)
+        Text(text = memberInfo.nickname, modifier = Modifier.padding(vertical = 8.dp))
         CustomDivider()
 
-        // 姓名部分
-        Text(text = "姓名", fontWeight = FontWeight.Bold) // 顯示標籤文字
-        Text(text = "Angle Huang", modifier = Modifier.padding(vertical = 8.dp)) // 顯示姓名內容
-        CustomDivider()
-
+        // 密碼部分
         Text(text = "會員密碼", fontWeight = FontWeight.Bold)
         if (isEditingPassword) {
-            // 新密碼輸入框
+            // 顯示編輯密碼的輸入框
             TextField(
                 value = newPassword,
                 onValueChange = { newPassword = it },
                 label = { Text("新密碼") },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
             )
-            // 確認密碼輸入框
             TextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 label = { Text("確認密碼") },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
             )
-            // 錯誤訊息
             if (passwordError) {
+                // 如果密碼不一致，顯示錯誤訊息
                 Text(
                     text = "密碼不一致，請重新輸入",
                     color = Color.Red,
@@ -112,41 +121,39 @@ fun Settingpage(
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
-            // 儲存按鈕（文字按鈕）
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End // 將按鈕對齊到右側
+                horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
                     onClick = {
                         if (newPassword == confirmPassword) {
-                            password = newPassword // 更新密碼
-                            isEditingPassword = false // 結束編輯模式
-                            passwordError = false // 清除錯誤狀態
+                            password = newPassword
+                            isEditingPassword = false
+                            passwordError = false
+                            settingVM.updatePassword(newPassword) // 呼叫 ViewModel 更新密碼
                         } else {
-                            passwordError = true // 顯示錯誤訊息
+                            passwordError = true
                         }
                     }
                 ) {
-                    Text("變更密碼") // 按鈕文字
+                    Text("變更密碼")
                 }
             }
         } else {
-            // 顯示密碼與編輯按鈕
+            // 顯示靜態密碼
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
             ) {
-                // 將密碼顯示為與字數相同的星號
-                Text(
-                    text = "*".repeat(password.length), // 根據密碼長度生成星號
-                    modifier = Modifier.weight(1f)
-                )
+                Text(text = "*".repeat(password.length), modifier = Modifier.weight(1f))
                 IconButton(
                     onClick = { isEditingPassword = true }
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.edit), // 編輯按鈕圖示
+                        painter = painterResource(id = R.drawable.edit),
                         contentDescription = "Edit"
                     )
                 }
@@ -154,40 +161,43 @@ fun Settingpage(
         }
         CustomDivider()
 
-
-        // 暱稱部分
+        // 使用 EditableRow 顯示暱稱部分
         EditableRow(
-            label = "暱稱", // 暱稱標籤
-            value = nickname, // 顯示的暱稱
-            isEditing = isEditingNickname, // 是否處於編輯模式
-            onEditClick = { isEditingNickname = true }, // 點擊進入編輯模式
-            onSaveClick = { isEditingNickname = false }, // 點擊完成保存
-            onValueChange = { nickname = it } // 更新暱稱值
+            label = "暱稱",
+            value = nickname,
+            isEditing = isEditingNickname,
+            onEditClick = { isEditingNickname = true },
+            onSaveClick = {
+                isEditingNickname = false
+                settingVM.updateNickname(nickname) // 呼叫 ViewModel 更新暱稱
+            },
+            onValueChange = { nickname = it }
         )
         CustomDivider()
 
-        // 手機號碼部分
+        // 使用 EditableRow 顯示手機號碼部分
         EditableRow(
-            label = "手機號碼", // 手機號碼標籤
-            value = phoneNumber, // 顯示的手機號碼
-            isEditing = isEditingPhoneNumber, // 是否處於編輯模式
-            onEditClick = { isEditingPhoneNumber = true }, // 點擊進入編輯模式
-            onSaveClick = { isEditingPhoneNumber = false }, // 點擊完成保存
-            onValueChange = { phoneNumber = it } // 更新手機號碼值
+            label = "手機號碼",
+            value = phoneNumber,
+            isEditing = isEditingPhoneNumber,
+            onEditClick = { isEditingPhoneNumber = true },
+            onSaveClick = {
+                isEditingPhoneNumber = false
+                settingVM.updatePhoneNumber(phoneNumber) // 呼叫 ViewModel 更新手機號碼
+            },
+            onValueChange = { phoneNumber = it }
         )
         CustomDivider()
 
-        Spacer(modifier = Modifier.weight(1f)) // 添加一個可彈性填充的空間
+        Spacer(modifier = Modifier.weight(1f))
 
         // 登出按鈕
         Button(
-            onClick = {
-                navController.navigate(Screen.LoginScreen.name) // 跳轉到 LoginScreen
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent), // 設置按鈕為透明背景
-            modifier = Modifier.fillMaxWidth() // 按鈕填滿寬度
+            onClick = { navController.navigate(Screen.LoginScreen.name) },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "登出帳號", color = Color.Red, fontWeight = FontWeight.Bold) // 顯示登出文字，紅色加粗
+            Text(text = "登出帳號", color = Color.Red, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -262,6 +272,8 @@ fun EditableRow(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSettingsScreen() {
-    Settingpage(rememberNavController(), settingVM = SettingVM())
+fun SettingPagePreview() {
+    val navController = rememberNavController()
+    val settingVM = SettingViewModel() // 假設有無參數建構子，實際情況請修改
+    SettingPage(navController = navController, settingVM = settingVM)
 }

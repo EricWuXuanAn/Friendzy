@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,9 +49,9 @@ import com.example.tip102group01friendzy.TabVM
 @Composable
 fun MemberScreen(
     navController: NavHostController,
-    memberVM: MemberSceernVM,
     tabVM: TabVM
 ) {
+    val context = LocalContext.current
 
     // 使用 remember 保存輸入框的狀態（專長與自我介紹）
     // 專長選項列表與已選專長的狀態
@@ -389,12 +390,11 @@ fun MemberScreen(
                 }
             } else {
                 // 顯示模式
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFFDCD0F0)) // 背景顏色設定為 #DCD0F0
-                        .clickable { isEditingSelfIntroduction = true } // 點擊切換為編輯模式
-                        .padding(16.dp) // 內邊距
+                Box(modifier = Modifier
+                    .fillMaxWidth() // 填滿整行
+                    .height(120.dp) // 設定高度
+                    .background(Color(0xFFDCD0F0)) // 背景顏色
+                    .padding(16.dp) // 內邊距
                 ) {
                     // 顯示自我介紹內容或提示文字
                     Text(
@@ -405,17 +405,7 @@ fun MemberScreen(
             }
         }
 
-    // 刊登中顯示
-    Box(
-        modifier = Modifier
-            .fillMaxWidth() // 佔滿寬度
-            .padding(vertical = 8.dp) // 垂直間距
-            .height(50.dp) // 設定高度
-            .background(Color.LightGray), // 背景顏色
-        contentAlignment = Alignment.Center // 內容置中
-    ) {
-        Text(text = "刊登中", fontWeight = FontWeight.Bold) // 文字內容
-    }
+
 
     // 增加間距，讓內容向上排列
     Spacer(modifier = Modifier.weight(1f))
@@ -426,5 +416,5 @@ fun MemberScreen(
 @Composable
 @Preview(showBackground = true)
 fun memberScreenPreview() {
-    MemberScreen(rememberNavController(), memberVM = MemberSceernVM(), tabVM = TabVM())
+    MemberScreen(rememberNavController(), tabVM = TabVM())
 }

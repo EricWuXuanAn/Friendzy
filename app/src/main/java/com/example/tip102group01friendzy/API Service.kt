@@ -3,13 +3,11 @@ package com.example.tip102group01friendzy
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
-import android.accounts.Account
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Path
 import java.lang.reflect.Member
@@ -31,9 +29,12 @@ interface APIService {
 
     @GET("rest/customer/favoriteList")
     suspend fun showAllFavoriteList():List<Favorite_List>
-    
 
+    @GET("rest/member/find")
+    suspend fun findMemberInfo(): MemberModel.MemberInfoResponse?
 
+    @POST("rest/member/edit")
+    suspend fun edit(@Body request: MemberModel.edit): Response<Unit>
     
 
     @GET("rest/member/login/{email}/{mpassword}")
