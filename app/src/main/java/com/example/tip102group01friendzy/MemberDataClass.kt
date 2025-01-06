@@ -14,3 +14,8 @@ data class CreatMemberResponce(
 data class Member(
     val email: String
 )
+
+data class Result(
+    val statu: Boolean,    // 操作状态
+    val message: String?   // 消息
+)
