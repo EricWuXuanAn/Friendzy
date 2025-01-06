@@ -117,7 +117,7 @@ fun Main(
     companionAppointmentVM: CompanionAppointmentVM = viewModel(),
     companionOrderVM: CompanionOrderVM = viewModel(),
     comOrderDtlVM: ComOrderDtlVM = viewModel(),
-    loginViewModel: LoginViewModel = LoginViewModel(context = LocalContext.current)
+    loginViewModel: LoginViewModel = LoginViewModel(context = LocalContext.current),
     ) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
