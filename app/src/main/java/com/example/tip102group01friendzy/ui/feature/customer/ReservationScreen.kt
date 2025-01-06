@@ -39,7 +39,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ofPattern
 
 @Composable
@@ -50,11 +49,7 @@ fun ReservationScreen(
 
 ) {
     val dateFormat = ofPattern("YYYY-MM-dd")
-    var startDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
-    var endDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
-    var startTime by remember { mutableStateOf("HH") }
-    var endTime by remember { mutableStateOf("HH") }
-    var postContent by remember { mutableStateOf("") }
+
     val scpoe = rememberCoroutineScope()
     var selectedPost by remember { mutableStateOf<Post?>(null) }
     LaunchedEffect(Unit) {
