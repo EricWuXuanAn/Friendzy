@@ -17,9 +17,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +38,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ofPattern
 
@@ -43,7 +46,7 @@ import java.time.format.DateTimeFormatter.ofPattern
 fun ReservationScreen(
     navController: NavHostController,
     reservationVM: ReservationVM,
-    postListVM: PostListVM
+    service_id:Int
 
 ) {
     val dateFormat = ofPattern("YYYY-MM-dd")
@@ -52,13 +55,22 @@ fun ReservationScreen(
     var startTime by remember { mutableStateOf("HH") }
     var endTime by remember { mutableStateOf("HH") }
     var postContent by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("台北") }
+    val scpoe = rememberCoroutineScope()
+    var selectedPost by remember { mutableStateOf<Post?>(null) }
+    LaunchedEffect(Unit) {
+        scpoe.launch {
+             selectedPost = reservationVM.getSelectedPostList( service_id = service_id)
+        }
+    }
+
+//    var location by remember { mutableStateOf("台北") }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Text(
             modifier = Modifier.padding(10.dp),
             text = "Check Him/Her Out",
@@ -83,7 +95,7 @@ fun ReservationScreen(
                 contentDescription = "image"
             )
             Text(
-                text = "Name: ",
+                text = "Name: ${selectedPost?.member_name}",
                 modifier = Modifier.padding(10.dp),
                 fontSize = 18.sp
             )
@@ -115,21 +127,21 @@ fun ReservationScreen(
                 .height(350.dp)
                 .padding(10.dp)
         ) {
-            Text(text = "TiTle: ", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
-            Text(text = "Specialty: ", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
+            Text(text = "TiTle: \n${selectedPost?.service}", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
+            Text(text = "Content: \n${selectedPost?.service_detail}", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
             Text(text = "Available: ", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
             Text(
-                text = "Start: $startDate $startTime",
+                text = "Start: ${selectedPost?.start_time}",
                 fontSize = 20.sp,
                 modifier = Modifier.padding(10.dp)
             )
             Text(
-                text = "End: $endDate $endTime",
+                text = "End: ${selectedPost?.finished_time}",
                 fontSize = 20.sp,
                 modifier = Modifier.padding(10.dp)
             )
-            Text(text = "Location: $location", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
-            Text(text = "Price: ", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
+//            Text(text = "Location: $location", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
+            Text(text = "Price: ${selectedPost?.service_charge}", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
         }
     }
     Row(
@@ -151,7 +163,7 @@ fun ReservationScreen(
                 應該要用一個coroutineScope包起來 裡面值請求發給後端動 然後回到上一頁
                 */
             }) {
-            Text(text = "Confirm")
+            Text(text = "Make a reservation")
         }
         Button(
             modifier = Modifier.weight(0.3f),
@@ -163,7 +175,7 @@ fun ReservationScreen(
                 navController.popBackStack() //回到上一頁
             }
         ) {
-            Text(text = stringResource(R.string.decline))
+            Text(text = stringResource(R.string.cancle))
         }
     }
 }
@@ -172,5 +184,5 @@ fun ReservationScreen(
 @Composable
 @Preview(showBackground = true)
 fun ReservationScreenPreview() {
-    ReservationScreen(rememberNavController(), ReservationVM(), PostListVM())
+    ReservationScreen(rememberNavController(), ReservationVM(), service_id = 1)
 }

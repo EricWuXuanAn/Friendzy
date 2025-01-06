@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -22,15 +20,16 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,9 +48,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.TabVM
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter.ofPattern
 
@@ -59,18 +61,22 @@ import java.time.format.DateTimeFormatter.ofPattern
 @Composable
 fun PostScreen(
     navController: NavHostController,
-    postVM: PostVM
+    postVM: PostVM,
+    tabVM : TabVM
 ) {
-    var startExpendText by remember { mutableStateOf("HH") }
-    var endExpendText by remember { mutableStateOf("HH") }
-
+    tabVM.tabBarState(true)
+    var service_content by remember { mutableStateOf("") }
+    var post_status by remember { mutableStateOf(0) }
+    var service_price by remember { mutableStateOf(0.0) }
+    var startExpendText by remember { mutableStateOf("00:00:00") }
+    var endExpendText by remember { mutableStateOf("00:00:00") }
     var startExpended by remember { mutableStateOf(false) }
     var endExpended by remember { mutableStateOf(false) }
-
+    var service_poster by remember { mutableIntStateOf(1) }
     val options = listOf(
-        "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
-        "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
-        "20:00", "21:00", "22:00", "23:00", "24:00"
+        "00:00:00", "01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00", "06:00:00", "07:00:00", "08:00:00", "09:00:00",
+        "10:00:00", "11:00:00", "12:00:00", "13:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00",
+        "20:00:00", "21:00:00", "22:00:00", "23:00:00"
     )
 
     val dateFormat = ofPattern("YYYY-MM-dd") //設定日期格式
@@ -84,6 +90,13 @@ fun PostScreen(
             LocalDate.now().format(dateFormat)
         )
     }
+    val formatter = ofPattern("yyyy-MM-dd HH:mm:ss")
+    val startTime = "$startSelectDate $startExpendText"
+    val finishedTime = "$endSelectDate $endExpendText"
+    val startTimeFormatter = LocalDateTime.parse(startTime, formatter)
+    val finishedTimeFormatter = LocalDateTime.parse(finishedTime, formatter)
+    val stratTimestamp = startTimeFormatter.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()  // 轉換為 Long 類型的時間戳
+    val finishedTimestamp = finishedTimeFormatter.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
     //日期對話選擇後會在Text上顯示的日期
     var showStartDatePickerDialog by remember { mutableStateOf(false) } //預設日期對話匡要顯示還是不顯示，預設為不顯示
@@ -117,15 +130,25 @@ fun PostScreen(
                 text = "Event Title:",
                 fontSize = 17.sp
             )
-            TextField(
+            OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 15.dp)
-                    .height(28.dp),
+                    .height(70.dp),
                 value = inputTitle,
                 onValueChange = { inputTitle = it },
                 label = { Text(text = "Type your title!", fontSize = 13.sp) }
             )
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp)
+                    .height(70.dp),
+                value = service_content,
+                onValueChange = { service_content = it },
+                label = { Text(text = "Type your content", fontSize = 13.sp) }
+            )
+
             Spacer(
                 Modifier
                     .fillMaxWidth()
@@ -139,7 +162,7 @@ fun PostScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(0.64f),
+                    modifier = Modifier.fillMaxWidth(0.6f),
                     value = "Date: ${startSelectDate}",
                     onValueChange = { startSelectDate = it },
                     shape = RoundedCornerShape(15.dp),
@@ -174,11 +197,11 @@ fun PostScreen(
                     }
                 )
                 ExposedDropdownMenuBox(
+                    expanded = startExpended,
                     onExpandedChange = {
                         startExpended = it
-                        startExpended = true
-                    },
-                    expanded = startExpended
+//                        startExpended = true
+                    }
                 ) {
                     OutlinedTextField(
                         value = startExpendText,
@@ -216,7 +239,7 @@ fun PostScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(0.64f),
+                    modifier = Modifier.fillMaxWidth(0.6f),
                     value = "Date: ${endSelectDate}",
                     onValueChange = { endSelectDate = it },
                     shape = RoundedCornerShape(15.dp),
@@ -251,11 +274,11 @@ fun PostScreen(
                     }
                 )
                 ExposedDropdownMenuBox(
+                    expanded = endExpended,
                     onExpandedChange = {
                         endExpended = it
-                        endExpended = true
+//                        endExpended = true
                     },
-                    expanded = endExpended
                 ) {
                     OutlinedTextField(
                         value = endExpendText,
@@ -287,29 +310,32 @@ fun PostScreen(
             }
 
         }
-    }
-    Column(
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
-        OutlinedButton(
-            modifier = Modifier
-                .padding(10.dp)
-                .height(110.dp),
-            shape = RoundedCornerShape(10.dp),
-            onClick = {}
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = "upload photo"
-                )
-                Text("Upload Photo")
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 10.dp, start = 5.dp, end = 5.dp)
+        ) {  TextField(
+            modifier = Modifier.weight(0.8f),
+            value = service_poster.toString(),
+            onValueChange = {service_poster = it.toInt()},
+            label = { Text("請輸入會員ID") }
+        ) }
+        Row(
+            modifier = Modifier.padding(top = 20.dp, start = 5.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            TextField(
+                modifier = Modifier.weight(0.7f),
+                value = post_status.toString(),
+                onValueChange = {post_status = it.toInt()},
+                label =  { Text(text = "0 為顧客 , 1 為陪伴者") }
+            )
+
+            TextField(
+                modifier = Modifier.weight(0.4f),
+                value = service_price.toString(),
+                onValueChange = {service_price = it.toDouble()},
+                label = { Text(text = "訂單價格: ") }
+            )
         }
+
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
@@ -317,21 +343,38 @@ fun PostScreen(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp),
+                .padding(top = 0.dp),
             onClick = {
                 scpoe.launch {
+                    postVM.postOrder(
+                        service = inputTitle,
+                        service_charge = service_price,
+                        post_status = post_status,
+                        start_time = stratTimestamp,
+                        finished_time = finishedTimestamp,
+                        service_poster = service_poster,
+                        service_status = 0,
+                        service_detail = service_content
+                    )
+                    delay(200)
                     snackBar.showSnackbar(
-                        "Successfully Post Your Event!",
+                        message = "Post Successful!",
                         withDismissAction = true
                     )
-                    navController.popBackStack()
+                    delay(2000)
                 }
+                inputTitle = ""
+                service_content = ""
+                service_price = 0.0
+                service_poster = 1
+                startExpendText = "00:00:00"
+                endExpendText = "00:00:00"
             }
         ) {
             Text("Post")
         }
+        SnackbarHost(hostState = snackBar)
     }
-
 }
 
 
@@ -369,5 +412,5 @@ fun getDatePicker(
 @Composable
 @Preview(showBackground = true)
 fun PostScreenPreview() {
-    PostScreen(rememberNavController(), postVM = PostVM())
+    PostScreen(rememberNavController(), postVM = PostVM(), tabVM = TabVM())
 }

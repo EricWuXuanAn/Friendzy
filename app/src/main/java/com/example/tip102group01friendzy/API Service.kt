@@ -3,6 +3,10 @@ package com.example.tip102group01friendzy
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
+import com.example.tip102group01friendzy.ui.feature.customer.Post
+import com.example.tip102group01friendzy.ui.feature.customer.addPostRequest
+import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
+import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -29,6 +33,20 @@ interface APIService {
 
     @GET("rest/customer/favoriteList")
     suspend fun showAllFavoriteList():List<Favorite_List>
+
+    @POST("rest/customer/insertPost")
+    suspend fun addNewPost(
+        @Body request: addPostRequest
+    ): addPostResponse
+
+    @GET("rest/customer/showPostList")
+    suspend fun showPostList():List<Post>
+
+    @POST("rest/customer/selectedPostList")
+    suspend fun selectedPostList(
+        @Body request: selectedPostList
+    ):Post
+
 
     @GET("rest/member/find")
     suspend fun findMemberInfo(): MemberModel.MemberInfoResponse?
