@@ -22,10 +22,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
 import com.example.tip102group01friendzy.ui.feature.Memberpage.Settingpage
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
@@ -196,7 +198,7 @@ fun Main(
                 CustomerScreen(
                     navController = navController,
                     customerVM = customerVM,
-                    postListVM = postListVM,
+                    postVM = postVM,
                     tabVM = tabVM
                 )
             }
@@ -210,12 +212,16 @@ fun Main(
             }
 
             composable(
-                route = Screen.ReservationScreen.name
+                route ="${Screen.ReservationScreen.name}/{service_id}",
+                arguments = listOf(navArgument("service_id") { type = NavType.IntType })
             ) {
+                val serviceId = backStackEntry?.arguments?.getInt("service_id") ?: 0
+
                 ReservationScreen(
                     navController = navController,
                     reservationVM = reservationVM,
-                    PostListVM()
+                    service_id = serviceId,
+                    
                 )
             }
 
@@ -241,7 +247,7 @@ fun Main(
                 MemberScreen(navController = navController, memberVM = viewModel(), tabVM = tabVM)
             }
             composable(route = Screen.PostScreen.name) {
-                PostScreen(navController = navController, postVM = postVM)
+                PostScreen(navController = navController, postVM = postVM, tabVM = tabVM)
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {

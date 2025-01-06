@@ -43,7 +43,6 @@ fun OrderListScreen(
     orderlistVM: OrderVM,
     navController: NavHostController
 ) {
-//    var list by remember { mutableStateOf<List<OrderList>>(emptyList()) }
     var tabIndex by remember { mutableStateOf(0) }
     val ordeState by orderlistVM.orderList.collectAsState()
     val uncomfirm = ordeState.filter { it.order_status == 0 }
@@ -169,7 +168,7 @@ fun orderList(
         items(orders) { order ->
             ListItem(
                 modifier = Modifier.clickable { onClick(order) },
-                headlineContent = { Text(text = "order Content: ${order.order_person}") },
+                headlineContent = { Text(text = "order Title: ${order.order_title}") },
                 overlineContent = { Text(text = "Order ID: ${order.order_id}", fontSize = 18.sp) },
                 supportingContent = { Text(text = "Order Person:${order.member_name}") },
                 trailingContent = {

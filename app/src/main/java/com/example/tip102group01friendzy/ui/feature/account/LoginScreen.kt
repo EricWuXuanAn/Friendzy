@@ -178,11 +178,11 @@ fun LoginScreen(
 //                        }
 //                    }
 
-//                    loginViewModel.onLoginClicked()
-//                    //TODO: 確認帳號正確才能登入(控制器到首頁)，測試直接跳轉
-//                    navController.navigate(Screen.TabMainScreen.name){
-//                        popUpTo(Screen.LoginScreen.name){inclusive=true}
-//                    }
+                    loginViewModel.onLoginClicked()
+                    //TODO: 確認帳號正確才能登入(控制器到首頁)，測試直接跳轉
+                    navController.navigate(Screen.TabMainScreen.name){
+                        popUpTo(Screen.LoginScreen.name){inclusive=true}
+                    }
 
                 },
                 colors = ButtonDefaults.buttonColors(
