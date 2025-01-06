@@ -1,6 +1,8 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tip102group01friendzy.RetrofitInstance
@@ -18,24 +20,40 @@ class CompanionOrderVM : ViewModel() {
     private val _orderDetailsSelectState = MutableStateFlow<CompanionOrder?>(null)
     val orderDetailsSelectState = _orderDetailsSelectState.asStateFlow()
 
+//    private val  _orderStatusSelect = MutableStateFlow<CompanionOrder?>(null)
+//    val orderStatusSelect = _orderStatusSelect.asStateFlow()
 
-    init {
+    fun getOrderList(){
         viewModelScope.launch {
             _orderListState.value = fetchOrderList()
         }
     }
 
+    //取得訂單明細
     fun setSelectOrder(order: Int) {
         viewModelScope.launch {
             val value = fetchOrderId(order)
 //        Log.e("_tagFetchOrderVM", Gson().toJson(value))
             Log.e("_tagValye", "$value")
             _orderDetailsSelectState.update { value }
+//            _orderStatusSelect.update { value }
 //        Log.d("_tagDetailSelect","$_orderDetailsSelectState")
         }
     }
 
-    private suspend fun fetchOrderList(): List<CompanionOrder> {
+    //更改訂單狀態
+    fun setOrderStatus(orderId: Int,status: Int){
+        viewModelScope.launch {
+            val value = fetchOrderStatus(orderId, status)
+//            _orderStatusSelect.update { value }
+            _orderDetailsSelectState.update { value }
+            _orderListState.update { fetchOrderList() } //更新後取得訂單列表
+            Log.d("_orderList", "${fetchOrderList()}")
+        }
+    }
+
+    //取得所有訂單
+     suspend fun fetchOrderList(): List<CompanionOrder> {
         try {
             val orderList = RetrofitInstance.api.comShowAllOrder()
             return orderList
@@ -43,7 +61,7 @@ class CompanionOrderVM : ViewModel() {
             return emptyList()
         }
     }
-
+    //取得指定ID的訂單
     private suspend fun fetchOrderId(id: Int): CompanionOrder {
         try {
             val order = RetrofitInstance.api.comOrderDetails(id)
@@ -54,7 +72,17 @@ class CompanionOrderVM : ViewModel() {
             return CompanionOrder()
         }
     }
-
+    //該改訂單編號
+    private suspend fun fetchOrderStatus(orderId: Int, status: Int):CompanionOrder{
+        try {
+            val status = RetrofitInstance.api.comOrderUpdate(
+                CompanionOrder(orderId = orderId,orderStatus = status)
+            )
+            return status
+        }catch ( e:Exception ){
+            return CompanionOrder()
+        }
+    }
 
     /*
        fun fetchOrderList():List<CompanionOrder>{
@@ -101,31 +129,24 @@ data class CompanionOrder(
     var startTime: Long = 0L,//開始時間
     var endTime: String = "yyyy-MM-dd hh:mm",//結束時間
     */
-    var orderId: Int = -1,//訂單編號
-    var serviceId: Int = -1,//服務編號
-    var theirId: Int = -1,//對方Id
-    var theirName: String = "BBBBBBBBB",//對方名字
-    var orderPersonName: String = "訂購人A",//訂購人名字
-    var orderPerson: Int = -1,//訂購人編號
-    var orderPosterName: String = "AAAAAAAA",//刊登人名字
-    var orderPoster: Int = -1,//刊登人編號
-    var startTime: Long = 0L,//開始時間
-    var endTime: Long = 0L,//結束時間
-    var orderStatus: Int = -1,//訂單狀態
-    var serviceStatus: Int = -1,//服務狀態
-    var service: String = "我是標題",//標題
-    var cusRateContent: String = "123567465643",//顧客評論
-    var cusRate: Int = 0,//顧客評分
-    var comRateContent: String = "7564323456",//陪伴者評論
-    var comRate: Int = 0,//陪伴者頻分
+    var orderId: Int? = null,//訂單編號
+    var serviceId: Int? = null,//服務編號
+    var theirId: Int? = null,//對方Id
+    var theirName: String? = null,//對方名字
+    var orderPersonName: String? = null,//訂購人名字
+    var orderPerson: Int? = null,//訂購人編號
+    var orderPosterName: String? = null,//刊登人名字
+    var orderPoster: Int? = null,//刊登人編號
+    var startTime: Long? = null,//開始時間
+    var endTime: Long? = null,//結束時間
+    var orderStatus: Int? = null,//訂單狀態
+    var serviceStatus: Int? = null,//服務狀態
+    var service: String? = null,//標題
+    var cusRateContent: String? = null,//顧客評論
+    var cusRate: Int? = null,//顧客評分
+    var comRateContent: String? = null,//陪伴者評論
+    var comRate: Int? = null,//陪伴者頻分
 
 
 ) {
-    override fun equals(other: Any?): Boolean {
-        return this.orderId == (other as CompanionOrder).orderId
-    }
-
-    override fun hashCode(): Int {
-        return orderId.hashCode()
-    }
 }

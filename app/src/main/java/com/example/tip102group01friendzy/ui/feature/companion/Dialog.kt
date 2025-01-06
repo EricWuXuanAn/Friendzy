@@ -63,9 +63,9 @@ fun PublishDatePicker(
 }
 
 /**JSON時間轉換String*/
-fun formatTimestamp(timestamp: Long): String {
+fun formatTimestamp(timestamp: Long?): String {
     // 將 Timestamp 轉為 LocalDateTime
-    val dateTime = Instant.ofEpochMilli(timestamp)
+    val dateTime = Instant.ofEpochMilli(timestamp ?: return "")
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
 

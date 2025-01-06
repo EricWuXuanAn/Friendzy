@@ -19,6 +19,7 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -51,19 +52,27 @@ class OrderTabsButton(
 fun CompanionOrderListScreen(
     navController: NavController,
     companionOrderVM: CompanionOrderVM,
-    companionAppointmentVM: CompanionAppointmentVM,
+//    companionAppointmentVM: CompanionAppointmentVM,
     tabVM: TabVM
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     var testText by remember { mutableStateOf("") }
-    val appoState by companionAppointmentVM.setAppointment.collectAsState()
+//    val appoState by companionAppointmentVM.setAppointment.collectAsState()
     val orderState by companionOrderVM.orderListState.collectAsState()
     val uncomfirm = orderState.filter { it.orderStatus == 0 }
     val inProfress = orderState.filter { it.orderStatus == 1 }
     val completed = orderState.filter { it.orderStatus == 2 }
     val reservation = orderState.filter { it.serviceStatus == 0 }
 
+//    var updateList by remember { mutableStateOf<List<CompanionOrder>>(emptyList()) }
+
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        Log.d("TAG","getOrderList")
+        companionOrderVM.getOrderList()
+    }
+
 
     //tab列資訊
     val tabList = listOf(
@@ -88,6 +97,11 @@ fun CompanionOrderListScreen(
             .background(companionScenery),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+//        LaunchedEffect(Unit) {
+//            coroutineScope.launch {
+//                updateList = companionOrderVM.fetchOrderList()
+//            }
+//        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -137,14 +151,14 @@ fun CompanionOrderListScreen(
                         orders = orderState,
                         onClick = {
                             //要再判斷我預約和預約我的到另一頁
-                            if (it.orderStatus < 1 && it.serviceStatus == 0){
+                            if (it.orderStatus!! < 1 && it.serviceStatus == 0){
                                 coroutineScope.launch {
-                                    companionOrderVM.setSelectOrder(it.orderId)
+                                    companionOrderVM.setSelectOrder(it.orderId!!)
                                     navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
                                 }
                             }else{
                                 coroutineScope.launch {
-                                    companionOrderVM.setSelectOrder(it.orderId)
+                                    companionOrderVM.setSelectOrder(it.orderId!!)
                                     navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                                 }
                             }
@@ -157,7 +171,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = uncomfirm,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it.orderId)
+                            companionOrderVM.setSelectOrder(it.orderId!!)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
@@ -168,7 +182,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = inProfress,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it.orderId)
+                            companionOrderVM.setSelectOrder(it.orderId!!)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
@@ -179,7 +193,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = completed,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it.orderId)
+                            companionOrderVM.setSelectOrder(it.orderId!!)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
@@ -284,7 +298,7 @@ fun PreviewCompanionOrderListScreen() {
     CompanionOrderListScreen(
         navController = rememberNavController(),
         companionOrderVM = CompanionOrderVM(),
-        companionAppointmentVM = CompanionAppointmentVM(),
+//        companionAppointmentVM = CompanionAppointmentVM(),
         TabVM()
     )
 }

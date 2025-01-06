@@ -277,7 +277,7 @@ fun Main(
                 CompanionOrderListScreen(
                     navController = navController,
                     companionOrderVM = companionOrderVM,
-                    companionAppointmentVM = companionAppointmentVM,
+//                    companionAppointmentVM = companionAppointmentVM,
                     tabVM = tabVM
                 )
             }

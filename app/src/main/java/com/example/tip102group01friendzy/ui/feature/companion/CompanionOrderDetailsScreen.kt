@@ -1,6 +1,5 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,8 +55,6 @@ fun CompanionOrderDetailsScreen(
     tabVM: TabVM
 ) {//評論評分要在處裡
     val orderDtl by companionOrderVM.orderDetailsSelectState.collectAsState()
-
-
 //    Log.d("_tagDetails","$orderDtl")
     var orderStatus by remember { mutableIntStateOf(orderDtl?.orderStatus ?:0) }//訂單狀態
     var rating by remember { mutableIntStateOf(0) } // 評分輸入
@@ -125,8 +122,8 @@ fun CompanionOrderDetailsScreen(
 //                modifier = Modifier.padding(bottom = blank))
             Text(text = "刊登人：${orderDtl?.orderPosterName}", fontSize = 20.sp)
             Text(text = "訂購人：${orderDtl?.orderPersonName}", fontSize = 20.sp)
-            Text(text = "開始時間：${formatTimestamp(orderDtl!!.startTime)}", fontSize = 20.sp)
-            Text(text = "結束時間：${formatTimestamp(orderDtl!!.endTime)}", fontSize = 20.sp)
+            Text(text = "開始時間：${formatTimestamp(orderDtl?.startTime)}", fontSize = 20.sp)
+            Text(text = "結束時間：${formatTimestamp(orderDtl?.endTime)}", fontSize = 20.sp)
             Text(text = "訂單狀態：${statusList[orderStatus]}", fontSize = 20.sp)
             if (orderStatus == 2 && score != 0 || testTrue) {
                 Row(
@@ -229,6 +226,7 @@ fun CompanionOrderDetailsScreen(
                     onClick = {
                         if (orderStatus != 2) {
                             orderStatus = 2
+                            companionOrderVM.setOrderStatus(orderDtl?.orderId!!,orderStatus)
                         }
                     }
                 ) { Text("完成訂單") }

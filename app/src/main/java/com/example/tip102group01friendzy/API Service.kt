@@ -12,6 +12,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import java.lang.reflect.Member
 
@@ -48,6 +49,10 @@ interface APIService {
     //陪伴者訂單明細
     @GET("rest/companion/order/showId/{id}")
     suspend fun comOrderDetails(@Path("id") account: Int):CompanionOrder
+
+    //陪伴者改訂單狀態
+    @PUT("rest/companion/order/orderStatus/update")
+    suspend fun comOrderUpdate(@Body comOrder:CompanionOrder):CompanionOrder
 }
 
 object RetrofitInstance{
