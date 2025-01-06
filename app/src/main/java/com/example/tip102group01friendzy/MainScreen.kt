@@ -29,7 +29,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
-import com.example.tip102group01friendzy.ui.feature.Memberpage.Settingpage
+import com.example.tip102group01friendzy.ui.feature.Memberpage.SettingPage
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordViewModel
 import com.example.tip102group01friendzy.ui.feature.account.LoginScreen
@@ -240,7 +240,7 @@ fun Main(
                 )
             }
             composable(route = Screen.SettingScreen.name) {
-                Settingpage(navController = navController, settingVM = viewModel())
+                SettingPage(navController = navController, settingVM = viewModel())
             }
 
             composable(route = Screen.MemberScreen.name) {
