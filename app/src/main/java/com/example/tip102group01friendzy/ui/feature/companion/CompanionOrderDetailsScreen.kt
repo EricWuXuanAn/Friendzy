@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -64,6 +66,9 @@ fun CompanionOrderDetailsScreen(
     var comment by remember { mutableStateOf(orderDtl?.comRateContent ?:"") }  //評論送出
     val statusList = listOf("待確認", "進行中", "已完成", "取消")
 
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val memberNo = preferences.getInt("member_no", 0)
 
     val blank = 6.dp
     val testTrue = 1 == 2 //寫code方便看 全顯示用
@@ -226,7 +231,7 @@ fun CompanionOrderDetailsScreen(
                     onClick = {
                         if (orderStatus != 2) {
                             orderStatus = 2
-                            companionOrderVM.setOrderStatus(orderDtl?.orderId!!,orderStatus)
+                            companionOrderVM.setOrderStatus(orderDtl?.orderId!!,orderStatus,memberNo)
                         }
                     }
                 ) { Text("完成訂單") }

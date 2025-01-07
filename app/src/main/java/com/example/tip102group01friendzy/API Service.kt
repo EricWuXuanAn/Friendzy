@@ -71,12 +71,12 @@ interface APIService {
 
 
     //陪伴者訂單管理
-    @GET("rest/companion/order/showAll")
-    suspend fun comShowAllOrder():List<CompanionOrder>
+    @GET("rest/companion/order/showAll/{memberNo}")
+    suspend fun comShowAllOrder(@Path("memberNo") memberNo: Int):List<CompanionOrder>
 
     //陪伴者訂單明細
-    @GET("rest/companion/order/showId/{id}")
-    suspend fun comOrderDetails(@Path("id") account: Int):CompanionOrder
+    @GET("rest/companion/order/showId/{memberNo}/{servicePerson}/{orderId}")
+    suspend fun comOrderDetails(@Path("memberNo") memberNo: Int, @Path("servicePerson") servicePerson: Int, @Path("orderId") orderId: Int,):CompanionOrder
 
     //陪伴者改訂單狀態
     @PUT("rest/companion/order/orderStatus/update")

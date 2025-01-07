@@ -1,8 +1,10 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tip102group01friendzy.RetrofitInstance
@@ -20,19 +22,24 @@ class CompanionOrderVM : ViewModel() {
     private val _orderDetailsSelectState = MutableStateFlow<CompanionOrder?>(null)
     val orderDetailsSelectState = _orderDetailsSelectState.asStateFlow()
 
+//    val context = LocalContext.current
+//    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+//    val memberNo = preferences.getInt("member_no", 0)
+
 //    private val  _orderStatusSelect = MutableStateFlow<CompanionOrder?>(null)
 //    val orderStatusSelect = _orderStatusSelect.asStateFlow()
 
-    fun getOrderList(){
+    fun getOrderList(memberNo :Int){
         viewModelScope.launch {
-            _orderListState.value = fetchOrderList()
+            _orderListState.value = fetchOrderList(memberNo)
         }
     }
 
     //取得訂單明細
-    fun setSelectOrder(order: Int) {
+    fun setSelectOrder(memberNo: Int,servicePerson: Int,orderId: Int) {
         viewModelScope.launch {
-            val value = fetchOrderId(order)
+            Log.d("_tag-setSelectOrder","memberNo：$memberNo , orderPoster： ${servicePerson} , orderId：${orderId}")
+            val value = fetchOrderId(memberNo,servicePerson,orderId)
 //        Log.e("_tagFetchOrderVM", Gson().toJson(value))
             Log.e("_tagValye", "$value")
             _orderDetailsSelectState.update { value }
@@ -42,29 +49,29 @@ class CompanionOrderVM : ViewModel() {
     }
 
     //更改訂單狀態
-    fun setOrderStatus(orderId: Int,status: Int){
+    fun setOrderStatus(orderId: Int,status: Int,memberNo: Int){
         viewModelScope.launch {
             val value = fetchOrderStatus(orderId, status)
 //            _orderStatusSelect.update { value }
             _orderDetailsSelectState.update { value }
-            _orderListState.update { fetchOrderList() } //更新後取得訂單列表
-            Log.d("_orderList", "${fetchOrderList()}")
+            _orderListState.update { fetchOrderList(memberNo) } //更新後取得訂單列表
+            Log.d("_orderList", "${fetchOrderList(memberNo)}")
         }
     }
 
     //取得所有訂單
-     suspend fun fetchOrderList(): List<CompanionOrder> {
+     suspend fun fetchOrderList(memberNo: Int): List<CompanionOrder> {
         try {
-            val orderList = RetrofitInstance.api.comShowAllOrder()
+            val orderList = RetrofitInstance.api.comShowAllOrder(memberNo)
             return orderList
         } catch (e: Exception) {
             return emptyList()
         }
     }
     //取得指定ID的訂單
-    private suspend fun fetchOrderId(id: Int): CompanionOrder {
+    private suspend fun fetchOrderId(memberNo: Int,servicePerson: Int,orderId: Int): CompanionOrder {
         try {
-            val order = RetrofitInstance.api.comOrderDetails(id)
+            val order = RetrofitInstance.api.comOrderDetails(memberNo,servicePerson,orderId)
             Log.d("_tagFetchOrderVM", "$order")
             return order
         } catch (e: Exception) {

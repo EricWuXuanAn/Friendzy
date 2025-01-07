@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -66,11 +68,16 @@ fun CompanionOrderListScreen(
 
 //    var updateList by remember { mutableStateOf<List<CompanionOrder>>(emptyList()) }
 
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val memberNo = preferences.getInt("member_no", 0)
+    Log.d("_tab","${memberNo}")
+
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         Log.d("TAG","getOrderList")
-        companionOrderVM.getOrderList()
+        companionOrderVM.getOrderList(memberNo)
     }
 
 
@@ -88,7 +95,9 @@ fun CompanionOrderListScreen(
 //    val orderDetail by companionOrderVM.orderDetailsSelectState.collectAsState()
 
     Column (
-        modifier = Modifier.fillMaxSize().background(companionScenery)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(companionScenery)
     ){  }
     Column(
         modifier = Modifier
@@ -115,7 +124,8 @@ fun CompanionOrderListScreen(
             ) {
                 tabList.forEachIndexed { index, tabs ->
                     Tab(
-                        modifier = Modifier.padding(4.dp)
+                        modifier = Modifier
+                            .padding(4.dp)
                             .background(companionScenery),
                         selected = index == tabIndex,
                         onClick = { tabIndex = index },
@@ -140,25 +150,30 @@ fun CompanionOrderListScreen(
             }
         }
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             Text(testText, fontSize = 24.sp)
             when (tabIndex) {
                 0 -> {//全部
-//                    testText = "0000"
+                    if(orderState.isEmpty()){
+                        testText = "此欄位沒有訂單"
+                    }else{
+                        testText = ""
+                    }
                     CompanionOrderLazy(
                         orders = orderState,
                         onClick = {
                             //要再判斷我預約和預約我的到另一頁
                             if (it.orderStatus!! < 1 && it.serviceStatus == 0){
                                 coroutineScope.launch {
-                                    companionOrderVM.setSelectOrder(it.orderId!!)
+                                    companionOrderVM.setSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
                                     navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
                                 }
                             }else{
                                 coroutineScope.launch {
-                                    companionOrderVM.setSelectOrder(it.orderId!!)
+                                    companionOrderVM.setSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
                                     navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                                 }
                             }
@@ -167,40 +182,57 @@ fun CompanionOrderListScreen(
                 }
 
                 1 -> {//待確認
-                    testText = "1111"
+                    if(uncomfirm.isEmpty()){
+                        testText = "此欄位沒有訂單"
+                    }else{
+                        testText = ""
+                    }
                     CompanionOrderLazy(
                         orders = uncomfirm,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it.orderId!!)
-                            navController.navigate(Screen.CompanionOrderDetailsScreen.name)
+                            companionOrderVM.setSelectOrder(memberNo,it.orderPerson!!,it.orderId!!)
+                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
                         }
                     )
                 }
 
                 2 -> {//進行中
-                    testText = "2222"
+                    if(inProfress.isEmpty()){
+                        testText = "此欄位沒有訂單"
+                    }else{
+                        testText = ""
+                    }
                     CompanionOrderLazy(
                         orders = inProfress,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it.orderId!!)
+                            Log.d("_tag","memberNo：$memberNo , orderPoster： ${it.orderPerson} , orderId：${it.orderId}")
+                            companionOrderVM.setSelectOrder(memberNo,it.orderPerson!!,it.orderId!!)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
                 }
 
                 3 -> {//已完成
-                    testText = "3333"
+                    if(completed.isEmpty()){
+                        testText = "此欄位沒有訂單"
+                    }else{
+                        testText = ""
+                    }
                     CompanionOrderLazy(
                         orders = completed,
                         onClick = {
-                            companionOrderVM.setSelectOrder(it.orderId!!)
+                            companionOrderVM.setSelectOrder(memberNo,it.orderPerson!!,it.orderId!!)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
                 }
 
                 4 -> {//來應徵
-                    testText = "4444"
+                    if(reservation.isEmpty()){
+                        testText = "此欄位沒有訂單"
+                    }else{
+                        testText = ""
+                    }
                     CompanionOrderLazy(
                         orders = reservation,
                         onClick = {
@@ -210,7 +242,11 @@ fun CompanionOrderListScreen(
                 }
 
                 5 -> {//我應徵
-                    testText = "5555"
+                    if(reservation.isEmpty()){
+                        testText = "此欄位沒有訂單"
+                    }else{
+                        testText = ""
+                    }
 //                    CompanionOrderList(
 //                        orders = reservation,
 //                        onClick = {
