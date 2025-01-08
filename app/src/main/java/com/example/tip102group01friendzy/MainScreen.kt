@@ -46,7 +46,6 @@ import com.example.tip102group01friendzy.ui.feature.companion.CompanionAppointme
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionCheckAppointmentScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionLookPublishScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionMyPublishVM
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderDetailsScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderListScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderVM
@@ -221,7 +220,7 @@ fun Main(
                     navController = navController,
                     reservationVM = reservationVM,
                     service_id = serviceId,
-                    
+
                 )
             }
 
@@ -253,8 +252,12 @@ fun Main(
             composable(route = Screen.SearchWithMapScreen.name) {
                 SearchWithMap(navController = navController, tabVM = tabVM)
             }
-            composable(route = Screen.ReservationConfirmScreen.name){
-                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM)
+            composable(route = "${Screen.ReservationConfirmScreen.name}/{order_id}"){
+                Log.d("tag_", " composable backentry: ${backStackEntry?.arguments}")
+//                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
+//                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
+//                Log.d("tag_", " composable order_id: $order_id")
+                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1)
             }
 
             //>>>陪伴者

@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,24 +45,52 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
 
 
 @Composable
 fun ReservationConfirmScreen(
     navController: NavHostController,
-    reservationConfirmVM:ReservationConfirmVM
+    reservationConfirmVM:ReservationConfirmVM,
+    order_id: Int
 ) {
     val scope = rememberCoroutineScope()
     var snackbarHostState = remember { SnackbarHostState() }
     val dateFormat = ofPattern("YYYY-MM-dd")
     var startDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
     var endDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
-    var startTime by remember { mutableStateOf("HH") }
-    var endTime by remember { mutableStateOf("HH") }
+//    var startTime by remember { mutableStateOf("HH") }
+//    var endTime by remember { mutableStateOf("HH") }
     var postContent by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("台北") }
+    var orderState by remember { mutableStateOf<OrderList?>(null) }
+
+
+    LaunchedEffect(Unit) {
+       scope.launch {
+           Log.d("tag_", "order_idLunch: $order_id")
+           orderState = reservationConfirmVM.getSelectOrder(order_id = order_id)
+
+       }
+
+    }
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    val startTime:Long? = orderState?.start_time
+    val finishedTime = orderState?.finished_time
+    val startTimeFormatter: String? = startTime?.let {
+        Instant.ofEpochMilli(it)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime().format(dateFormatter)
+    }
+    val finishedTimeFormatter: String? = finishedTime?.let {
+        Instant.ofEpochMilli(it)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime().format(dateFormatter)
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -82,7 +112,7 @@ fun ReservationConfirmScreen(
                 painter = painterResource(R.drawable.friendzy),
                 contentDescription = "Image"
             )
-            Text(text = "Name: ", fontSize = 18.sp, modifier = Modifier.padding(10.dp))
+            Text(text = "Name: ${orderState?.member_name}", fontSize = 18.sp, modifier = Modifier.padding(10.dp))
             Column(
                 modifier = Modifier
                     .padding(top = 30.dp)
@@ -110,7 +140,7 @@ fun ReservationConfirmScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            text = "POST CONTENT",
+            text = "POST CONTENT: ${orderState?.service_detail}",
             fontFamily = FontFamily.Cursive,
             fontSize = 20.sp,
             textAlign = TextAlign.Center
@@ -137,7 +167,7 @@ fun ReservationConfirmScreen(
         Spacer(modifier = Modifier.padding(10.dp))
         Text(
             modifier = Modifier.fillMaxWidth(0.87f),
-            text = "Start at: $startDate  $startTime\n \nEnd at: $endDate $endTime\n\nLocation: $location\n\nPrice:",
+            text = "Start at: ${startTimeFormatter}\n \nEnd at: ${finishedTimeFormatter}\nPrice: ${orderState?.order_price}",
             textAlign = TextAlign.Start,
             fontSize = 17.sp
         )
@@ -191,5 +221,5 @@ fun ReservationConfirmScreen(
 @Composable
 @Preview(showBackground = true)
 fun RSCpreview() {
-    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM())
+    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM(), order_id = 1)
 }

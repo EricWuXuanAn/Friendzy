@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -67,7 +68,7 @@ fun CustomerScreen(
     var inputText by remember { mutableStateOf("") } //搜尋功能使用的
     val postListState by customerVM.recommendPostListState.collectAsState()
     val postlists = postListState.filter { it.poster_status == 1 }
-
+    Log.d("tag_custmerScreen","${postlists}")
 
     Column(
         modifier = Modifier
@@ -226,8 +227,8 @@ fun postList(
         items(postlist) { post ->
             ListItem(
                 modifier = Modifier.clickable { onClick(post) },
-                overlineContent = { Text(text = post.service_id.toString(), fontSize = 18.sp) },
-                headlineContent = { Text(text = post.service, fontFamily = FontFamily.Default) },
+                overlineContent = { Text(text = "ServiceID: ${post.service_id.toString()}", fontSize = 18.sp) },
+                headlineContent = { Text(text = "Service Title: ${post.service}", fontFamily = FontFamily.Default) },
                 supportingContent = {
 
                     val formattedDate = post.start_time.let { startTime ->
@@ -236,7 +237,7 @@ fun postList(
                             .toLocalDate()
                             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                     }
-                    Text(text = formattedDate)
+                    Text(text = "Start at: ${formattedDate}")
                 },
                 leadingContent = {
                     Image(
