@@ -4,7 +4,7 @@ data class OrderList (
     val order_id: Int = 0,
     val member_name:String = "",
     val service_idno: Int = 0,
-    val order_person: String = "",
+    val order_person: Int = 0,
     val customer_rate: Int = 0,
     val custoner_rate_content: String = "",
     val companion_rate: Int = 0,

@@ -55,9 +55,10 @@ import java.time.format.DateTimeFormatter.ofPattern
 @Composable
 fun ReservationConfirmScreen(
     navController: NavHostController,
-    reservationConfirmVM:ReservationConfirmVM,
+    reservationConfirmVM:ReservationConfirmVM ,
     order_id: Int
 ) {
+    Log.d("tag_pass", "order_idPass $order_id")
     val scope = rememberCoroutineScope()
     var snackbarHostState = remember { SnackbarHostState() }
     val dateFormat = ofPattern("YYYY-MM-dd")
@@ -68,6 +69,7 @@ fun ReservationConfirmScreen(
     var postContent by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("台北") }
     var orderState by remember { mutableStateOf<OrderList?>(null) }
+    Log.d("tag_222", "orderState: $orderState")
 
 
     LaunchedEffect(Unit) {

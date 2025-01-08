@@ -2,17 +2,16 @@ package com.example.tip102group01friendzy
 
 import com.example.tip102group01friendzy.ui.feature.account.MemberInfo
 import com.example.tip102group01friendzy.ui.feature.chat.Chatroom
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
 import com.example.tip102group01friendzy.ui.feature.customer.Post
 import com.example.tip102group01friendzy.ui.feature.customer.addPostRequest
 import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
-import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
-import android.accounts.Account
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
-import com.example.tip102group01friendzy.ui.feature.customer.OrderListNullable
+import com.example.tip102group01friendzy.ui.feature.customer.requestDelete
 import com.example.tip102group01friendzy.ui.feature.customer.selectedOrderListRequest
+import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -88,6 +87,12 @@ interface APIService {
 
     @POST("rest/customer/selectedOrderList")
     suspend fun selectedorderList(@Body request: selectedOrderListRequest): OrderList
+
+    @POST("rest/customer/updateStatus")
+    suspend fun myRequestList(@Body request: selectedPostList)
+
+    @POST("rest/customer/deleteBlackList")
+    suspend fun deleteBlackList(@Body request: requestDelete)
 }
 
 

@@ -39,6 +39,7 @@ class CustomerVM : ViewModel() {
 //    }
 
 
+
     suspend fun getPostList():List<Post>{
         try {
             val list = RetrofitInstance.api.showPostList()

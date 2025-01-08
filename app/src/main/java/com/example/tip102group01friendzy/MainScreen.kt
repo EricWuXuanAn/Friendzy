@@ -189,7 +189,7 @@ fun Main(
                 route = Screen.OrderScreen.name
             ) {
 
-               OrderListScreen(navController = navController, orderlistVM = orderlistVM)
+               OrderListScreen(navController = navController, orderlistVM = orderlistVM, customerVM = customerVM, context = context)
             }
             composable(
                 route = Screen.CustomerScreen.name
@@ -206,7 +206,8 @@ fun Main(
             ) {
                 Favorite_and_BlackListScreen (
                     navController = navController,
-                    favorite_and_blacklistVM = favorite_and_bkacklistVM
+                    favorite_and_blacklistVM = favorite_and_bkacklistVM,
+                    context = context
                 )
             }
 
@@ -255,9 +256,9 @@ fun Main(
             composable(route = "${Screen.ReservationConfirmScreen.name}/{order_id}"){
                 Log.d("tag_", " composable backentry: ${backStackEntry?.arguments}")
 //                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
-//                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
-//                Log.d("tag_", " composable order_id: $order_id")
-                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1)
+                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
+                Log.d("tag_", " composable order_id: $order_id")
+                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, order_id = order_id)
             }
 
             //>>>陪伴者

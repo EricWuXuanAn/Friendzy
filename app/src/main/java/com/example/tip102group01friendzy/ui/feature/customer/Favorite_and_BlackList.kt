@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,19 +32,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import kotlinx.coroutines.launch
 
 @Composable
 fun Favorite_and_BlackListScreen(
     navController: NavHostController,
-    favorite_and_blacklistVM: Favorite_and_Black_ListVM
+    favorite_and_blacklistVM: Favorite_and_Black_ListVM,
+    context: Context
 ) {
+    val scpoe = rememberCoroutineScope()
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val user_id = preferences.getInt("member_no", 0)
     var tabIndex by remember { mutableStateOf(0) }
     val tab = listOf(
         stringResource(R.string.favotite),
@@ -50,6 +55,7 @@ fun Favorite_and_BlackListScreen(
     )
     val favListState by favorite_and_blacklistVM.favoriteListState.collectAsState()
     val blackListState by favorite_and_blacklistVM.blackListState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,8 +77,21 @@ fun Favorite_and_BlackListScreen(
 
         }
         when (tabIndex) {
-            0 -> getFavList(favaLists = favListState, onClick = {Screen.MemberScreen.name}, navController = navController)
-            1 -> getBlackList(blackLists = blackListState, onClick = {/*發請求叫後端做動作刪除 VM要多刪除方法*/})
+            0 -> getFavList(
+                favaLists = favListState,
+                onClick = { Screen.MemberScreen.name },
+                navController = navController
+            )
+
+            1 -> getBlackList(
+                blackLists = blackListState.filter { it.user_id == user_id },
+                onClick = {
+                    scpoe.launch {
+                        favorite_and_blacklistVM.delete(
+                            user_id = user_id, balcklist_id = it.blacklist_id
+                        )
+                    }
+                })
         }
     }
 }
@@ -82,7 +101,7 @@ fun Favorite_and_BlackListScreen(
 fun getFavList(
     favaLists: List<Favorite_List>,
     onClick: (Favorite_List) -> Unit,
-    navController:NavHostController
+    navController: NavHostController
 ) {
     LazyColumn {
         items(favaLists) { favaList ->
@@ -146,18 +165,20 @@ fun getBlackList(
                     )
                 },
                 leadingContent = {
-                   Image(
-                       modifier = Modifier.size(70.dp),
-                       painter = painterResource(R.drawable.ic_launcher_foreground),
-                       contentDescription = "image"
-                   )
+                    Image(
+                        modifier = Modifier.size(70.dp),
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = "image"
+                    )
                 },
                 trailingContent = {
                     Column(
                         //為何不會靠底下？
                         verticalArrangement = Arrangement.Bottom
                     ) {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+
+                        }) {
                             Icon(
                                 Icons.Default.Delete,
                                 "remove block"
@@ -174,9 +195,9 @@ fun getBlackList(
     }
 }
 
-
-@Composable
-@Preview(showBackground = true)
-fun Favorite_and_BlackListScreenPreview() {
-    Favorite_and_BlackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
-}
+//
+//@Composable
+//@Preview(showBackground = true)
+//fun Favorite_and_BlackListScreenPreview() {
+//    Favorite_and_BlackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
+//}

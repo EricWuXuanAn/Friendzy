@@ -166,11 +166,10 @@ fun ReservationScreen(
                 contentColor = Color.DarkGray
             ),
             onClick = {
-                /*
-                發請求給後端 叫後端動作 會有修改然後傳到某個table會在頂單管理出現
-                應該要用一個coroutineScope包起來 裡面值請求發給後端動 然後回到上一頁
-                FCM 連server 發通知
-                */
+                scpoe.launch {
+                    reservationVM.getNewStatus(service_id = service_id)
+                    navController.popBackStack() //回到上一頁
+                }
             }) {
             Text(text = "Make a reservation")
         }
@@ -181,7 +180,7 @@ fun ReservationScreen(
                 contentColor = Color.DarkGray
             ),
             onClick = {
-                navController.popBackStack() //回到上一頁
+                    navController.popBackStack() //回到上一頁
             }
         ) {
             Text(text = stringResource(R.string.cancle))
