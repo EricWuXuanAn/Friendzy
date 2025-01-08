@@ -1,7 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
 data class OrderList (
-    val order_id: Int ,
+    val order_id: Int = 0,
     val member_name:String = "",
     val service_idno: Int = 0,
     val order_person: String = "",

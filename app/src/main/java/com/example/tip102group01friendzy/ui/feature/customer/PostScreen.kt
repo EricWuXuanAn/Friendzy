@@ -62,7 +62,7 @@ import java.time.format.DateTimeFormatter.ofPattern
 fun PostScreen(
     navController: NavHostController,
     postVM: PostVM,
-    tabVM : TabVM
+    tabVM: TabVM
 ) {
     tabVM.tabBarState(true)
     var service_content by remember { mutableStateOf("") }
@@ -74,9 +74,30 @@ fun PostScreen(
     var endExpended by remember { mutableStateOf(false) }
     var service_poster by remember { mutableIntStateOf(1) }
     val options = listOf(
-        "00:00:00", "01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00", "06:00:00", "07:00:00", "08:00:00", "09:00:00",
-        "10:00:00", "11:00:00", "12:00:00", "13:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00",
-        "20:00:00", "21:00:00", "22:00:00", "23:00:00"
+        "00:00:00",
+        "01:00:00",
+        "02:00:00",
+        "03:00:00",
+        "04:00:00",
+        "05:00:00",
+        "06:00:00",
+        "07:00:00",
+        "08:00:00",
+        "09:00:00",
+        "10:00:00",
+        "11:00:00",
+        "12:00:00",
+        "13:00:00",
+        "14:00:00",
+        "15:00:00",
+        "16:00:00",
+        "17:00:00",
+        "18:00:00",
+        "19:00:00",
+        "20:00:00",
+        "21:00:00",
+        "22:00:00",
+        "23:00:00"
     )
 
     val dateFormat = ofPattern("YYYY-MM-dd") //設定日期格式
@@ -95,8 +116,10 @@ fun PostScreen(
     val finishedTime = "$endSelectDate $endExpendText"
     val startTimeFormatter = LocalDateTime.parse(startTime, formatter)
     val finishedTimeFormatter = LocalDateTime.parse(finishedTime, formatter)
-    val stratTimestamp = startTimeFormatter.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()  // 轉換為 Long 類型的時間戳
-    val finishedTimestamp = finishedTimeFormatter.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val stratTimestamp = startTimeFormatter.atZone(ZoneId.systemDefault()).toInstant()
+        .toEpochMilli()  // 轉換為 Long 類型的時間戳
+    val finishedTimestamp =
+        finishedTimeFormatter.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
     //日期對話選擇後會在Text上顯示的日期
     var showStartDatePickerDialog by remember { mutableStateOf(false) } //預設日期對話匡要顯示還是不顯示，預設為不顯示
@@ -311,27 +334,34 @@ fun PostScreen(
 
         }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 10.dp, start = 5.dp, end = 5.dp)
-        ) {  TextField(
-            modifier = Modifier.weight(0.8f),
-            value = service_poster.toString(),
-            onValueChange = {service_poster = it.toInt()},
-            label = { Text("請輸入會員ID") }
-        ) }
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, start = 5.dp, end = 5.dp)
+        ) {
+            TextField(
+                modifier = Modifier.weight(0.8f),
+                value = service_poster.toString(),
+                onValueChange = { service_poster = it.toInt() },
+                label = { Text("請輸入會員ID") }
+            )
+        }
         Row(
-            modifier = Modifier.padding(top = 20.dp, start = 5.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            modifier = Modifier
+                .padding(top = 20.dp, start = 5.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             TextField(
                 modifier = Modifier.weight(0.7f),
                 value = post_status.toString(),
-                onValueChange = {post_status = it.toInt()},
-                label =  { Text(text = "0 為顧客 , 1 為陪伴者") }
+                onValueChange = { post_status = it.toInt() },
+                label = { Text(text = "0 為顧客 , 1 為陪伴者") }
             )
 
             TextField(
                 modifier = Modifier.weight(0.4f),
                 value = service_price.toString(),
-                onValueChange = {service_price = it.toDouble()},
+                onValueChange = { service_price = it.toDouble() },
                 label = { Text(text = "訂單價格: ") }
             )
         }
@@ -363,12 +393,15 @@ fun PostScreen(
                     )
                     delay(2000)
                 }
-                inputTitle = ""
-                service_content = ""
-                service_price = 0.0
-                service_poster = 1
-                startExpendText = "00:00:00"
-                endExpendText = "00:00:00"
+                scpoe.launch {
+                    service_content = ""
+                    service_price = 0.0
+                    inputTitle = ""
+                    service_poster = 1
+                    startExpendText = "00:00:00"
+                    endExpendText = "00:00:00"
+                }
+
             }
         ) {
             Text("Post")
