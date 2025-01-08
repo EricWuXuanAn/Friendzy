@@ -39,7 +39,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
-import java.time.format.DateTimeFormatter.ofPattern
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun ReservationScreen(
@@ -48,8 +50,7 @@ fun ReservationScreen(
     service_id:Int
 
 ) {
-    val dateFormat = ofPattern("YYYY-MM-dd")
-
+    val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     val scpoe = rememberCoroutineScope()
     var selectedPost by remember { mutableStateOf<Post?>(null) }
     LaunchedEffect(Unit) {
@@ -57,8 +58,20 @@ fun ReservationScreen(
              selectedPost = reservationVM.getSelectedPostList( service_id = service_id)
         }
     }
+    val startTime:Long? = selectedPost?.start_time
+    val finishedTime = selectedPost?.finished_time
+    val startTimeFormatter: String? = startTime?.let {
+        Instant.ofEpochMilli(it)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime().format(dateFormat)
+    }
+    val finishedTimeFormatter: String? = finishedTime?.let {
+        Instant.ofEpochMilli(it)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime().format(dateFormat)
+    }
 
-//    var location by remember { mutableStateOf("台北") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -126,12 +139,12 @@ fun ReservationScreen(
             Text(text = "Content: \n${selectedPost?.service_detail}", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
             Text(text = "Available: ", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
             Text(
-                text = "Start: ${selectedPost?.start_time}",
+                text = "Start: ${startTimeFormatter}",
                 fontSize = 20.sp,
                 modifier = Modifier.padding(10.dp)
             )
             Text(
-                text = "End: ${selectedPost?.finished_time}",
+                text = "End: ${finishedTimeFormatter}",
                 fontSize = 20.sp,
                 modifier = Modifier.padding(10.dp)
             )
@@ -156,6 +169,7 @@ fun ReservationScreen(
                 /*
                 發請求給後端 叫後端動作 會有修改然後傳到某個table會在頂單管理出現
                 應該要用一個coroutineScope包起來 裡面值請求發給後端動 然後回到上一頁
+                FCM 連server 發通知
                 */
             }) {
             Text(text = "Make a reservation")

@@ -11,6 +11,8 @@ import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
 import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
 import android.accounts.Account
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
+import com.example.tip102group01friendzy.ui.feature.customer.OrderListNullable
+import com.example.tip102group01friendzy.ui.feature.customer.selectedOrderListRequest
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -83,7 +85,12 @@ interface APIService {
     suspend fun comOrderUpdate(@Body comOrder:CompanionOrder):CompanionOrder
     @GET("rest/chatrooms")
     suspend fun showAllChatrooms(): List<Chatroom>
+
+    @POST("rest/customer/selectedOrderList")
+    suspend fun selectedorderList(@Body request: selectedOrderListRequest): OrderList
 }
+
+
 
 object RetrofitInstance {
     val client = OkHttpClient.Builder()

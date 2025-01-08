@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,7 +49,9 @@ fun OrderListScreen(
     val uncomfirm = ordeState.filter { it.order_status == 0 }
     val inProfress = ordeState.filter { it.order_status == 1 }
     val completed = ordeState.filter { it.order_status == 2 }
+
     val unknowcode = ordeState.filter { it.order_status == 3 }
+    Log.d("tag_", "unknowCode: $unknowcode")
     val tab = listOf(
         stringResource(R.string.order_List),
         stringResource(R.string.unconfirm),
@@ -150,7 +153,10 @@ fun OrderListScreen(
             })
 
             4 -> orderList(orders = unknowcode, onClick = {
-                navController.navigate(Screen.ReservationConfirmScreen.name)
+                Log.d("tag_", "orderList: $it")
+//                Log.d("tag_", "order_id: ${it.order_id}")
+                Log.d("tag_", "route: ${Screen.ReservationConfirmScreen.name}/${it.order_id}")
+                navController.navigate(route = "${Screen.ReservationConfirmScreen.name}/${it.order_id}")
             })
 
             5 -> Text("到時候會有清單")
@@ -167,13 +173,15 @@ fun orderList(
     LazyColumn {
         items(orders) { order ->
             ListItem(
-                modifier = Modifier.clickable { onClick(order) },
+                modifier = Modifier.clickable {
+                    Log.d("tag_", "order: $order")
+                    onClick(order) },
                 headlineContent = { Text(text = "order Title: ${order.order_title}") },
                 overlineContent = { Text(text = "Order ID: ${order.order_id}", fontSize = 18.sp) },
                 supportingContent = { Text(text = "Order Person:${order.member_name}") },
                 trailingContent = {
                     Text(
-                        text = "Order Price: \n${order.order_pirce}",
+                        text = "Order Price: \n${order.order_price}",
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
