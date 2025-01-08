@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -40,11 +42,10 @@ import com.example.tip102group01friendzy.ui.feature.account.RegisterViewModel
 import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.feature.companion.ComOrderDtlVM
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionAppointmentVM
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionApplicantVM
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionCheckAppointmentScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionLookPublishScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionMyPublishVM
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderDetailsScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderListScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderVM
@@ -53,6 +54,7 @@ import com.example.tip102group01friendzy.ui.feature.companion.CompanionScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionVM
 import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
 import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
+import com.example.tip102group01friendzy.ui.feature.companion.companionScenery
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_and_BlackListScreen
@@ -114,7 +116,7 @@ fun Main(
     tabVM: TabVM = TabVM(),
     companionVM: CompanionVM = viewModel(),
     companionMyPublishVM: CompanionMyPublishVM = viewModel(),
-    companionAppointmentVM: CompanionAppointmentVM = viewModel(),
+    companionApplicantVM: CompanionApplicantVM = viewModel(),
     companionOrderVM: CompanionOrderVM = viewModel(),
     comOrderDtlVM: ComOrderDtlVM = viewModel(),
     loginViewModel: LoginViewModel = LoginViewModel(context = LocalContext.current),
@@ -133,6 +135,8 @@ fun Main(
     // 設定內容向上捲動時，TopAppBar自動收起來；呼叫pinnedScrollBehavior()則不會收起來
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val context = LocalContext.current
+
+    val memberStatus = tabVM.memberStatus.collectAsState()
 
 
     Scaffold(
@@ -156,10 +160,17 @@ fun Main(
         NavHost(
             navController = navController,
             startDestination = Screen.EnterScreen.name,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-
+            modifier =
+            if(memberStatus.value){
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(color = companionScenery)
+            }else{
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            },
         ) {
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
@@ -286,7 +297,8 @@ fun Main(
                 CompanionOrderListScreen(
                     navController = navController,
                     companionOrderVM = companionOrderVM,
-//                    companionAppointmentVM = companionAppointmentVM,
+                    companionApplicantVM = companionApplicantVM,
+
                     tabVM = tabVM
                 )
             }
@@ -307,7 +319,7 @@ fun Main(
             ){
                 CompanionCheckAppointmentScreen(
                     navController = navController,
-                    companionAppointmentVM = companionAppointmentVM,
+                    companionApplicantVM = companionApplicantVM,
                     comOrderVM = companionOrderVM,
                     tabVM = tabVM
                 )

@@ -3,6 +3,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,6 +52,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.switch
 //tab選項內容格式
 class ScreenTabsButton(var name: String = "", var btIcon: Int = R.drawable.icon, var color:Int = R.color.white)
 /**陪伴者背景色*/
+//val companionScenery = Color(red = 170, green = 170, blue = 170, alpha = 255)
 val companionScenery = Color(red = 235, green = 243, blue = 250, alpha = 255)
 //val companionScenery = Color(red = 199, green = 238, blue = 234, alpha = 255)
 
@@ -71,6 +73,7 @@ fun CompanionScreen(
 
     var accountStatus by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
+    val memberStatus = tabVM.memberStatus.collectAsState().value
 
 
     val tabs :List<ScreenTabsButton> =listOf(//tab選項內容
@@ -81,11 +84,10 @@ fun CompanionScreen(
     )
 
     Column (
-        modifier = Modifier.fillMaxSize()
-            .background(companionScenery)
-    ){  }
-    Column (
-        modifier = Modifier.fillMaxSize().padding(20.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+            .background(companionScenery),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         //切換身分列
@@ -97,21 +99,17 @@ fun CompanionScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             switch(
-                check = accountStatus
+                check = memberStatus
             ) {
-                accountStatus = it
-                if (!accountStatus){
-                    navController.navigate(Screen.CustomerScreen.name){
-                        popUpTo(Screen.CompanionScreen.name){inclusive = true}
-                    }
-                }
+                tabVM.setMemberStatus(it)
+//                if (!accountStatus){
+//                    navController.navigate(Screen.CustomerScreen.name){
+//                        popUpTo(Screen.CompanionScreen.name){inclusive = true}
+//                    }
+//                }
 
 
             }
-//            text = when(accountStatus){
-//                false ->"Customer"
-//                true ->"Companion"
-//            }
             Text(
                 text = "Companion"
             )
@@ -119,28 +117,6 @@ fun CompanionScreen(
                 onClick = {},
             ) { Icon(Icons.Filled.Notifications, contentDescription = "Notification") }
         }
-        /*
-        //↑保留
-        Column {
-            //tab選項點擊功能
-            when(tabIndex){
-                0 ->{//訂單管理
-                    OrderListScreen(
-                        orderlistVM = OrderVM(),
-                        navController = rememberNavController(),
-                    )
-                    testIten = "123"
-                }
-                1 ->{//可預約時間
-                    testIten = "456"
-                }
-                2 ->{//申請項目
-                    testIten = "asd"
-                }
-            }
-        }
-        // ↓點tab隱藏
-        */
         //搜尋框
         Column(
             modifier = Modifier

@@ -10,6 +10,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.addPostRequest
 import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
 import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
 import android.accounts.Account
+import com.example.tip102group01friendzy.ui.feature.companion.Applicant
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
@@ -76,13 +77,25 @@ interface APIService {
 
     //陪伴者訂單明細
     @GET("rest/companion/order/showId/{memberNo}/{servicePerson}/{orderId}")
-    suspend fun comOrderDetails(@Path("memberNo") memberNo: Int, @Path("servicePerson") servicePerson: Int, @Path("orderId") orderId: Int,):CompanionOrder
+    suspend fun comOrderDetails(
+        @Path("memberNo") memberNo: Int, @Path("servicePerson") servicePerson: Int, @Path("orderId") orderId: Int,
+    ):CompanionOrder
 
     //陪伴者改訂單狀態
     @PUT("rest/companion/order/orderStatus/update")
     suspend fun comOrderUpdate(@Body comOrder:CompanionOrder):CompanionOrder
     @GET("rest/chatrooms")
     suspend fun showAllChatrooms(): List<Chatroom>
+
+    //應徵者清單
+    @GET("/showAll/{memberNo}")
+    suspend fun showAllApplicants(@Path("memberNo") memberNo: Int):List<Applicant>
+
+    //應徵者詳細資訊
+    @GET("/showId/{memberNo}/{account}/{serviceId}")
+    suspend fun showApplicantByAccount(
+        @Path("memberNo") memberNo: Int,@Path("account") account: Int,@Path("serviceId") serviceId: Int
+    ):Applicant
 }
 
 object RetrofitInstance {

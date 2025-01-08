@@ -1,5 +1,7 @@
 package com.example.tip102group01friendzy
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -12,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,9 +30,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberSceernVM
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionMyPublishVM
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionPublishScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionVM
 import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
 import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
+import com.example.tip102group01friendzy.ui.feature.companion.companionScenery
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
@@ -43,7 +50,13 @@ fun TabMainScreen(
 ) {
     var switchState by remember { mutableStateOf(false) }
     val tabBarVisibility = tabVM.tabBarVisibility.collectAsState()
-    var tabIndex by remember { mutableStateOf(0) }
+//    var tabIndex by remember { mutableStateOf(0) }
+
+    val showTabIndex = tabVM.showTabIndex.collectAsState().value
+    var tabIndex by remember { mutableIntStateOf(showTabIndex) }
+    val memberStatus = tabVM.memberStatus.collectAsState()
+    Log.d("_showTabIndex","showTabIndex:$showTabIndex")
+
     val tabs = listOf(
         stringResource(id = R.string.home),
         stringResource(id = R.string.service),
@@ -55,28 +68,49 @@ fun TabMainScreen(
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+            modifier = if(memberStatus.value){
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(color = companionScenery)
+            }else{
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            }
         ) {
 
 
             when (tabIndex) {
                 0 -> SearchWithMap(navController = navController, tabVM = tabVM)
-                1 -> CustomerScreen(
-                    navController = navController,
-                    tabVM = tabVM,
-                    customerVM = CustomerVM(),
-                    postVM = PostVM()
-                )
 
-                2 -> if (switchState == false) {
-                    PostScreen(navController = navController, postVM = PostVM(), tabVM = tabVM)
-                } else {
+                1 ->if (memberStatus.value){
+                    CompanionScreen(
+                        navController = navController,
+                        companionVM = CompanionVM(),
+                        companionMyPublishVM = CompanionMyPublishVM(),
+                        tabVM = tabVM
+                    )
+                }else{
+                    CustomerScreen(
+                        navController = navController,
+                        tabVM = tabVM,
+                        customerVM = CustomerVM(),
+                        postVM = PostVM()
+                    )
+                }
+
+                2 -> if (memberStatus.value) {
                     CompanionPublishScreen(
                         navController = navController,
                         skillVM = SkillVM(),
                         locationVM = LocationVM(),
+                        tabVM = tabVM
+                    )
+                } else {
+                    PostScreen(
+                        navController = navController,
+                        postVM = PostVM(),
                         tabVM = tabVM
                     )
                 }
@@ -102,7 +136,10 @@ fun TabMainScreen(
                         // 判斷此頁籤是否為選取頁籤
                         selected = index == tabIndex,
                         // 點擊此頁籤後將選取索引改為此頁籤的索引
-                        onClick = { tabIndex = index },
+                        onClick = {tabIndex = index
+//                            tabVM.setShowTabIndex(index)
+//                                  Log.d("_tabIndex","index:$index")
+                                  },
                         // 設定選取顏色
                         selectedContentColor = colorResource(R.color.teal_700),
                         // 設定未選取顏色
