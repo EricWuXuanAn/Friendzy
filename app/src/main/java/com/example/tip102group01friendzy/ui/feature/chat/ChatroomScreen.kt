@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.chat
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -46,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
 import java.text.SimpleDateFormat
@@ -59,7 +61,6 @@ fun ChatroomScreen(
     chatroomViewModel: ChatroomViewModel = viewModel(),
     tabVM: TabVM = TabVM()
 ) {
-
     tabVM.tabBarState(true)
     var searchChatroom by remember { mutableStateOf("") }
     val chatrooms by chatroomViewModel.chatroomState.collectAsState()
@@ -105,11 +106,11 @@ fun ChatroomScreen(
         ) {
             getChatroomLists(
                 chatrooms.filter { it.OtherUserName.contains(searchChatroom, true) },
-                onClick = {
-                    // TODO:跳轉到該聊天室
-//                    Log.d("tag_", "ChatroomScreen1")
-//                    navController.navigate(Screen.ChatMessageScreen.name)
-//                    Log.d("tag_", "ChatroomScreen2")
+                onClick = { chatroom ->
+                     //TODO:跳轉到該聊天室
+                    Log.d("tag_", "ChatroomScreen1")
+                    navController.navigate("${Screen.ChatMessageScreen.name}/${chatroom.room_no}")
+                    Log.d("tag_", "ChatroomScreen2")
                 }
             )
         }

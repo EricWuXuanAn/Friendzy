@@ -1,5 +1,7 @@
 package com.example.tip102group01friendzy
 
+import android.content.Context
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -164,12 +166,7 @@ fun Main(
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
                     navController = navController,
-                    loginViewModel = LoginViewModel(context = context),
-//                    requestVM = RequestVM(),
-//                    onLoginSuccess = {
-//                        loginViewModel.email.value = it
-//
-//                    }
+                    loginViewModel = LoginViewModel(context = context)
                 )
             }
             composable(
@@ -325,8 +322,20 @@ fun Main(
             composable(route = Screen.TabMainScreen.name){
                 TabMainScreen(navController = navController, tabVM = tabVM)
             }
-            composable(route = Screen.ChatMessageScreen.name){
-                ChatMessageScreen(navController = navController)
+            composable(
+                "${Screen.ChatMessageScreen.name}/{roomNo}",
+                arguments = listOf(navArgument("roomNo") { type = NavType.IntType })
+            ){backStackEntry ->
+                val roomNo = backStackEntry?.arguments?.getInt("roomNo") ?: 0
+                val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+                val memberNo = preferences.getInt("member_no",0)
+                Log.d("tag_MainScreen_backStackEntry?.arguments","backStackEntry?.arguments:${backStackEntry?.arguments}")
+                ChatMessageScreen(
+                    navController = navController,
+                    roomNo = roomNo,
+                    currentUserId = memberNo
+                )
+                Log.d("tab_MainScreen_ChatMessageScreen","roomNo: ${roomNo}, currentUserId: $memberNo")
             }
 
         }
