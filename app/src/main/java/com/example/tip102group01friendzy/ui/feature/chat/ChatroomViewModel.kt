@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.RetrofitInstance
-import com.example.tip102group01friendzy.createResult
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -23,7 +22,7 @@ class ChatroomViewModel : ViewModel() {
     private val _chatroomState = MutableStateFlow(emptyList<Chatroom>())
     val chatroomState: StateFlow<List<Chatroom>> = _chatroomState.asStateFlow()
 
-    private val _resultState = MutableStateFlow<createResult?>(null)
+    private val _resultState = MutableStateFlow<Chatroom?>(null)
     val resultState = _resultState.asStateFlow()
 
     init {
@@ -34,8 +33,9 @@ class ChatroomViewModel : ViewModel() {
             //同步到Firebase
             localChatrooms.forEach { chatroom ->
                 syncChatroomToFirebase(chatroom)
-
             }
+            //監聽Firebase變化
+            observeFirebaseUpdates()
         }
     }
 
@@ -57,12 +57,16 @@ class ChatroomViewModel : ViewModel() {
         database.reference.child("chatRooms")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val chatrooms = mutableListOf<Chatroom>()
-                    snapshot.children.forEach { roomSnapshot ->
-                        val room = roomSnapshot.getValue(Chatroom::class.java)
-                        room?.let { chatrooms.add(it) }
+                    viewModelScope.launch {
+                        val updateChatrooms = getChatroomInfo()
+                        _chatroomState.value = updateChatrooms
                     }
-                    _chatroomState.value = chatrooms
+//                    val chatrooms = mutableListOf<Chatroom>()
+//                    snapshot.children.forEach { roomSnapshot ->
+//                        val room = roomSnapshot.getValue(Chatroom::class.java)
+//                        room?.let { chatrooms.add(it) }
+//                    }
+//                    _chatroomState.value = chatrooms
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -72,41 +76,45 @@ class ChatroomViewModel : ViewModel() {
             )
     }
 
-    //新增聊天室
-//    fun addChatroom(item: Chatroom) {
-//        _chatroomState.update {
-//            val chatrooms = it.toMutableList()
-//            chatrooms.add(item)
-//            chatrooms
-//        }
-//    }
-    suspend fun createChatroom(otherUserId: Int){
-        try {
-            val response = RetrofitInstance.api.createChatroom(otherUserId)
-
-            if (response.isSuccessful){
-                _resultState.value = createResult(true, "創建聊天室成功")
-            }else{
-                _resultState.value = createResult(false, response.message())
-            }
+    //找聊天室是否已存在
+    suspend fun checkChatroomExists(currentUserId: Int, otherUserId: Int): Int?{
+        return try {
+            val chatrooms = getChatroomInfo()
+            chatrooms.find { room ->
+                (room.room_user_one == currentUserId && room.room_user_two == otherUserId) ||
+                        (room.room_user_one == otherUserId && room.room_user_two == currentUserId)
+            }?.room_no
         }catch (e: Exception){
-            _resultState.value = createResult(false, "創建聊天室時發生錯誤: ${e.message}")
+            null
         }
     }
 
-//    suspend fun checkIfChatroomExists(otherUserId: Int): Boolean {
-//        // 嘗試從資料庫中查找是否有現有的聊天室
-//        val chatrooms = getChatroomInfo()
-//        return chatrooms.any { it.room_user_one == otherUserId || it.room_user_two == otherUserId }
-//    }
-
+    suspend fun createAndGetChatroom(otherUserId: Int): Int? {
+        return try {
+            val response = RetrofitInstance.api.createChatroom(otherUserId)
+            if (response.isSuccessful) {
+                val newChatroom = response.body()
+                newChatroom?.let {
+                    syncChatroomToFirebase(it)
+                    return it.room_no
+                }
+            }
+            null
+        }catch (e: Exception){
+            null
+        }
+    }
 
     //拿聊天室資料
     suspend fun getChatroomInfo(): List<Chatroom> {
         try {
-            val list = RetrofitInstance.api.showAllChatrooms()
-            Log.d("ChatroomViewModel", "Fetched chatrooms: $list")
-            return list
+            val allChatrooms = RetrofitInstance.api.showAllChatrooms()
+            val uniqueChatRooms = allChatrooms.distinctBy { chatroom ->
+                val userIds = listOf(chatroom.room_user_one, chatroom.room_user_two).sorted()
+                "${userIds[0]}_${userIds[1]}"
+            }
+            Log.d("ChatroomViewModel", "allChatrooms: $allChatrooms, uniqueChatRooms: $uniqueChatRooms")
+            return uniqueChatRooms
         } catch (e: Exception) {
             Log.e("ChatroomViewModel", "Error fetching chatrooms", e)
             return emptyList()

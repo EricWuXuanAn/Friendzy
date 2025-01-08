@@ -50,6 +50,7 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import com.google.firebase.Firebase
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -107,14 +108,12 @@ fun ChatroomScreen(
             getChatroomLists(
                 chatrooms.filter { it.OtherUserName.contains(searchChatroom, true) },
                 onClick = { chatroom ->
-                     //TODO:跳轉到該聊天室
                     Log.d("tag_", "ChatroomScreen1")
                     navController.navigate("${Screen.ChatMessageScreen.name}/${chatroom.room_no}")
                     Log.d("tag_", "ChatroomScreen2")
                 }
             )
         }
-
     }
 }
 
@@ -122,6 +121,7 @@ fun ChatroomScreen(
 fun getChatroomLists(
     chatrooms: List<Chatroom>,
     onClick: (Chatroom) -> Unit,
+    chatMessageViewModel: ChatMessageViewModel = viewModel()
 //    navController: NavHostController
 ) {
     LazyColumn(
@@ -136,7 +136,7 @@ fun getChatroomLists(
                 modifier = Modifier.clickable {
                     onClick(chatroom)
                 },
-                overlineContent = { Text(text = chatroom.room_no.toString()) },
+//                overlineContent = { Text(text = chatroom.room_no.toString()) },
                 headlineContent = { Text(chatroom.OtherUserName) },
 
                 leadingContent = {
@@ -151,9 +151,10 @@ fun getChatroomLists(
                     )
                 },
 //                trailingContent = {
-//                    Text(text = formatDatetime(chatroom.lastMessageTime))
+//                    Text(
+//                        text =
+//                    )
 //                }
-
             )
         }
     }

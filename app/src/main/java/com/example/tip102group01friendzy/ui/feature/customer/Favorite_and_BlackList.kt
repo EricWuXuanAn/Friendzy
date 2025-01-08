@@ -1,5 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,20 +25,27 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageViewModel
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun Favorite_and_BlackListScreen(
@@ -82,8 +91,14 @@ fun Favorite_and_BlackListScreen(
 fun getFavList(
     favaLists: List<Favorite_List>,
     onClick: (Favorite_List) -> Unit,
-    navController:NavHostController
+    navController:NavHostController,
+    chatroomViewModel: ChatroomViewModel = viewModel()
 ) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val memberNo = preferences.getInt("member_no", 0)
+
     LazyColumn {
         items(favaLists) { favaList ->
             ListItem(
@@ -105,7 +120,15 @@ fun getFavList(
                     IconButton(
                         modifier = Modifier.size(20.dp),
                         onClick = {
-//                            navController.navigate("${Screen.ChatMessageScreen.name}/${chatroom.room_no}")
+                          scope.launch {
+                              handleChatNavigation(
+                                  currentUserId = memberNo,
+                                  otherUserId = favaList.be_hunted,
+                                  chatroomViewModel = chatroomViewModel,
+                                  navController = navController,
+                                  context = context
+                              )
+                          }
                         }
                     ) {
                         Icon(
@@ -126,7 +149,6 @@ fun getFavList(
         }
     }
 }
-
 
 //建立一個函式去VM中拿取資料
 @Composable
@@ -174,6 +196,28 @@ fun getBlackList(
     }
 }
 
+private suspend fun handleChatNavigation(
+    currentUserId: Int,
+    otherUserId: Int,
+    chatroomViewModel: ChatroomViewModel,
+    navController: NavController,
+    context: Context
+){
+    try {
+        var roomNo = chatroomViewModel.checkChatroomExists(currentUserId, otherUserId)
+
+        if (roomNo == null){
+            roomNo = chatroomViewModel.createAndGetChatroom(otherUserId)
+        }
+        if(roomNo != null){
+            navController.navigate("${Screen.ChatMessageScreen.name}/${roomNo}")
+        }else{
+            Toast.makeText(context,"無法創建聊天室，請稍後再試", Toast.LENGTH_SHORT).show()
+        }
+    }catch (e: Exception){
+        Toast.makeText(context,"發生錯誤: ${e.message}", Toast.LENGTH_SHORT).show()
+    }
+}
 
 @Composable
 @Preview(showBackground = true)
