@@ -255,9 +255,9 @@ fun Main(
             composable(route = "${Screen.ReservationConfirmScreen.name}/{order_id}"){
                 Log.d("tag_", " composable backentry: ${backStackEntry?.arguments}")
 //                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
-//                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
-//                Log.d("tag_", " composable order_id: $order_id")
-                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1)
+                val orderId = backStackEntry?.arguments?.getInt("order_id") ?: -1
+                Log.d("tag_", " composable order_id: $orderId")
+                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, orderId)
             }
 
             //>>>陪伴者

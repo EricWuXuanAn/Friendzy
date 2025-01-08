@@ -105,7 +105,7 @@ fun getFavList(
                     IconButton(
                         modifier = Modifier.size(20.dp),
                         onClick = {
-                            navController.navigate(Screen.ChatMessageScreen.name)
+//                            navController.navigate("${Screen.ChatMessageScreen.name}/${chatroom.room_no}")
                         }
                     ) {
                         Icon(

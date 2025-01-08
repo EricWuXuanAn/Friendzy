@@ -131,12 +131,14 @@ fun getChatroomLists(
     ) {
         items(chatrooms) { chatroom ->
             // 用來建立Lists內容物
+            Log.d("tag_chatroomScreen", "room_user_one: ${chatroom.room_user_one}, room_user_two: ${chatroom.room_user_two}")
             ListItem(
                 modifier = Modifier.clickable {
                     onClick(chatroom)
                 },
                 overlineContent = { Text(text = chatroom.room_no.toString()) },
                 headlineContent = { Text(chatroom.OtherUserName) },
+
                 leadingContent = {
                     Image(
                         painter = painterResource(id = R.drawable.puzzle),
@@ -151,6 +153,7 @@ fun getChatroomLists(
 //                trailingContent = {
 //                    Text(text = formatDatetime(chatroom.lastMessageTime))
 //                }
+
             )
         }
     }

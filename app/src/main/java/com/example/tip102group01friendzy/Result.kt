@@ -6,3 +6,8 @@ data class Result(
     val token: String?
 )
 
+data class createResult(
+    val statu: Boolean,
+    val message: String
+)
+

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.RetrofitInstance
+import com.example.tip102group01friendzy.createResult
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -22,6 +23,9 @@ class ChatroomViewModel : ViewModel() {
     private val _chatroomState = MutableStateFlow(emptyList<Chatroom>())
     val chatroomState: StateFlow<List<Chatroom>> = _chatroomState.asStateFlow()
 
+    private val _resultState = MutableStateFlow<createResult?>(null)
+    val resultState = _resultState.asStateFlow()
+
     init {
         viewModelScope.launch {
             //本地資料庫
@@ -32,8 +36,6 @@ class ChatroomViewModel : ViewModel() {
                 syncChatroomToFirebase(chatroom)
 
             }
-            //監聽firebase
-
         }
     }
 
@@ -44,6 +46,8 @@ class ChatroomViewModel : ViewModel() {
             .setValue(
                 mapOf(
                     "room_no" to chatroom.room_no,
+                    "room_user_one" to chatroom.room_user_one,
+                    "room_user_two" to chatroom.room_user_two,
                     "OtherUserName" to chatroom.OtherUserName
                 )
             )
@@ -69,13 +73,32 @@ class ChatroomViewModel : ViewModel() {
     }
 
     //新增聊天室
-    fun addChatroom(item: Chatroom) {
-        _chatroomState.update {
-            val chatrooms = it.toMutableList()
-            chatrooms.add(item)
-            chatrooms
+//    fun addChatroom(item: Chatroom) {
+//        _chatroomState.update {
+//            val chatrooms = it.toMutableList()
+//            chatrooms.add(item)
+//            chatrooms
+//        }
+//    }
+    suspend fun createChatroom(otherUserId: Int){
+        try {
+            val response = RetrofitInstance.api.createChatroom(otherUserId)
+
+            if (response.isSuccessful){
+                _resultState.value = createResult(true, "創建聊天室成功")
+            }else{
+                _resultState.value = createResult(false, response.message())
+            }
+        }catch (e: Exception){
+            _resultState.value = createResult(false, "創建聊天室時發生錯誤: ${e.message}")
         }
     }
+
+//    suspend fun checkIfChatroomExists(otherUserId: Int): Boolean {
+//        // 嘗試從資料庫中查找是否有現有的聊天室
+//        val chatrooms = getChatroomInfo()
+//        return chatrooms.any { it.room_user_one == otherUserId || it.room_user_two == otherUserId }
+//    }
 
 
     //拿聊天室資料

@@ -74,7 +74,6 @@ fun ReservationConfirmScreen(
        scope.launch {
            Log.d("tag_", "order_idLunch: $order_id")
            orderState = reservationConfirmVM.getSelectOrder(order_id = order_id)
-
        }
 
     }

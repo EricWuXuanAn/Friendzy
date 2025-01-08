@@ -9,9 +9,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.Post
 import com.example.tip102group01friendzy.ui.feature.customer.addPostRequest
 import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
 import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
-import android.accounts.Account
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
-import com.example.tip102group01friendzy.ui.feature.customer.OrderListNullable
 import com.example.tip102group01friendzy.ui.feature.customer.selectedOrderListRequest
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
@@ -83,11 +81,15 @@ interface APIService {
     //陪伴者改訂單狀態
     @PUT("rest/companion/order/orderStatus/update")
     suspend fun comOrderUpdate(@Body comOrder:CompanionOrder):CompanionOrder
+
     @GET("rest/chatrooms")
     suspend fun showAllChatrooms(): List<Chatroom>
 
     @POST("rest/customer/selectedOrderList")
     suspend fun selectedorderList(@Body request: selectedOrderListRequest): OrderList
+
+    @POST("rest/chatroom/create/{otherUserId}")
+    suspend fun createChatroom(@Path("otherUserId") otherUserId: Int): Response<createResult>
 }
 
 
