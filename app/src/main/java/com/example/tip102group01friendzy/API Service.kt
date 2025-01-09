@@ -97,6 +97,9 @@ interface APIService {
 
     @POST("rest/customer/updateOrderStatus")
     suspend fun updateOrderStatus(@Body request: selectedOrderListRequest)
+
+    @POST("rest/chatroom/create/{otherUserId}")
+    suspend fun createChatroom(@Path("otherUserId") otherUserId: Int): Response<Chatroom>
 }
 
 

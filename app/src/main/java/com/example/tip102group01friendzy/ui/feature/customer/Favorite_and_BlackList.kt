@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -47,6 +49,7 @@ fun Favorite_and_BlackListScreen(
     navController: NavHostController,
     favorite_and_blacklistVM: Favorite_and_Black_ListVM,
     context: Context
+
 ) {
     val scpoe = rememberCoroutineScope()
     val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
@@ -104,7 +107,8 @@ fun Favorite_and_BlackListScreen(
 fun getFavList(
     favaLists: List<Favorite_List>,
     onClick: (Favorite_List) -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
+    chatroomViewModel: ChatroomViewModel = viewModel()
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -207,6 +211,29 @@ fun getBlackList(
             HorizontalDivider()
         }
 
+    }
+}
+
+private suspend fun handleChatNavigation(
+    currentUserId: Int,
+    otherUserId: Int,
+    chatroomViewModel: ChatroomViewModel,
+    navController: NavController,
+    context: Context
+){
+    try {
+        var roomNo = chatroomViewModel.checkChatroomExists(currentUserId, otherUserId)
+
+        if (roomNo == null){
+            roomNo = chatroomViewModel.createAndGetChatroom(otherUserId)
+        }
+        if(roomNo != null){
+            navController.navigate("${Screen.ChatMessageScreen.name}/${roomNo}")
+        }else{
+            Toast.makeText(context,"無法創建聊天室，請稍後再試", Toast.LENGTH_SHORT).show()
+        }
+    }catch (e: Exception){
+        Toast.makeText(context,"發生錯誤: ${e.message}", Toast.LENGTH_SHORT).show()
     }
 }
 
