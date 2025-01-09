@@ -5,12 +5,12 @@ data class OrderList (
     val member_name:String = "",
     val service_idno: Int = 0,
     val order_person: Int = 0,
-    val customer_rate: Int = 0,
+    val customer_rating: Int = 0,
     val custoner_rate_content: String = "",
     val companion_rate: Int = 0,
     val cmpanion_rate_content:String = "",
     var order_price:Double = 0.0,
-    var order_status: Int = 0,
+    var order_status: Int ,
     var order_poster:String = "",
     val order_title:String = "",
     val service_detail: String = "",
@@ -19,7 +19,7 @@ data class OrderList (
 )
 
 data class selectedOrderListRequest(
-    val order_id: Int
+    val service_id: Int
 )
 
 data class OrderListNullable (

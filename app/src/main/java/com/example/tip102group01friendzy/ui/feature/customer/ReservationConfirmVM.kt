@@ -9,10 +9,25 @@ class ReservationConfirmVM():ViewModel() {
 //    var reservaConfirmtionState: StateFlow<OrderList> = _reservationComfirmState.asStateFlow()
 
 
+    suspend fun updateOrderStatus(service_id: Int){
+        val response = RetrofitInstance.api.updateOrderStatus(
+            selectedOrderListRequest(service_id = service_id)
+        )
+        return response
+    }
+    suspend fun getSelectedPostList(
+        service_id: Int
+    ): Post{
+        val response = RetrofitInstance.api.selectedPostList(
+            selectedPostList(service_id = service_id)
+        )
+        return response
+    }
+
     suspend fun getSelectOrder(order_id: Int):OrderList{
         Log.d("tag_", "order_idVM: $order_id")
         val order = RetrofitInstance.api.selectedorderList(
-            selectedOrderListRequest(order_id = order_id)
+            selectedOrderListRequest(service_id = order_id)
         )
         return order
     }

@@ -93,6 +93,9 @@ interface APIService {
 
     @POST("rest/customer/deleteBlackList")
     suspend fun deleteBlackList(@Body request: requestDelete)
+
+    @POST("rest/customer/updateOrderStatus")
+    suspend fun updateOrderStatus(@Body request: selectedOrderListRequest)
 }
 
 

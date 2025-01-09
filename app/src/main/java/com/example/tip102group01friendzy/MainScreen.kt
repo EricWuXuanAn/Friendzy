@@ -253,12 +253,15 @@ fun Main(
             composable(route = Screen.SearchWithMapScreen.name) {
                 SearchWithMap(navController = navController, tabVM = tabVM)
             }
-            composable(route = "${Screen.ReservationConfirmScreen.name}/{order_id}"){
+            composable(
+                route = "${Screen.ReservationConfirmScreen.name}/{service_id}",
+                arguments = listOf(navArgument("service_id") { type = NavType.IntType })
+                        ){
                 Log.d("tag_", " composable backentry: ${backStackEntry?.arguments}")
 //                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
-                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
-                Log.d("tag_", " composable order_id: $order_id")
-                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, order_id = order_id)
+                val service_id = backStackEntry?.arguments?.getInt("service_id") ?: -1
+//                Log.d("tag_", " composable order_id: $order_id")
+                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, service_id = service_id)
             }
 
             //>>>陪伴者
