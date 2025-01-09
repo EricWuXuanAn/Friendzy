@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.tip102group01friendzy.RetrofitInstance
 
-class ReservationConfirmVM():ViewModel() {
+class ReservationConfirmVM(
+
+):ViewModel() {
 //    private val _reservationComfirmState = MutableStateFlow(OrderList())
 //    var reservaConfirmtionState: StateFlow<OrderList> = _reservationComfirmState.asStateFlow()
 
@@ -30,5 +32,12 @@ class ReservationConfirmVM():ViewModel() {
             selectedOrderListRequest(service_id = order_id)
         )
         return order
+    }
+
+    suspend fun updateDeclineStatus(service_id: Int){
+        val response = RetrofitInstance.api.updateDeclineStatus(
+            selectedPostList(service_id = service_id)
+        )
+        return response
     }
 }

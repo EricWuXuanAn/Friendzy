@@ -261,7 +261,7 @@ fun Main(
 //                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
                 val service_id = backStackEntry?.arguments?.getInt("service_id") ?: -1
 //                Log.d("tag_", " composable order_id: $order_id")
-                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, service_id = service_id)
+                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, service_id = service_id, orderVM = OrderVM())
             }
 
             //>>>陪伴者

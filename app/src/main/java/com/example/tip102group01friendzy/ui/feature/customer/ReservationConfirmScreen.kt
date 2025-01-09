@@ -34,11 +34,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.delay
@@ -54,7 +52,8 @@ import java.time.format.DateTimeFormatter.ofPattern
 fun ReservationConfirmScreen(
     navController: NavHostController,
     reservationConfirmVM: ReservationConfirmVM,
-    service_id: Int
+    service_id: Int,
+    orderVM: OrderVM
 ) {
 //    Log.d("tag_pass", "order_idPass $order_id")
     val scope = rememberCoroutineScope()
@@ -72,6 +71,7 @@ fun ReservationConfirmScreen(
     LaunchedEffect(Unit) {
         scope.launch {
            orderState = reservationConfirmVM.getSelectedPostList(service_id = service_id)
+            orderVM.getOrderList()
         }
 
     }
@@ -205,12 +205,15 @@ fun ReservationConfirmScreen(
                 ),
                 onClick = {
                     scope.launch {
+                        reservationConfirmVM.updateDeclineStatus(service_id = service_id)
+                        delay(1000)
                         snackbarHostState.showSnackbar(
                             message = "Successfully Declined",
                             withDismissAction = true
                         )
-                        navController.popBackStack()
+                        delay(2000)
                     }
+                    navController.popBackStack()
                 }
             ) {
                 Text(text = "Decline")
@@ -220,8 +223,8 @@ fun ReservationConfirmScreen(
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun RSCpreview() {
-    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM(), service_id = 1)
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun RSCpreview() {
+//    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM(), service_id = 1)
+//}

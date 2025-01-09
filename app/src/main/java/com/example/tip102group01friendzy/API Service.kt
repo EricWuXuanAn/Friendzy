@@ -67,8 +67,8 @@ interface APIService {
     suspend fun edit(@Body request: MemberModel.edit): Response<Unit>
     
 
-    @GET("rest/member/login/{email}/{mpassword}")
-    suspend fun login(@Path("email") account: String, @Path("mpassword")mpasswod: String):Response<Unit>
+//    @GET("rest/member/login/{email}/{mpassword}")
+//    suspend fun login(@Path("email") account: String, @Path("mpassword")mpasswod: String):Response<Unit>
 
 
     //陪伴者訂單管理
@@ -95,11 +95,14 @@ interface APIService {
     @POST("rest/customer/deleteBlackList")
     suspend fun deleteBlackList(@Body request: requestDelete)
 
-    @POST("rest/customer/updateOrderStatus")
+    @POST("rest/customer/updateStatus")
     suspend fun updateOrderStatus(@Body request: selectedOrderListRequest)
 
     @POST("rest/chatroom/create/{otherUserId}")
     suspend fun createChatroom(@Path("otherUserId") otherUserId: Int): Response<Chatroom>
+
+    @POST("rest/customer/updateDeclineStatus")
+    suspend fun updateDeclineStatus(@Body request: selectedPostList)
 }
 
 
