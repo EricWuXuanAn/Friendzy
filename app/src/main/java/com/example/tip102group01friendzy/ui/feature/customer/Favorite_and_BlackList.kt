@@ -29,11 +29,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
@@ -103,6 +106,11 @@ fun getFavList(
     onClick: (Favorite_List) -> Unit,
     navController: NavHostController
 ) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val memberNo = preferences.getInt("member_no", 0)
+
     LazyColumn {
         items(favaLists) { favaList ->
             ListItem(
@@ -124,7 +132,15 @@ fun getFavList(
                     IconButton(
                         modifier = Modifier.size(20.dp),
                         onClick = {
-                            navController.navigate(Screen.ChatMessageScreen.name)
+                          scope.launch {
+                              handleChatNavigation(
+                                  currentUserId = memberNo,
+                                  otherUserId = favaList.be_hunted,
+                                  chatroomViewModel = chatroomViewModel,
+                                  navController = navController,
+                                  context = context
+                              )
+                          }
                         }
                     ) {
                         Icon(
@@ -145,7 +161,6 @@ fun getFavList(
         }
     }
 }
-
 
 //建立一個函式去VM中拿取資料
 @Composable

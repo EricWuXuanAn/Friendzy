@@ -82,6 +82,7 @@ interface APIService {
     //陪伴者改訂單狀態
     @PUT("rest/companion/order/orderStatus/update")
     suspend fun comOrderUpdate(@Body comOrder:CompanionOrder):CompanionOrder
+
     @GET("rest/chatrooms")
     suspend fun showAllChatrooms(): List<Chatroom>
 
