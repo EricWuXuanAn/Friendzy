@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -47,8 +48,8 @@ fun CompanionLookPublishScreen(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
-    val companion by companionVM.setCompanionState.collectAsState()
-
+    val detail by companionVM.applicantSelectState.collectAsState()
+    Log.d("_tagDetail01","detail:$detail")
     Column (
         modifier = Modifier.fillMaxSize()
             .background(companionScenery)
@@ -76,7 +77,7 @@ fun CompanionLookPublishScreen(
                     .padding(start = 8.dp, top = 8.dp),
                 horizontalAlignment = Alignment.End
             ){
-                Text(text = "名字：${ "" }",
+                Text(text = "名字：${detail.posterName}",
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp))
                 Button(
@@ -105,8 +106,8 @@ fun CompanionLookPublishScreen(
             }
         }
         HorizontalDivider(modifier = Modifier.padding(6.dp))//分隔線
-        Text(text = "標題：${ "" }", fontSize = 24.sp)
-        Text(text = "內容：${ "" }", fontSize = 24.sp)
+        Text(text = "標題：${ detail.service }", fontSize = 24.sp)
+        Text(text = "內容：${ detail.serviceDetail }", fontSize = 24.sp)
         Image(//再設最大上限
             painter = painterResource(R.drawable.friendzy),
             contentDescription = "servicImage",
@@ -117,9 +118,9 @@ fun CompanionLookPublishScreen(
                 minHeight = screenHeight * 0.2f,
             )
         )
-        Text(text = "開始時間：yyyy-MM-dd hh:mm", fontSize = 24.sp)
-        Text(text = "結束時間：yyyy-MM-dd hh:mm", fontSize = 24.sp)
-        Text(text = "所在地區：xxx", fontSize = 24.sp)
+        Text(text = "開始時間：${formatTimestamp(detail?.startTime)}", fontSize = 24.sp)
+        Text(text = "結束時間：${formatTimestamp(detail?.endTime)}", fontSize = 24.sp)
+        Text(text = "所在地區：${detail?.area}", fontSize = 24.sp)
 //        Text(text = "金費：xxx元", fontSize = 24.sp)
         Column (
             modifier = Modifier.fillMaxSize(),

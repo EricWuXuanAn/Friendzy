@@ -53,7 +53,6 @@ import com.example.tip102group01friendzy.TabVM
 fun CompanionOrderDetailsScreen(
     navController: NavHostController,
     companionOrderVM: CompanionOrderVM,
-    comOrderDtlVM: ComOrderDtlVM,
     tabVM: TabVM
 ) {//評論評分要在處裡
     val orderDtl by companionOrderVM.orderDetailsSelectState.collectAsState()
@@ -280,5 +279,5 @@ fun CompanionOrderDetailsScreen(
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionOrderDetailsScreen() {
-    CompanionOrderDetailsScreen(rememberNavController(), companionOrderVM = CompanionOrderVM(), comOrderDtlVM = ComOrderDtlVM(),tabVM = TabVM())
+    CompanionOrderDetailsScreen(rememberNavController(), companionOrderVM = CompanionOrderVM(), tabVM = TabVM())
 }

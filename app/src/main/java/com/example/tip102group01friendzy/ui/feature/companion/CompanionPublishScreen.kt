@@ -1,7 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,8 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,15 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
-import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 import java.time.Instant
 import java.time.ZoneId
@@ -53,13 +51,12 @@ import java.time.format.DateTimeFormatter.ofPattern
 //陪伴者刊登畫面
 fun CompanionPublishScreen(
     navController: NavHostController,
-    skillVM: SkillVM,
-    locationVM: LocationVM,
+    myPublish: CompanionMyPublishVM,
     tabVM: TabVM
 ) {
     //呼叫VM
-    val skillState by skillVM.skillState.collectAsState()
-    val locationState by locationVM.locationState.collectAsState()
+    val skillState by myPublish.publishSkillState.collectAsState()
+    val areaState by myPublish.publishAreaState.collectAsState()
     //標題輸入文字
     var inputTitleText by remember { mutableStateOf("") }
     //專長輸入文字
@@ -76,7 +73,7 @@ fun CompanionPublishScreen(
     var shortStartDatePick by remember { mutableStateOf(false) }
     var shortEndDatePick by remember { mutableStateOf(false) }
     //預算輸入文字
-//    var inputBudget by remember { mutableStateOf("") }
+    var inputBudget by remember { mutableStateOf("") }
     //下拉選單輸入文字
     var inputDropdownMenu by remember { mutableStateOf("") }//專長
     var inputCityText by remember { mutableStateOf("") }//城市
@@ -85,8 +82,8 @@ fun CompanionPublishScreen(
     var skillExpanded by remember { mutableStateOf(false) }//專長
     var cityExpanded by remember { mutableStateOf(false) }//城市
     var districtExpanded by remember { mutableStateOf(false) }//區
-    var TimeStartExpanded by remember { mutableStateOf(false) }//開始時間
-    var TimeEndExpanded by remember { mutableStateOf(false) }//結束時間
+    var timeStartExpanded by remember { mutableStateOf(false) }//開始時間
+    var timeEndExpanded by remember { mutableStateOf(false) }//結束時間
     //選時間用的小時數
     val timeList = listOf(
         "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
@@ -94,17 +91,18 @@ fun CompanionPublishScreen(
         "20:00", "21:00", "22:00", "23:00", "24:00"
     )
     //過濾掉重複的城市
-    val cityList = locationState.map { it.city }.distinct()
+    val cityList = areaState.map { it.areaCity }.distinct()
     //過濾出所選城市的所有區
-    val districtList = locationState.filter { it.city == inputCityText }.map { it.district }
+    val districtList = areaState.filter { it.areaCity == inputCityText }.map { it.areaDistricy }
     //專長文字搜尋過濾
-    val skillFiltered = skillState.filter { it.skillName.startsWith(inputDropdownMenu, true) }
+    val skillFiltered = skillState.filter { it.expertiseLabel!!.startsWith(inputDropdownMenu, true) }
     skillExpanded = skillExpanded && skillFiltered.isNotEmpty()
 
-    Column (
-        modifier = Modifier.fillMaxSize()
-            .background(companionScenery)
-    ){  }
+    LaunchedEffect(Unit) {
+        myPublish.getAreaState()
+        myPublish.getSkillState()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -162,9 +160,9 @@ fun CompanionPublishScreen(
                 ) {
                     skillFiltered.forEach { skill ->
                         DropdownMenuItem(
-                            text = { Text(skill.skillName) },
+                            text = { Text(skill.expertiseLabel!!) },
                             onClick = {
-                                inputDropdownMenu = skill.skillName
+                                inputDropdownMenu = skill.expertiseLabel!!
                                 skillExpanded = false
                             }
                         )
@@ -270,9 +268,9 @@ fun CompanionPublishScreen(
                 }
                 //開始時段選單
                 ExposedDropdownMenuBox(
-                    expanded = TimeStartExpanded,
+                    expanded = timeStartExpanded,
                     onExpandedChange = {
-                        TimeStartExpanded = it
+                        timeStartExpanded = it
                         inputTimeStart = ""
                     },
                 ) {
@@ -284,23 +282,23 @@ fun CompanionPublishScreen(
                         value = inputTimeStart,
                         onValueChange = {
                             inputTimeStart = it
-                            TimeStartExpanded = true
+                            timeStartExpanded = true
                         },
                         placeholder = { Text("選時間") },
                         shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = TimeStartExpanded) },
+                        trailingIcon = { TrailingIcon(expanded = timeStartExpanded) },
                         enabled = false
                     )
                     ExposedDropdownMenu(
-                        expanded = TimeStartExpanded,
-                        onDismissRequest = { TimeStartExpanded = false },
+                        expanded = timeStartExpanded,
+                        onDismissRequest = { timeStartExpanded = false },
                     ) {
                         timeList.forEach { time ->
                             DropdownMenuItem(
                                 text = { Text(time) },
                                 onClick = {
                                     inputTimeStart = time
-                                    TimeStartExpanded = false
+                                    timeStartExpanded = false
                                 }
                             )
                         }
@@ -370,9 +368,9 @@ fun CompanionPublishScreen(
                 }
                 //結束時段選擇
                 ExposedDropdownMenuBox(
-                    expanded = TimeEndExpanded,
+                    expanded = timeEndExpanded,
                     onExpandedChange = {
-                        TimeEndExpanded = it
+                        timeEndExpanded = it
                         inputTimeEnd = ""
                     },
                 ) {
@@ -384,23 +382,23 @@ fun CompanionPublishScreen(
                         value = inputTimeEnd,
                         onValueChange = {
                             inputTimeEnd = it
-                            TimeEndExpanded = true
+                            timeEndExpanded = true
                         },
                         placeholder = { Text("選時間") },
                         shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = TimeEndExpanded) },
+                        trailingIcon = { TrailingIcon(expanded = timeEndExpanded) },
                         enabled = false
                     )
                     ExposedDropdownMenu(
-                        expanded = TimeEndExpanded,
-                        onDismissRequest = { TimeEndExpanded = false },
+                        expanded = timeEndExpanded,
+                        onDismissRequest = { timeEndExpanded = false },
                     ) {
                         timeList.forEach { time ->
                             DropdownMenuItem(
                                 text = { Text(time) },
                                 onClick = {
                                     inputTimeEnd = time
-                                    TimeEndExpanded = false
+                                    timeEndExpanded = false
                                 }
                             )
                         }
@@ -466,9 +464,9 @@ fun CompanionPublishScreen(
                     ) {
                         cityList.forEach { citys ->
                             DropdownMenuItem(
-                                text = { Text(citys) },
+                                text = { Text(citys!!) },
                                 onClick = {
-                                    inputCityText = citys
+                                    inputCityText = citys!!
                                     inputDistrictText = ""
                                     cityExpanded = false
                                 }
@@ -506,9 +504,9 @@ fun CompanionPublishScreen(
                     ) {
                         districtList.forEach { district ->
                             DropdownMenuItem(
-                                text = { Text(district) },
+                                text = { Text(district!!) },
                                 onClick = {
-                                    inputDistrictText = district
+                                    inputDistrictText = district!!
                                     districtExpanded = false
                                 }
                             )
@@ -517,34 +515,35 @@ fun CompanionPublishScreen(
                 }
             }
             //金額
-            /*
+//            /*
+            Spacer(modifier = Modifier.size(8.dp))//間隔
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "金額：", fontSize = 16.sp)
+                Text(text = "價格：", fontSize = 16.sp)
                 OutlinedTextField(
                     value = inputBudget,
                     onValueChange = { inputBudget = it },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = RoundedCornerShape(15.dp),
-                    placeholder = { Text("輸入金額") },
+                    placeholder = { Text("輸入價格 最少0元") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
-             */
+//             */
         }
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Top
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(top = 8.dp)
             ) {
                 Button(
                     colors = ButtonDefaults.buttonColors(
@@ -554,7 +553,13 @@ fun CompanionPublishScreen(
                     modifier = Modifier
                         .fillMaxWidth(1f)
                         .padding(end = 6.dp),
-                    onClick = {}
+                    onClick = {
+                        val area =areaState.filter {
+                            it.areaCity == inputCityText && it.areaDistricy == inputDistrictText
+                        }
+                        val Publish = MyPublish(
+                        )
+                    }
                 ) { Text("刊登") }
             }
         }
@@ -566,8 +571,7 @@ fun CompanionPublishScreen(
 fun PreviewCompanionPublishScreen() {
     CompanionPublishScreen(
         rememberNavController(),
-        skillVM = SkillVM(),
-        locationVM = LocationVM(),
+        CompanionMyPublishVM(),
         tabVM = TabVM()
     )
 }

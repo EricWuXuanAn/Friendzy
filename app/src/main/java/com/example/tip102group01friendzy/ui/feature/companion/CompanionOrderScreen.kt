@@ -161,12 +161,16 @@ fun CompanionOrderListScreen(
                             //要再判斷我預約和預約我的到另一頁
                             if (it.orderStatus!! < 1 && it.serviceStatus == 0){
                                 coroutineScope.launch {
-                                    companionOrderVM.setSelectOrder(memberNo,it.orderPerson!!,it.orderId!!)
+                                    companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
+//                                    Log.d("_OrderDt","Details：$it")
+//                                    Log.d("_OrderMember","MemberNo：$memberNo")
                                     navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
                                 }
                             }else{
                                 coroutineScope.launch {
-                                    companionOrderVM.setSelectOrder(memberNo,it.orderPerson!!,it.orderId!!)
+                                    companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
+//                                    Log.d("_OrderDt","Details：$it")
+//                                    Log.d("_OrderMember","MemberNo：$memberNo")
                                     navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                                 }
                             }
@@ -183,7 +187,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = uncomfirm,
                         onClick = {
-                            companionOrderVM.setSelectOrder(memberNo,it.orderPerson!!,it.orderId!!)
+                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
                             navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
                         }
                     )
@@ -198,8 +202,8 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = inProfress,
                         onClick = {
-                            Log.d("_tag","memberNo：$memberNo , orderPoster： ${it.orderPerson} , orderId：${it.orderId}")
-                            companionOrderVM.setSelectOrder(memberNo,it.orderPerson!!,it.orderId!!)
+                            Log.d("_tag","memberNo：$memberNo , orderPoster： ${it.orderPoster} , orderId：${it.orderId}")
+                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
@@ -214,7 +218,7 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = completed,
                         onClick = {
-                            companionOrderVM.setSelectOrder(memberNo,it.orderPerson!!,it.orderId!!)
+                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
                             navController.navigate(Screen.CompanionOrderDetailsScreen.name)
                         }
                     )
@@ -264,7 +268,6 @@ fun CompanionOrderLazy(
             ListItem(
                 modifier = Modifier.clickable { onClick(order) },
                 colors = ListItemDefaults.colors(containerColor = companionScenery),
-                headlineContent = { Text(text = "訂單標題: ${order.service}") },
                 overlineContent = {
                     Row (
                         modifier = Modifier.fillMaxWidth(),
@@ -284,13 +287,14 @@ fun CompanionOrderLazy(
                         )
                     }
                 },
+                headlineContent = { Text(text = "訂單標題: ${order.service}") },
                 supportingContent = {
                     Row (
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         Text(text = "訂購人:${order.orderPersonName}")
-                        Text(text = "開始時間：${formatTimestamp(order.startTime!!)}")
+                        Text(text = "開始時間：${formatTimestamp(order.startTime)}")
                     }
                 },
             )

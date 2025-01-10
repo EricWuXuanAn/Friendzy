@@ -285,8 +285,7 @@ fun Main(
             ){
                 CompanionPublishScreen(
                     navController = navController,
-                    skillVM = SkillVM(),
-                    locationVM = LocationVM(),
+                    myPublish = companionMyPublishVM,
                     tabVM = tabVM
                 )
             }
@@ -309,7 +308,6 @@ fun Main(
                 CompanionOrderDetailsScreen(
                     navController = navController,
                     companionOrderVM = companionOrderVM,
-                    comOrderDtlVM = comOrderDtlVM,
                     tabVM = tabVM
                 )
             }

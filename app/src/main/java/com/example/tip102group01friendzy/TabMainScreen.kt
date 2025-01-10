@@ -103,8 +103,7 @@ fun TabMainScreen(
                 2 -> if (memberStatus.value) {
                     CompanionPublishScreen(
                         navController = navController,
-                        skillVM = SkillVM(),
-                        locationVM = LocationVM(),
+                        myPublish = CompanionMyPublishVM(),
                         tabVM = tabVM
                     )
                 } else {

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 //專長VM
 class SkillVM : ViewModel() {
+    /*
     private val _skillState = MutableStateFlow(emptyList<Skill>())
     val skillState = _skillState.asStateFlow()
 
@@ -23,7 +24,9 @@ class SkillVM : ViewModel() {
             Skill("05", "攝影"),
         )
     }
+    */
 }
+ /*
 //專長類別
 data class Skill(var skillNo: String = "", var skillName: String = "") {
     override fun equals(other: Any?): Boolean {
@@ -35,3 +38,4 @@ data class Skill(var skillNo: String = "", var skillName: String = "") {
     }
 
 }
+ */

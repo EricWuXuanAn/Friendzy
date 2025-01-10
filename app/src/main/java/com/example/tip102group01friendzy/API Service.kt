@@ -11,7 +11,11 @@ import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
 import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
 import android.accounts.Account
 import com.example.tip102group01friendzy.ui.feature.companion.Applicant
+import com.example.tip102group01friendzy.ui.feature.companion.ComArea
+import com.example.tip102group01friendzy.ui.feature.companion.ComPublish
+import com.example.tip102group01friendzy.ui.feature.companion.ComSkill
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
+import com.example.tip102group01friendzy.ui.feature.companion.MyPublish
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -76,9 +80,9 @@ interface APIService {
     suspend fun comShowAllOrder(@Path("memberNo") memberNo: Int):List<CompanionOrder>
 
     //陪伴者訂單明細
-    @GET("rest/companion/order/showId/{memberNo}/{servicePerson}/{orderId}")
+    @GET("rest/companion/order/showId/{memberNo}/{servicePoster}/{orderId}")
     suspend fun comOrderDetails(
-        @Path("memberNo") memberNo: Int, @Path("servicePerson") servicePerson: Int, @Path("orderId") orderId: Int,
+        @Path("memberNo") memberNo: Int, @Path("servicePoster") servicePoster: Int, @Path("orderId") orderId: Int,
     ):CompanionOrder
 
     //陪伴者改訂單狀態
@@ -88,14 +92,35 @@ interface APIService {
     suspend fun showAllChatrooms(): List<Chatroom>
 
     //應徵者清單
-    @GET("/showAll/{memberNo}")
+    @GET("rest/companion/appoint/showAll/{memberNo}")
     suspend fun showAllApplicants(@Path("memberNo") memberNo: Int):List<Applicant>
 
     //應徵者詳細資訊
-    @GET("/showId/{memberNo}/{account}/{serviceId}")
+    @GET("rest/companion/appoint/showId/{memberNo}/{account}/{serviceId}")
     suspend fun showApplicantByAccount(
         @Path("memberNo") memberNo: Int,@Path("account") account: Int,@Path("serviceId") serviceId: Int
     ):Applicant
+
+    //陪伴者主頁的預約清單
+    @GET("rest/companion/publish/showAll/{memberNo}")
+    suspend fun showAllPublish(@Path("memberNo") memberNo: Int):List<ComPublish>
+
+    //陪伴者看預約詳細資料
+    @GET("rest/companion/publish/showId/{serviceId}/{memberNo}")
+    suspend fun showPublishDetail(@Path("serviceId") serviceId: Int,@Path("memberNo") memberNo: Int):ComPublish
+
+    //陪伴者刊登頁取得專長
+    @GET("rest/companion/publish/skill")
+    suspend fun comPublishSkill(): List<ComSkill>
+
+    //陪伴者刊登頁取得地區
+    @GET("rest/companion/publish/area")
+    suspend fun comPublishArea(): List<ComArea>
+
+    //陪伴者刊登新增
+    @POST()
+    suspend fun addPublish(@Body myPublish: MyPublish): MyPublish
+
 }
 
 object RetrofitInstance {

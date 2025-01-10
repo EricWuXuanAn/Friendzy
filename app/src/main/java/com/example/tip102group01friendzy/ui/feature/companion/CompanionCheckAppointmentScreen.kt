@@ -41,11 +41,11 @@ import com.example.tip102group01friendzy.TabVM
 //陪伴者確認預約(確認訂單)
 fun CompanionCheckAppointmentScreen(
     navController: NavHostController,
-    companionAppointmentVM: CompanionAppointmentVM,
+    companionApplicantVM: CompanionApplicantVM,
     comOrderVM: CompanionOrderVM,
     tabVM: TabVM
     ) {
-    val appoState by companionAppointmentVM.appointmentState.collectAsState()
+    val appoState by companionApplicantVM.appointmentState.collectAsState()
     val order by comOrderVM.orderDetailsSelectState.collectAsState()
     Column (
         modifier = Modifier.fillMaxSize()
@@ -168,5 +168,5 @@ fun CompanionCheckAppointmentScreen(
 @Preview(showBackground = true)
 fun PreviewCompanionCheckAppointmentScreen(
 ) {
-    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionAppointmentVM = CompanionAppointmentVM(), comOrderVM = CompanionOrderVM())
+    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionApplicantVM = CompanionApplicantVM(), comOrderVM = CompanionOrderVM())
 }
