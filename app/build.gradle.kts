@@ -79,10 +79,11 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.firebase.bom)
     implementation(libs.firebase.messaging.ktx)
-    implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.analytics.ktx)
+    implementation(libs.retrofit)
+
 
 
     testImplementation(libs.junit)

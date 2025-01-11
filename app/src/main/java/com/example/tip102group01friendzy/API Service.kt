@@ -2,7 +2,6 @@ package com.example.tip102group01friendzy
 
 import com.example.tip102group01friendzy.ui.feature.account.MemberInfo
 import com.example.tip102group01friendzy.ui.feature.chat.Chatroom
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
@@ -32,6 +31,7 @@ import retrofit2.http.Path
 import java.lang.reflect.Member
 import java.net.CookieManager
 import java.net.CookiePolicy
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder as CompanionOrder1
 
 interface APIService {
     //    @Multipart 不要打開
@@ -88,17 +88,17 @@ interface APIService {
 
     //陪伴者訂單管理
     @GET("rest/companion/order/showAll/{memberNo}")
-    suspend fun comShowAllOrder(@Path("memberNo") memberNo: Int):List<CompanionOrder>
+    suspend fun comShowAllOrder(@Path("memberNo") memberNo: Int):List<CompanionOrder1>
 
     //陪伴者訂單明細
     @GET("rest/companion/order/showId/{memberNo}/{servicePoster}/{orderId}")
     suspend fun comOrderDetails(
         @Path("memberNo") memberNo: Int, @Path("servicePoster") servicePoster: Int, @Path("orderId") orderId: Int,
-    ):CompanionOrder
+    ): CompanionOrder1
 
     //陪伴者改訂單狀態
     @PUT("rest/companion/order/statusUp")
-    suspend fun comOrderUpdate(@Body comOrder:CompanionOrder):CompanionOrder
+    suspend fun comOrderUpdate(@Body comOrder: CompanionOrder1): CompanionOrder1
 
     @GET("rest/chatrooms")
     suspend fun showAllChatrooms(): List<Chatroom>
