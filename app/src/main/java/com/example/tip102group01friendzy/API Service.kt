@@ -88,17 +88,17 @@ interface APIService {
 
     //陪伴者訂單管理
     @GET("rest/companion/order/showAll/{memberNo}")
-    suspend fun comShowAllOrder(@Path("memberNo") memberNo: Int):List<CompanionOrder1>
+    suspend fun comShowAllOrder(@Path("memberNo") memberNo: Int):List<CompanionOrder>
 
     //陪伴者訂單明細
     @GET("rest/companion/order/showId/{memberNo}/{servicePoster}/{orderId}")
     suspend fun comOrderDetails(
         @Path("memberNo") memberNo: Int, @Path("servicePoster") servicePoster: Int, @Path("orderId") orderId: Int,
-    ): CompanionOrder1
+    ): CompanionOrder
 
     //陪伴者改訂單狀態
     @PUT("rest/companion/order/statusUp")
-    suspend fun comOrderUpdate(@Body comOrder: CompanionOrder1): CompanionOrder1
+    suspend fun comOrderUpdate(@Body comOrder: CompanionOrder): CompanionOrder
 
     @GET("rest/chatrooms")
     suspend fun showAllChatrooms(): List<Chatroom>
