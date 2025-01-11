@@ -1,6 +1,7 @@
 
 package com.example.tip102group01friendzy.ui.feature.Memberpage
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -38,21 +40,28 @@ fun SettingPage(
 
     // 編輯狀態與輸入框的值
     var password by remember { mutableStateOf("**********") } // 顯示用的密碼
-    var nickname by remember { mutableStateOf(memberInfo.nickname) } // 暱稱
-    var phoneNumber by remember { mutableStateOf(memberInfo.phone) } // 手機號碼
+    var nickname by remember { mutableStateOf( "") } // 暱稱
+    var phoneNumber by remember { mutableStateOf( "") } // 手機號碼
     var newPassword by remember { mutableStateOf("") } // 新密碼輸入框的值
     var confirmPassword by remember { mutableStateOf("") } // 確認密碼輸入框的值
     var passwordError by remember { mutableStateOf(false) } // 密碼錯誤狀態
-
+    // 登出按鈕
+    var showLogoutDialog by remember { mutableStateOf(false) }
     // 編輯狀態的控制變數
     var isEditingPassword by remember { mutableStateOf(false) }
     var isEditingNickname by remember { mutableStateOf(false) }
     var isEditingPhoneNumber by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         // 初始化時從後端抓取會員資料
-        settingVM.fetchMemberInfo()
+        settingVM.fetchMemberInfo(context)
     }
+    LaunchedEffect(memberInfo) {
+        password = "*".repeat(memberInfo.password?.length ?: 0) // 根據資料長度更新靜態密碼顯示
+        nickname = memberInfo.nickname ?: ""
+        phoneNumber = memberInfo.phone ?: ""
+    }
+
 
     Column(
         modifier = Modifier
@@ -84,12 +93,12 @@ fun SettingPage(
 
         // 會員帳號
         Text(text = "會員帳號", fontWeight = FontWeight.Bold)
-        Text(text = memberInfo.email, modifier = Modifier.padding(vertical = 8.dp))
+        Text(text = memberInfo.email ?: "", modifier = Modifier.padding(vertical = 8.dp))
         CustomDivider() // 使用自定義的分隔線
 
         // 姓名
         Text(text = "姓名", fontWeight = FontWeight.Bold)
-        Text(text = memberInfo.nickname, modifier = Modifier.padding(vertical = 8.dp))
+        Text(text = memberInfo.name ?: "", modifier = Modifier.padding(vertical = 8.dp))
         CustomDivider()
 
         // 密碼部分
@@ -128,10 +137,11 @@ fun SettingPage(
                 TextButton(
                     onClick = {
                         if (newPassword == confirmPassword) {
-                            password = newPassword
+                            password = "*".repeat(newPassword.length) // 更新靜態密碼顯示
                             isEditingPassword = false
                             passwordError = false
-                            settingVM.updatePassword(newPassword) // 呼叫 ViewModel 更新密碼
+                            // 確保傳遞的 context 和 newPassword 已經是最新的
+                            settingVM.updatePassword(context, newPassword) // 呼叫 ViewModel 更新密碼
                         } else {
                             passwordError = true
                         }
@@ -148,7 +158,7 @@ fun SettingPage(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             ) {
-                Text(text = "*".repeat(password.length), modifier = Modifier.weight(1f))
+                Text(text = password, modifier = Modifier.weight(1f))
                 IconButton(
                     onClick = { isEditingPassword = true }
                 ) {
@@ -169,7 +179,8 @@ fun SettingPage(
             onEditClick = { isEditingNickname = true },
             onSaveClick = {
                 isEditingNickname = false
-                settingVM.updateNickname(nickname) // 呼叫 ViewModel 更新暱稱
+                // 確保在保存時傳遞最新的暱稱
+                settingVM.updateNickname(context, nickname) // 呼叫 ViewModel 更新暱稱
             },
             onValueChange = { nickname = it }
         )
@@ -183,7 +194,8 @@ fun SettingPage(
             onEditClick = { isEditingPhoneNumber = true },
             onSaveClick = {
                 isEditingPhoneNumber = false
-                settingVM.updatePhoneNumber(phoneNumber) // 呼叫 ViewModel 更新手機號碼
+                // 確保在保存時傳遞最新的手機號碼
+                settingVM.updatePhoneNumber(context, phoneNumber) // 呼叫 ViewModel 更新手機號碼
             },
             onValueChange = { phoneNumber = it }
         )
@@ -193,12 +205,47 @@ fun SettingPage(
 
         // 登出按鈕
         Button(
-            onClick = { navController.navigate(Screen.LoginScreen.name) },
+            onClick = { showLogoutDialog = true }, // 點擊按鈕時顯示確認窗口
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "登出帳號", color = Color.Red, fontWeight = FontWeight.Bold)
         }
+        // 清除登入資料的方法
+        fun clearLoginData(context: Context) {
+            val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+            preferences.edit().clear().apply() // 清除 SharedPreferences 中的所有資料
+        }
+        // 彈出確認窗口
+        if (showLogoutDialog) {
+            AlertDialog(
+                onDismissRequest = { showLogoutDialog = false }, // 點擊窗口外或返回鍵時關閉窗口
+                title = { Text(text = "確認登出") },
+                text = { Text(text = "您確定要登出帳號嗎？") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            // 清除登入資料
+                            clearLoginData(context)
+
+                            // 導航到 Login 頁面
+                            navController.navigate(Screen.LoginScreen.name) {
+                                popUpTo(0) // 清空導航堆疊，防止返回到其他頁面
+                            }
+                        }
+                    ) {
+                        Text(text = "確認", color = Color.Red)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showLogoutDialog = false }) {
+                        Text(text = "取消")
+                    }
+                }
+            )
+        }
+
+
     }
 }
 

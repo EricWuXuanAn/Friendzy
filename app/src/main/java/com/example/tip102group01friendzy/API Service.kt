@@ -63,8 +63,16 @@ interface APIService {
     suspend fun findMemberInfo(): MemberModel.MemberInfoResponse?
 
     @POST("rest/member/edit")
-    suspend fun edit(@Body request: MemberModel.edit): Response<Unit>
-    
+    suspend fun editpassword(@Body request: MemberModel.editpassword): Response<Unit>
+
+    @POST("rest/member/edit")
+    suspend fun editnickname(@Body request: MemberModel.editnickname): Response<Unit>
+
+    @POST("rest/member/edit")
+    suspend fun editphone(@Body request: MemberModel.editphone): Response<Unit>
+
+    @POST("rest/member/edit")
+    suspend fun editintroduction(@Body request: MemberModel.editintroduction): Response<Unit>
 
     @GET("rest/member/login/{email}/{mpassword}")
     suspend fun login(@Path("email") account: String, @Path("mpassword")mpasswod: String):Response<Unit>

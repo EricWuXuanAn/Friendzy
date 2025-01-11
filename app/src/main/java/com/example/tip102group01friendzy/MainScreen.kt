@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.tip102group01friendzy.ui.feature.Memberpage.ForOthers
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
 import com.example.tip102group01friendzy.ui.feature.Memberpage.SettingPage
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
@@ -93,7 +94,8 @@ enum class Screen(@StringRes val title: Int) {
     CompanionCheckAppointmentScreen(title = R.string.CompanionCheckAppointmentScreen),
     CompanionLookPublishScreen(title = R.string.CompanionLookPublishScreen),
     TabMainScreen(title = R.string.TabMainScreen),
-    ChatMessageScreen(title = R.string.ChatMessageScreen)
+    ChatMessageScreen(title = R.string.ChatMessageScreen),
+    ForothersScreen(title = R.string.forothers)
 }
 /**
  * Main是一個頁面容器，其他頁面會依照使用者操作被加上來
@@ -247,8 +249,14 @@ fun Main(
             }
 
             composable(route = Screen.MemberScreen.name) {
-                MemberScreen(navController = navController, memberVM = viewModel(), tabVM = tabVM)
+                MemberScreen(navController = navController, memberVM = viewModel())
             }
+
+            composable(route = Screen.ForothersScreen.name) {
+                ForOthers(
+                    navController = navController, forothersVM = viewModel())
+            }
+
             composable(route = Screen.PostScreen.name) {
                 PostScreen(navController = navController, postVM = postVM, tabVM = tabVM)
             }

@@ -87,7 +87,6 @@ fun TabMainScreen(
 
                 4 -> MemberScreen(
                     navController = navController,
-                    tabVM = tabVM,
                     memberVM = MemberSceernVM()
                 )
             }
