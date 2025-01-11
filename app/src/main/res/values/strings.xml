@@ -78,5 +78,6 @@
     <string name="my_request">My Request</string>
     <string name="cancle">Cancle</string>
     <string name="alreadyRegistered">\"Email already registered.\"</string>
+    <string name="forothers">forothers</string>
 
 </resources>

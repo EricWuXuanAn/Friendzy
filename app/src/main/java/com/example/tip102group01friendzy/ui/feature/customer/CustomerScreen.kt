@@ -228,8 +228,8 @@ fun postList(
         items(postlist) { post ->
             ListItem(
                 modifier = Modifier.clickable { onClick(post) },
-                overlineContent = { Text(text = post.service_id.toString(), fontSize = 18.sp) },
-                headlineContent = { Text(text = post.service, fontFamily = FontFamily.Default) },
+                overlineContent = { Text(text = "ServiceID: ${post.service_id.toString()}", fontSize = 18.sp) },
+                headlineContent = { Text(text = "Service Title: ${post.service}", fontFamily = FontFamily.Default) },
                 supportingContent = {
 
                     val formattedDate = post.start_time.let { startTime ->
@@ -238,7 +238,7 @@ fun postList(
                             .toLocalDate()
                             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                     }
-                    Text(text = formattedDate)
+                    Text(text = "Start at: ${formattedDate}")
                 },
                 leadingContent = {
                     Image(

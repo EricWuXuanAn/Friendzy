@@ -29,11 +29,11 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="*********" />
+            android:value="********" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="*********" />
+            android:value="********" />
 
         <!-- 可以加上metadata標籤設定Notification的預設圖示、顏色與Channel ID (Android 8.0)，
              就無須使用程式建立Notification物件 -->

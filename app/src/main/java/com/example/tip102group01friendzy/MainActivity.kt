@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import com.google.firebase.Firebase
+import com.google.firebase.initialize
 import okhttp3.CookieJar
 import okhttp3.JavaNetCookieJar
 import java.net.CookieManager
@@ -26,6 +28,9 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Firebase.initialize(this)
+
         enableEdgeToEdge()
 
         val preferences = getSharedPreferences("settings", Context.MODE_PRIVATE)

@@ -12,6 +12,14 @@ class ReservationVM:ViewModel() {
 
 
 
+    suspend fun getNewStatus(
+        service_id: Int
+    ){
+        val response = RetrofitInstance.api.myRequestList(
+            selectedPostList(service_id = service_id)
+        )
+        return response
+    }
 
     suspend fun getSelectedPostList(
         service_id: Int

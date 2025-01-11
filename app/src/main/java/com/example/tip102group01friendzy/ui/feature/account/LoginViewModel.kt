@@ -33,6 +33,7 @@ class LoginViewModel(private val context: Context) : ViewModel() {
         ){
             email.value = savedEmail
             mpassword.value = savedPassword
+            Log.d("LoginViewModelValue","email: ${email.value}, password: ${mpassword.value}")
             try {
                 viewModelScope.launch {
                     login()
