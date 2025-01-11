@@ -34,7 +34,9 @@ import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
 import com.example.tip102group01friendzy.ui.feature.customer.PostVM
+import com.example.tip102group01friendzy.ui.feature.search.CompanionInfo
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMapScreen
+import com.google.android.gms.maps.model.LatLng
 
 @Composable
 fun TabMainScreen(
@@ -62,8 +64,14 @@ fun TabMainScreen(
 
 
             when (tabIndex) {
-//                0 -> SearchWithMapScreen(
-//                    navController = navController, tabVM = tabVM)
+                0 -> SearchWithMapScreen(
+                    navController = navController,
+                    defaultLocation = LatLng(25.0330, 121.5654),
+                    showPopup = true,
+                    onMemberSelected = { } ,
+                    CompanionInfo("1", "Nita", "搬家&油漆幫手", "信義區",
+                        LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3 ),
+                    tabVM = tabVM)
                 1 -> CustomerScreen(
                     navController = navController,
                     tabVM = tabVM,

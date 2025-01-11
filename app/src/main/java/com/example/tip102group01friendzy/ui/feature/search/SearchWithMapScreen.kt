@@ -1,4 +1,5 @@
 package com.example.tip102group01friendzy.ui.feature.search
+
 import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,6 +12,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +29,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.TabVM
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -48,7 +51,8 @@ fun SearchWithMapScreen(
     defaultLocation: LatLng = LatLng(25.0330, 121.5654),
     showPopup: Boolean = true,
     onMemberSelected: (String) -> Unit,
-    cameraPositionState: CompanionInfo
+    cameraPositionState: CompanionInfo,
+    tabVM: TabVM
 ) {
     var showPopupState by remember { mutableStateOf(showPopup) }
     var showAllInfoWindows by remember { mutableStateOf(false) }
@@ -159,24 +163,25 @@ fun UserMarker(
 ) {
     val markerState = rememberMarkerState(position = companion.location)
 
-    Marker(
-        state = markerState,
-        title = companion.name ?: "Unknown", // 处理 name 为空的情况
-        snippet = companion.description ?: "No description available", // 处理 description 为空的情况
-        icon = BitmapDescriptorFactory.defaultMarker(30f),
-        onClick = {
-            onMemberSelected(companion)
-            true // 确保不干扰 InfoWindow 显示
-        }
-    )
-
-    if (showInfoWindow) {
-        LaunchedEffect(Unit) {
-            markerState.showInfoWindow() // 显示 Marker 的 InfoWindow
+    // 強制顯示 InfoWindow
+    LaunchedEffect(showInfoWindow) {
+        if (showInfoWindow) {
+            markerState.showInfoWindow() // 顯示 InfoWindow
         }
     }
-}
 
+    // 添加 Marker
+    Marker(
+        state = markerState,
+        title = companion.nickname ?: "Unknown", // 如果 nickname 為 null，顯示 "Unknown"
+        snippet = companion.description ?: "No description available", // 如果 description 為 null，顯示默認值
+        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE), // Marker 顏色
+        onClick = {
+            onMemberSelected(companion) // 點擊時觸發回調
+            false // 返回 false 以顯示 InfoWindow
+        }
+    )
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -189,6 +194,7 @@ fun SearchWithMapScreenPreview() {
         defaultLocation = defaultLocation,
         onMemberSelected = { memberName -> println("Selected: $memberName") },
         cameraPositionState = CompanionInfo("1", "Nita", "搬家&油漆幫手", "信義區",
-            LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3)
+            LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3 ),
+        tabVM = TabVM()
     )
 }

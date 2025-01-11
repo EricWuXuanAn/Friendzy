@@ -77,7 +77,7 @@ enum class Screen(@StringRes val title: Int) {
     RegisterScreen(title = R.string.RegisterScreen),
     ForgetPasswordScreen(title = R.string.ForgetPasswordScreen),
     ChatroomScreen(title = R.string.ChatroomScreen),
-    SearchResultScreen(title = R.string.SearchResultScreen),
+//    SearchResultScreen(title = R.string.SearchResultScreen),
     SearchWithMapScreen(title = R.string.SearchWithMapRScreen),
     OrderScreen(title = R.string.OrderScreen),
     Favorite_and_BlackListScreen(title = R.string.Favorite_and_BlackListScreen),
@@ -158,7 +158,7 @@ fun Main(
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.EnterScreen.name,
+            startDestination = Screen.TabMainScreen.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -260,10 +260,12 @@ fun Main(
             composable(route = Screen.SearchWithMapScreen.name) {
                 SearchWithMapScreen(
                     navController = navController,
-                    defaultLocation = TODO(),
-                    showPopup = TODO(),
-                    onMemberSelected = TODO(),
-                    cameraPositionState = TODO()
+                    defaultLocation = LatLng(25.0330, 121.5654),
+                    showPopup = true,
+                    onMemberSelected = { } ,
+                    CompanionInfo("1", "Nita", "搬家&油漆幫手", "信義區",
+                        LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3 ),
+                    tabVM = tabVM
                 )
             }
             composable(

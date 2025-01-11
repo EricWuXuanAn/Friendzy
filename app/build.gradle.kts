@@ -122,4 +122,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation("com.google.maps.android:maps-compose:2.13.0") // 最新版本（截至目前）
 }
