@@ -103,9 +103,9 @@ fun ReservationScreen(
                 contentDescription = "image"
             )
             Text(
-                text = "Name: ${selectedPost?.member_name}",
+                text = "Name: \n ${selectedPost?.member_name}",
                 modifier = Modifier.padding(10.dp),
-                fontSize = 18.sp
+                fontSize = 20.sp
             )
             Column(
                 modifier = Modifier
@@ -160,7 +160,7 @@ fun ReservationScreen(
         verticalAlignment = Alignment.Bottom
     ) {
         Button(
-            modifier = Modifier.weight(0.3f),
+            modifier = Modifier.weight(0.3f).padding(bottom = 15.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
                 contentColor = Color.DarkGray
@@ -174,7 +174,7 @@ fun ReservationScreen(
             Text(text = "Make a reservation")
         }
         Button(
-            modifier = Modifier.weight(0.3f),
+            modifier = Modifier.weight(0.3f).padding(bottom = 15.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
                 contentColor = Color.DarkGray
