@@ -1,19 +1,14 @@
 package com.example.tip102group01friendzy.ui.feature.search
 import android.Manifest
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -57,7 +52,6 @@ fun SearchWithMapScreen(
 ) {
     var showPopupState by remember { mutableStateOf(showPopup) }
     var showAllInfoWindows by remember { mutableStateOf(false) }
-//    var searchText by remember { mutableStateOf("") }
 
     val fineLocationPermission = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val coarseLocationPermission = rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -73,11 +67,11 @@ fun SearchWithMapScreen(
         LocationRequestDialog(
             onDismiss = {
                 showPopupState = false
-                showAllInfoWindows = true
+                showAllInfoWindows = true // 顯示所有 Marker 的 InfoWindow
             },
             onConfirm = {
                 showPopupState = false
-                showAllInfoWindows = true
+                showAllInfoWindows = true // 顯示所有 Marker 的 InfoWindow
             }
         )
     }
@@ -90,23 +84,8 @@ fun SearchWithMapScreen(
             companions = getMockCompanions(),
             showAllInfoWindows = showAllInfoWindows
         )
-
-        // 添加懸浮的搜尋欄
-//        TextField(
-//            value = searchText,
-//            onValueChange = { searchText = it },
-//            placeholder = { Text("搜尋地點或陪伴者") },
-//            modifier = Modifier
-//                .align(Alignment.TopCenter)
-//                .padding(16.dp)
-//                .fillMaxWidth(0.9f), // 可調整搜尋欄的寬度
-//            shape = RoundedCornerShape(34.dp), // 設定圓角
-//            colors = TextFieldDefaults.colors(),
-//            singleLine = true
-//        )
     }
 }
-
 
 @Composable
 fun LocationRequestDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
@@ -182,22 +161,22 @@ fun UserMarker(
 
     Marker(
         state = markerState,
-        title = companion.name,
-//      snippet = companion.description,
-        snippet = "${companion.name}\n${companion.description}", // 添加 name 和 description
+        title = companion.name ?: "Unknown", // 处理 name 为空的情况
+        snippet = companion.description ?: "No description available", // 处理 description 为空的情况
         icon = BitmapDescriptorFactory.defaultMarker(30f),
         onClick = {
             onMemberSelected(companion)
-            true // 確保不干擾 InfoWindow 顯示
+            true // 确保不干扰 InfoWindow 显示
         }
     )
 
     if (showInfoWindow) {
         LaunchedEffect(Unit) {
-            markerState.showInfoWindow() // 顯示 Marker 的 InfoWindow
+            markerState.showInfoWindow() // 显示 Marker 的 InfoWindow
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
