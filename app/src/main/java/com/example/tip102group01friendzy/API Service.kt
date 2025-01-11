@@ -2,15 +2,16 @@ package com.example.tip102group01friendzy
 
 import com.example.tip102group01friendzy.ui.feature.account.MemberInfo
 import com.example.tip102group01friendzy.ui.feature.chat.Chatroom
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
 import com.example.tip102group01friendzy.ui.feature.customer.Post
 import com.example.tip102group01friendzy.ui.feature.customer.addPostRequest
 import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
+import com.example.tip102group01friendzy.ui.feature.customer.requestDelete
+import com.example.tip102group01friendzy.ui.feature.customer.selectedOrderListRequest
 import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
-import android.accounts.Account
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -74,8 +75,8 @@ interface APIService {
     @POST("rest/member/edit")
     suspend fun editintroduction(@Body request: MemberModel.editintroduction): Response<Unit>
 
-    @GET("rest/member/login/{email}/{mpassword}")
-    suspend fun login(@Path("email") account: String, @Path("mpassword")mpasswod: String):Response<Unit>
+//    @GET("rest/member/login/{email}/{mpassword}")
+//    suspend fun login(@Path("email") account: String, @Path("mpassword")mpasswod: String):Response<Unit>
 
 
     //陪伴者訂單管理
@@ -89,9 +90,30 @@ interface APIService {
     //陪伴者改訂單狀態
     @PUT("rest/companion/order/orderStatus/update")
     suspend fun comOrderUpdate(@Body comOrder:CompanionOrder):CompanionOrder
+
     @GET("rest/chatrooms")
     suspend fun showAllChatrooms(): List<Chatroom>
+
+    @POST("rest/customer/selectedOrderList")
+    suspend fun selectedorderList(@Body request: selectedOrderListRequest): OrderList
+
+    @POST("rest/customer/updateStatus")
+    suspend fun myRequestList(@Body request: selectedPostList)
+
+    @POST("rest/customer/deleteBlackList")
+    suspend fun deleteBlackList(@Body request: requestDelete)
+
+    @POST("rest/customer/updateStatus")
+    suspend fun updateOrderStatus(@Body request: selectedOrderListRequest)
+
+    @POST("rest/chatroom/create/{otherUserId}")
+    suspend fun createChatroom(@Path("otherUserId") otherUserId: Int): Response<Chatroom>
+
+    @POST("rest/customer/updateDeclineStatus")
+    suspend fun updateDeclineStatus(@Body request: selectedPostList)
 }
+
+
 
 object RetrofitInstance {
     val client = OkHttpClient.Builder()

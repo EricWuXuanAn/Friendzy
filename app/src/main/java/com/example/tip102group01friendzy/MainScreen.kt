@@ -1,5 +1,7 @@
 package com.example.tip102group01friendzy
 
+import android.content.Context
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -45,7 +47,6 @@ import com.example.tip102group01friendzy.ui.feature.companion.CompanionAppointme
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionCheckAppointmentScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionLookPublishScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionMyPublishVM
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderDetailsScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderListScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderVM
@@ -166,12 +167,7 @@ fun Main(
             composable(route = Screen.LoginScreen.name) {
                 LoginScreen(
                     navController = navController,
-                    loginViewModel = LoginViewModel(context = context),
-//                    requestVM = RequestVM(),
-//                    onLoginSuccess = {
-//                        loginViewModel.email.value = it
-//
-//                    }
+                    loginViewModel = LoginViewModel(context = context)
                 )
             }
             composable(
@@ -195,7 +191,7 @@ fun Main(
                 route = Screen.OrderScreen.name
             ) {
 
-               OrderListScreen(navController = navController, orderlistVM = orderlistVM)
+               OrderListScreen(navController = navController, orderlistVM = orderlistVM, customerVM = customerVM, context = context)
             }
             composable(
                 route = Screen.CustomerScreen.name
@@ -212,7 +208,8 @@ fun Main(
             ) {
                 Favorite_and_BlackListScreen (
                     navController = navController,
-                    favorite_and_blacklistVM = favorite_and_bkacklistVM
+                    favorite_and_blacklistVM = favorite_and_bkacklistVM,
+                    context = context
                 )
             }
 
@@ -226,7 +223,7 @@ fun Main(
                     navController = navController,
                     reservationVM = reservationVM,
                     service_id = serviceId,
-                    
+
                 )
             }
 
@@ -264,8 +261,15 @@ fun Main(
             composable(route = Screen.SearchWithMapScreen.name) {
                 SearchWithMap(navController = navController, tabVM = tabVM)
             }
-            composable(route = Screen.ReservationConfirmScreen.name){
-                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM)
+            composable(
+                route = "${Screen.ReservationConfirmScreen.name}/{service_id}",
+                arguments = listOf(navArgument("service_id") { type = NavType.IntType })
+                        ){
+                Log.d("tag_", " composable backentry: ${backStackEntry?.arguments}")
+//                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
+                val service_id = backStackEntry?.arguments?.getInt("service_id") ?: -1
+//                Log.d("tag_", " composable order_id: $order_id")
+                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, service_id = service_id, orderVM = OrderVM())
             }
 
             //>>>陪伴者
@@ -333,8 +337,20 @@ fun Main(
             composable(route = Screen.TabMainScreen.name){
                 TabMainScreen(navController = navController, tabVM = tabVM)
             }
-            composable(route = Screen.ChatMessageScreen.name){
-                ChatMessageScreen(navController = navController)
+            composable(
+                "${Screen.ChatMessageScreen.name}/{roomNo}",
+                arguments = listOf(navArgument("roomNo") { type = NavType.IntType })
+            ){backStackEntry ->
+                val roomNo = backStackEntry?.arguments?.getInt("roomNo") ?: 0
+                val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+                val memberNo = preferences.getInt("member_no",0)
+                Log.d("tag_MainScreen_backStackEntry?.arguments","backStackEntry?.arguments:${backStackEntry?.arguments}")
+                ChatMessageScreen(
+                    navController = navController,
+                    roomNo = roomNo,
+                    currentUserId = memberNo
+                )
+                Log.d("tab_MainScreen_ChatMessageScreen","roomNo: ${roomNo}, currentUserId: $memberNo")
             }
 
         }

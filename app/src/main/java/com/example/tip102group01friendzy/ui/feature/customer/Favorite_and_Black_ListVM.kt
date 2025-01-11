@@ -34,12 +34,15 @@ class Favorite_and_Black_ListVM():ViewModel() {
         }
     }
     //移除收藏名單的函式
-    fun removeFav(favList:Favorite_List){
-        _favoriteListState.update {
-            val removeFav = it.toMutableList()
-            removeFav.remove(favList)
-            removeFav
-        }
+    suspend fun delete(
+        user_id: Int,
+        balcklist_id: Int
+    ){
+        val response = RetrofitInstance.api.deleteBlackList(
+            requestDelete(user_id = user_id, blacklist_id = balcklist_id)
+        )
+        _blackListState.value = getBlacList()
+        return response
     }
 
     //新增黑名單的函式

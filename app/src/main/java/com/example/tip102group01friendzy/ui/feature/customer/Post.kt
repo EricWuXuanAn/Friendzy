@@ -16,14 +16,14 @@ data class Post(
 )
 
 data class addPostRequest(
-    val service: String,
-    val service_charge: Double,
     val service_poster: Int,
+    val service_charge: Double,
+    val service: String,
+    val service_detail: String,
     val start_time: Long,
     val finished_time: Long,
-    val service_status: Int,
-    val poster_status: Int,
-    val service_detail: String
+    val poster_status: Int ,
+    val service_status: Int
 )
 
 data class addPostResponse(

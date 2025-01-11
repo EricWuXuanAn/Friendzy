@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,16 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,25 +41,56 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
 
 
 @Composable
 fun ReservationConfirmScreen(
     navController: NavHostController,
-    reservationConfirmVM:ReservationConfirmVM
+    reservationConfirmVM: ReservationConfirmVM,
+    service_id: Int,
+    orderVM: OrderVM
 ) {
+//    Log.d("tag_pass", "order_idPass $order_id")
     val scope = rememberCoroutineScope()
     var snackbarHostState = remember { SnackbarHostState() }
     val dateFormat = ofPattern("YYYY-MM-dd")
     var startDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
     var endDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
-    var startTime by remember { mutableStateOf("HH") }
-    var endTime by remember { mutableStateOf("HH") }
-    var postContent by remember { mutableStateOf("") }
+//    var startTime by remember { mutableStateOf("HH") }
+//    var endTime by remember { mutableStateOf("HH") }
     var location by remember { mutableStateOf("台北") }
+    var orderState by remember { mutableStateOf<Post?>(null) }
+    Log.d("tag_222", "orderState: $orderState")
+
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+           orderState = reservationConfirmVM.getSelectedPostList(service_id = service_id)
+            orderVM.getOrderList()
+        }
+
+    }
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    val startTime: Long? = orderState?.start_time
+    val finishedTime = orderState?.finished_time
+    val startTimeFormatter: String? = startTime?.let {
+        Instant.ofEpochMilli(it)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime().format(dateFormatter)
+    }
+    val finishedTimeFormatter: String? = finishedTime?.let {
+        Instant.ofEpochMilli(it)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime().format(dateFormatter)
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -82,7 +112,11 @@ fun ReservationConfirmScreen(
                 painter = painterResource(R.drawable.friendzy),
                 contentDescription = "Image"
             )
-            Text(text = "Name: ", fontSize = 18.sp, modifier = Modifier.padding(10.dp))
+            Text(
+                text = "Name: \n ${orderState?.member_name}",
+                fontSize = 20.sp,
+                modifier = Modifier.padding(10.dp)
+            )
             Column(
                 modifier = Modifier
                     .padding(top = 30.dp)
@@ -94,7 +128,7 @@ fun ReservationConfirmScreen(
                         containerColor = colorResource(R.color.purple_200),
                         contentColor = Color.DarkGray
                     ),
-                    onClick = {navController.navigate(Screen.ChatroomScreen.name)}
+                    onClick = { navController.navigate(Screen.ChatroomScreen.name) }
                 ) {
                     Icon(
                         modifier = Modifier.size(25.dp),
@@ -109,43 +143,34 @@ fun ReservationConfirmScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
-            text = "POST CONTENT",
+                .padding(10.dp, top = 40.dp),
+            text = "POST CONTENT: ",
             fontFamily = FontFamily.Cursive,
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center
+            fontSize = 25.sp,
+            textAlign = TextAlign.Start
         )
-        TextField(
-            modifier = Modifier.fillMaxWidth(0.9f),
-            value = postContent,
-            onValueChange = { postContent = it },
-            readOnly = true,
-            shape = RoundedCornerShape(15.dp),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            )
-        )
-        Spacer(modifier = Modifier.padding(10.dp))
-        Image(
+        Text(
+            text = "${orderState?.service_detail}",
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .border(3.dp, color = Color.Gray),
-            painter = painterResource(R.drawable.friendzy),
-            contentDescription = "Image"
+                .fillMaxWidth()
+                .padding(10.dp, top = 20.dp, bottom = 20.dp),
+            textAlign = TextAlign.Start,
+            fontSize = 20.sp
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Text(
-            modifier = Modifier.fillMaxWidth(0.87f),
-            text = "Start at: $startDate  $startTime\n \nEnd at: $endDate $endTime\n\nLocation: $location\n\nPrice:",
+            modifier = Modifier.fillMaxWidth(0.87f).padding(top = 20.dp, bottom = 20.dp),
+            text = "Start at: ${startTimeFormatter}\n \nEnd at: ${finishedTimeFormatter}\n \nPrice: ${orderState?.service_charge}",
             textAlign = TextAlign.Start,
-            fontSize = 17.sp
+            fontSize = 20.sp
         )
-        Row (
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+                .fillMaxSize()
+                .padding(10.dp, bottom = 60.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalAlignment = Alignment.Bottom
+
         ) {
             Button(
                 modifier = Modifier.weight(0.3f),
@@ -155,12 +180,15 @@ fun ReservationConfirmScreen(
                 ),
                 onClick = {
                     scope.launch {
+                        reservationConfirmVM.updateOrderStatus(service_id = service_id)
+                        delay(1000)
                         snackbarHostState.showSnackbar(
                             message = "Order Confirm !",
                             withDismissAction = true
                         )
-                        navController.popBackStack()
+                        delay(2000)
                     }
+                    navController.popBackStack()
                 }
             ) {
                 Text(text = stringResource(R.string.Confirm))
@@ -173,12 +201,15 @@ fun ReservationConfirmScreen(
                 ),
                 onClick = {
                     scope.launch {
+                        reservationConfirmVM.updateDeclineStatus(service_id = service_id)
+                        delay(1000)
                         snackbarHostState.showSnackbar(
                             message = "Successfully Declined",
                             withDismissAction = true
                         )
-                        navController.popBackStack()
+                        delay(2000)
                     }
+                    navController.popBackStack()
                 }
             ) {
                 Text(text = "Decline")
@@ -191,5 +222,5 @@ fun ReservationConfirmScreen(
 @Composable
 @Preview(showBackground = true)
 fun RSCpreview() {
-    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM())
+    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM(), service_id = 1, orderVM = OrderVM())
 }

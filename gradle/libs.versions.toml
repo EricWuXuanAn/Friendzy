@@ -40,6 +40,8 @@ firebaseBom = "33.7.0"
 firebaseMessagingKtx = "24.1.0"
 retrofit = "2.11.0"
 converterGson = "2.11.0"
+firebaseDatabaseKtx = "21.0.0"
+firebaseAnalyticsKtx = "22.1.2"
 
 
 [libraries]
@@ -89,6 +91,8 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
+firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx", version.ref = "firebaseAnalyticsKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

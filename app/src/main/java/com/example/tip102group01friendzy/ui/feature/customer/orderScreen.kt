@@ -1,5 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,11 +30,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
@@ -41,14 +41,24 @@ import kotlinx.coroutines.launch
 @Composable
 fun OrderListScreen(
     orderlistVM: OrderVM,
-    navController: NavHostController
+    customerVM: CustomerVM,
+    navController: NavHostController,
+    context: Context
 ) {
+    val my_requestList by customerVM.recommendPostListState.collectAsState()
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val order_person = preferences.getInt("member_no", 0)
     var tabIndex by remember { mutableStateOf(0) }
     val ordeState by orderlistVM.orderList.collectAsState()
+    Log.d("tag_orderState", "orderState: $ordeState")
     val uncomfirm = ordeState.filter { it.order_status == 0 }
     val inProfress = ordeState.filter { it.order_status == 1 }
     val completed = ordeState.filter { it.order_status == 2 }
-    val unknowcode = ordeState.filter { it.order_status == 3 }
+    val reservation = ordeState.filter { it.order_status == 3 }
+    Log.d("tag_un", "unknowCode: $reservation")
+    val my_request = my_requestList.filter { it.service_status == 0 }
+    Log.d("tag_un", "myRequest: $my_request")
+
     val tab = listOf(
         stringResource(R.string.order_List),
         stringResource(R.string.unconfirm),
@@ -127,33 +137,36 @@ fun OrderListScreen(
         when (tabIndex) {
             0 -> orderList(orders = ordeState, onClick = {
                 scope.launch {
-                    snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
+                   navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
                 }
             })
 
             1 -> orderList(orders = uncomfirm, onClick = {
                 scope.launch {
-                    snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
+                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
                 }
             })
 
             2 -> orderList(orders = inProfress, onClick = {
                 scope.launch {
-                    snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
+                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
                 }
             })
 
             3 -> orderList(orders = completed, onClick = {
                 scope.launch {
-                    snackbar.showSnackbar("跳到訂單頁面", withDismissAction = true)
+                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
                 }
             })
 
-            4 -> orderList(orders = unknowcode, onClick = {
-                navController.navigate(Screen.ReservationConfirmScreen.name)
+            4 -> orderList(orders = reservation, onClick = {
+               navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
             })
 
-            5 -> Text("到時候會有清單")
+            5 -> servicerList(orders = my_request, onClick = {
+                navController.navigate(route = "${Screen.ReservationConfirmScreen.name}/${it.service_id}")
+                Log.d("tag_", "service_id: ${it.service_id}")
+            })
         }
         SnackbarHost(hostState = snackbar)
     }
@@ -167,13 +180,41 @@ fun orderList(
     LazyColumn {
         items(orders) { order ->
             ListItem(
-                modifier = Modifier.clickable { onClick(order) },
+                modifier = Modifier.clickable {
+                    Log.d("tag_", "order: $order")
+                    onClick(order) },
                 headlineContent = { Text(text = "order Title: ${order.order_title}") },
                 overlineContent = { Text(text = "Order ID: ${order.order_id}", fontSize = 18.sp) },
                 supportingContent = { Text(text = "Order Person:${order.member_name}") },
                 trailingContent = {
                     Text(
-                        text = "Order Price: \n${order.order_pirce}",
+                        text = "Order Price: \n${order.order_price}",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            )
+            HorizontalDivider()
+        }
+    }
+}
+@Composable
+fun servicerList(
+    orders: List<Post>,
+    onClick: (Post) -> Unit
+) {
+    LazyColumn {
+        items(orders) { order ->
+            ListItem(
+                modifier = Modifier.clickable {
+                    Log.d("tag_", "order: $order")
+                    onClick(order) },
+                headlineContent = { Text(text = "order Title: ${order.service}") },
+                overlineContent = { Text(text = "Order ID: ${order.service_id}", fontSize = 18.sp) },
+                supportingContent = { Text(text = "Order Person:${order.member_name}") },
+                trailingContent = {
+                    Text(
+                        text = "Order Price: \n${order.service_charge}",
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
@@ -184,8 +225,10 @@ fun orderList(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun OrderListScreenPreview() {
-    OrderListScreen(orderlistVM = OrderVM(), navController = rememberNavController())
-}
+
+
+//@Composable
+//@Preview(showBackground = true)
+//fun OrderListScreenPreview() {
+//    OrderListScreen(orderlistVM = OrderVM(), navController = rememberNavController())
+//}

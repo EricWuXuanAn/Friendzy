@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.chat
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -46,8 +47,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import com.google.firebase.Firebase
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -59,7 +62,6 @@ fun ChatroomScreen(
     chatroomViewModel: ChatroomViewModel = viewModel(),
     tabVM: TabVM = TabVM()
 ) {
-
     tabVM.tabBarState(true)
     var searchChatroom by remember { mutableStateOf("") }
     val chatrooms by chatroomViewModel.chatroomState.collectAsState()
@@ -105,15 +107,13 @@ fun ChatroomScreen(
         ) {
             getChatroomLists(
                 chatrooms.filter { it.OtherUserName.contains(searchChatroom, true) },
-                onClick = {
-                    // TODO:跳轉到該聊天室
-//                    Log.d("tag_", "ChatroomScreen1")
-//                    navController.navigate(Screen.ChatMessageScreen.name)
-//                    Log.d("tag_", "ChatroomScreen2")
+                onClick = { chatroom ->
+                    Log.d("tag_", "ChatroomScreen1")
+                    navController.navigate("${Screen.ChatMessageScreen.name}/${chatroom.room_no}")
+                    Log.d("tag_", "ChatroomScreen2")
                 }
             )
         }
-
     }
 }
 
@@ -121,6 +121,7 @@ fun ChatroomScreen(
 fun getChatroomLists(
     chatrooms: List<Chatroom>,
     onClick: (Chatroom) -> Unit,
+    chatMessageViewModel: ChatMessageViewModel = viewModel()
 //    navController: NavHostController
 ) {
     LazyColumn(
@@ -130,12 +131,14 @@ fun getChatroomLists(
     ) {
         items(chatrooms) { chatroom ->
             // 用來建立Lists內容物
+            Log.d("tag_chatroomScreen", "room_user_one: ${chatroom.room_user_one}, room_user_two: ${chatroom.room_user_two}")
             ListItem(
                 modifier = Modifier.clickable {
                     onClick(chatroom)
                 },
-                overlineContent = { Text(text = chatroom.room_no.toString()) },
+//                overlineContent = { Text(text = chatroom.room_no.toString()) },
                 headlineContent = { Text(chatroom.OtherUserName) },
+
                 leadingContent = {
                     Image(
                         painter = painterResource(id = R.drawable.puzzle),
@@ -148,7 +151,9 @@ fun getChatroomLists(
                     )
                 },
 //                trailingContent = {
-//                    Text(text = formatDatetime(chatroom.lastMessageTime))
+//                    Text(
+//                        text =
+//                    )
 //                }
             )
         }

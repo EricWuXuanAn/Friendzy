@@ -1,5 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,26 +25,35 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun Favorite_and_BlackListScreen(
     navController: NavHostController,
-    favorite_and_blacklistVM: Favorite_and_Black_ListVM
+    favorite_and_blacklistVM: Favorite_and_Black_ListVM,
+    context: Context
+
 ) {
+    val scpoe = rememberCoroutineScope()
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val user_id = preferences.getInt("member_no", 0)
     var tabIndex by remember { mutableStateOf(0) }
     val tab = listOf(
         stringResource(R.string.favotite),
@@ -50,6 +61,7 @@ fun Favorite_and_BlackListScreen(
     )
     val favListState by favorite_and_blacklistVM.favoriteListState.collectAsState()
     val blackListState by favorite_and_blacklistVM.blackListState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,8 +83,21 @@ fun Favorite_and_BlackListScreen(
 
         }
         when (tabIndex) {
-            0 -> getFavList(favaLists = favListState, onClick = {Screen.MemberScreen.name}, navController = navController)
-            1 -> getBlackList(blackLists = blackListState, onClick = {/*發請求叫後端做動作刪除 VM要多刪除方法*/})
+            0 -> getFavList(
+                favaLists = favListState,
+                onClick = { Screen.MemberScreen.name },
+                navController = navController
+            )
+
+            1 -> getBlackList(
+                blackLists = blackListState.filter { it.user_id == user_id },
+                onClick = {
+                    scpoe.launch {
+                        favorite_and_blacklistVM.delete(
+                            user_id = user_id, balcklist_id = it.blacklist_id
+                        )
+                    }
+                })
         }
     }
 }
@@ -82,8 +107,14 @@ fun Favorite_and_BlackListScreen(
 fun getFavList(
     favaLists: List<Favorite_List>,
     onClick: (Favorite_List) -> Unit,
-    navController:NavHostController
+    navController: NavHostController,
+    chatroomViewModel: ChatroomViewModel = viewModel()
 ) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val memberNo = preferences.getInt("member_no", 0)
+
     LazyColumn {
         items(favaLists) { favaList ->
             ListItem(
@@ -105,7 +136,15 @@ fun getFavList(
                     IconButton(
                         modifier = Modifier.size(20.dp),
                         onClick = {
-                            navController.navigate(Screen.ChatMessageScreen.name)
+                          scope.launch {
+                              handleChatNavigation(
+                                  currentUserId = memberNo,
+                                  otherUserId = favaList.be_hunted,
+                                  chatroomViewModel = chatroomViewModel,
+                                  navController = navController,
+                                  context = context
+                              )
+                          }
                         }
                     ) {
                         Icon(
@@ -127,7 +166,6 @@ fun getFavList(
     }
 }
 
-
 //建立一個函式去VM中拿取資料
 @Composable
 fun getBlackList(
@@ -146,18 +184,20 @@ fun getBlackList(
                     )
                 },
                 leadingContent = {
-                   Image(
-                       modifier = Modifier.size(70.dp),
-                       painter = painterResource(R.drawable.ic_launcher_foreground),
-                       contentDescription = "image"
-                   )
+                    Image(
+                        modifier = Modifier.size(70.dp),
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = "image"
+                    )
                 },
                 trailingContent = {
                     Column(
                         //為何不會靠底下？
                         verticalArrangement = Arrangement.Bottom
                     ) {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+
+                        }) {
                             Icon(
                                 Icons.Default.Delete,
                                 "remove block"
@@ -174,9 +214,32 @@ fun getBlackList(
     }
 }
 
+private suspend fun handleChatNavigation(
+    currentUserId: Int,
+    otherUserId: Int,
+    chatroomViewModel: ChatroomViewModel,
+    navController: NavController,
+    context: Context
+){
+    try {
+        var roomNo = chatroomViewModel.checkChatroomExists(currentUserId, otherUserId)
 
-@Composable
-@Preview(showBackground = true)
-fun Favorite_and_BlackListScreenPreview() {
-    Favorite_and_BlackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
+        if (roomNo == null){
+            roomNo = chatroomViewModel.createAndGetChatroom(otherUserId)
+        }
+        if(roomNo != null){
+            navController.navigate("${Screen.ChatMessageScreen.name}/${roomNo}")
+        }else{
+            Toast.makeText(context,"無法創建聊天室，請稍後再試", Toast.LENGTH_SHORT).show()
+        }
+    }catch (e: Exception){
+        Toast.makeText(context,"發生錯誤: ${e.message}", Toast.LENGTH_SHORT).show()
+    }
 }
+
+//
+//@Composable
+//@Preview(showBackground = true)
+//fun Favorite_and_BlackListScreenPreview() {
+//    Favorite_and_BlackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
+//}
