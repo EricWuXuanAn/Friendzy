@@ -26,6 +26,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -342,7 +343,11 @@ fun PostScreen(
                 modifier = Modifier.weight(0.8f),
                 value = service_poster.toString(),
                 onValueChange = { service_poster = it.toInt() },
-                label = { Text("請輸入會員ID") }
+                label = { Text("請輸入會員ID") },
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
             )
         }
         Row(
@@ -355,25 +360,35 @@ fun PostScreen(
                 modifier = Modifier.weight(0.7f),
                 value = post_status.toString(),
                 onValueChange = { post_status = it.toInt() },
-                label = { Text(text = "0 為顧客 , 1 為陪伴者") }
+                label = { Text(text = "0 為顧客 , 1 為陪伴者") },
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
             )
 
             TextField(
                 modifier = Modifier.weight(0.4f),
                 value = service_price.toString(),
                 onValueChange = { service_price = it.toDouble() },
-                label = { Text(text = "訂單價格: ") }
+                label = { Text(text = "訂單價格: ") },
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+
+                )
             )
         }
 
         Button(
+
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.purple_200),
                 contentColor = Color.DarkGray
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 0.dp),
+                .padding(top = 5.dp, bottom = 5.dp),
             onClick = {
                 scpoe.launch {
                     postVM.postOrder(

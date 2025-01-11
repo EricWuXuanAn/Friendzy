@@ -34,9 +34,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.delay
@@ -111,8 +113,8 @@ fun ReservationConfirmScreen(
                 contentDescription = "Image"
             )
             Text(
-                text = "Name: ${orderState?.member_name}",
-                fontSize = 18.sp,
+                text = "Name: \n ${orderState?.member_name}",
+                fontSize = 20.sp,
                 modifier = Modifier.padding(10.dp)
             )
             Column(
@@ -141,40 +143,34 @@ fun ReservationConfirmScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(10.dp, top = 40.dp),
             text = "POST CONTENT: ",
             fontFamily = FontFamily.Cursive,
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center
+            fontSize = 25.sp,
+            textAlign = TextAlign.Start
         )
         Text(
             text = "${orderState?.service_detail}",
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 18.sp
-        )
-        Spacer(modifier = Modifier.padding(10.dp))
-        Image(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .border(3.dp, color = Color.Gray),
-            painter = painterResource(R.drawable.friendzy),
-            contentDescription = "Image"
+                .padding(10.dp, top = 20.dp, bottom = 20.dp),
+            textAlign = TextAlign.Start,
+            fontSize = 20.sp
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Text(
-            modifier = Modifier.fillMaxWidth(0.87f),
-            text = "Start at: ${startTimeFormatter}\n \nEnd at: ${finishedTimeFormatter}\nPrice: ${orderState?.service_charge}",
+            modifier = Modifier.fillMaxWidth(0.87f).padding(top = 20.dp, bottom = 20.dp),
+            text = "Start at: ${startTimeFormatter}\n \nEnd at: ${finishedTimeFormatter}\n \nPrice: ${orderState?.service_charge}",
             textAlign = TextAlign.Start,
-            fontSize = 17.sp
+            fontSize = 20.sp
         )
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+                .fillMaxSize()
+                .padding(10.dp, bottom = 60.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalAlignment = Alignment.Bottom
+
         ) {
             Button(
                 modifier = Modifier.weight(0.3f),
@@ -223,8 +219,8 @@ fun ReservationConfirmScreen(
 }
 
 
-//@Composable
-//@Preview(showBackground = true)
-//fun RSCpreview() {
-//    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM(), service_id = 1)
-//}
+@Composable
+@Preview(showBackground = true)
+fun RSCpreview() {
+    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM(), service_id = 1, orderVM = OrderVM())
+}

@@ -1,13 +1,8 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.example.tip102group01friendzy.RetrofitInstance
-import com.example.tip102group01friendzy.Screen
-import com.example.tip102group01friendzy.ui.feature.chat.ChatroomViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
