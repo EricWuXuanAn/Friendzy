@@ -86,7 +86,7 @@ interface APIService {
     ):CompanionOrder
 
     //陪伴者改訂單狀態
-    @PUT("rest/companion/order/orderStatus/update")
+    @PUT("rest/companion/order/statusUp")
     suspend fun comOrderUpdate(@Body comOrder:CompanionOrder):CompanionOrder
     @GET("rest/chatrooms")
     suspend fun showAllChatrooms(): List<Chatroom>
@@ -118,8 +118,8 @@ interface APIService {
     suspend fun comPublishArea(): List<ComArea>
 
     //陪伴者刊登新增
-    @POST()
-    suspend fun addPublish(@Body myPublish: MyPublish): MyPublish
+    @POST("rest/companion/publish/addPublish")
+    suspend fun addPublish(@Body myPublish: MyPublish): Int
 
 }
 

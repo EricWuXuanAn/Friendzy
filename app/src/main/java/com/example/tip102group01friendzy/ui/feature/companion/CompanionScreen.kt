@@ -252,11 +252,10 @@ fun CompanionScreen(
             MyPublishList(
                 publishs = companionState.filter { it.service!!.contains(inputText,true) },
                 onClick = {
-                    coroutineScope.launch {
-                        companionVM.getApplicantSelect(serviceId = it.serviceId!!, memberNo = memberNo)
+//                        companionVM.getApplicantSelect(serviceId = it.serviceId!!, memberNo = memberNo)
 //                        Log.d("_tagSelect","sevice:${it.serviceId},memberNo:${memberNo}")
-                        navController.navigate(Screen.CompanionLookPublishScreen.name)
-                    }
+                        navController.navigate(Screen.CompanionLookPublishScreen.name+"/${it.serviceId}")
+//                        navController.navigate(route = "${Screen.CompanionLookPublishScreen.name}/${it.serviceId}")
                 },
                 iconOnClick = {
 

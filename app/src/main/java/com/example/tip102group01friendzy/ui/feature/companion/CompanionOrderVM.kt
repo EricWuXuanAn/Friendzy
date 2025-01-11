@@ -35,13 +35,23 @@ class CompanionOrderVM : ViewModel() {
         }
     }
 
+    //重置訂單明細
+    fun reSelectOrder(){
+        _orderDetailsSelectState.update { CompanionOrder() }
+    }
+
     //更改訂單狀態
     fun setOrderStatus(orderId: Int, status: Int, memberNo: Int){
         viewModelScope.launch {
             val value = fetchOrderStatus(orderId, status)
+            Log.d("_tagUpdate status","orderId:$orderId ,status:$status ")
             _orderDetailsSelectState.update { value }
-            _orderListState.update { fetchOrderList(memberNo) } //更新後取得訂單列表
+            _orderListState.value = fetchOrderList(memberNo = memberNo)
         }
+    }
+    //更改評價資料
+    fun setRate(memberNo: Int ,Poster: Int,rate: Int,RateContent: String){
+
     }
 
     //取得所有訂單
@@ -67,6 +77,7 @@ class CompanionOrderVM : ViewModel() {
     //該改訂單編號
     private suspend fun fetchOrderStatus(orderId: Int, status: Int):CompanionOrder{
         try {
+            Log.d("_tagUpdate statusAPI","orderId:$orderId ,status:$status ")
             val status = RetrofitInstance.api.comOrderUpdate(
                 CompanionOrder(orderId = orderId,orderStatus = status)
             )
@@ -102,7 +113,7 @@ data class CompanionOrder(
     var comRateContent: String? = null,//陪伴者評論
     var comRate: Int? = null,//陪伴者頻分
     var area: String? = null,//地區
-    var ordePrice: Double? = null,//金額
+    var orderPrice: Double? = null,//金額
 
 ) {
 }

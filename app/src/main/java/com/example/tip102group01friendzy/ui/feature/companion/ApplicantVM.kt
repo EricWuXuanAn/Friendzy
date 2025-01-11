@@ -18,7 +18,8 @@ class CompanionApplicantVM():ViewModel(){
     //全部應徵者基本資訊
     fun getApplicantList(memberNo: Int){
         viewModelScope.launch {
-            _applicantListState.value = fetchAppointment(memberNo)
+            val value = fetchAppointment(memberNo)
+            _applicantListState.value = value
         }
     }
     //單個應徵者詳細資訊
@@ -28,6 +29,9 @@ class CompanionApplicantVM():ViewModel(){
             _applicantSelectState.update { value }
         }
     }
+    //確認
+
+
 
     //呼叫API取得全部應徵者基本資訊
     private suspend fun fetchAppointment(memberNo: Int) :List<Applicant>{
@@ -73,6 +77,8 @@ data class Applicant(
     var accountName: String? = null,//應徵者名字
     var applyStatus:Int? =null,//應徵的狀態
     var applicationResult:Int? =null,//應徵結果
+
+    var reject:Int? = null,//拒絕狀態
 
 ){
 

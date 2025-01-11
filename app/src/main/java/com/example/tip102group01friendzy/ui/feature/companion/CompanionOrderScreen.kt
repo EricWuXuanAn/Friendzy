@@ -42,7 +42,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
-import kotlinx.coroutines.launch
 
 class OrderTabsButton(
     var name: String = "",
@@ -64,19 +63,23 @@ fun CompanionOrderListScreen(
 
     var tabIndex by remember { mutableIntStateOf(0) }
     var testText by remember { mutableStateOf("") }
-    val appoState by companionApplicantVM.appointmentState.collectAsState()
+    val appointmentState by companionApplicantVM.appointmentState.collectAsState()
     val orderState by companionOrderVM.orderListState.collectAsState()
-    val uncomfirm = orderState.filter { it.orderStatus == 0 && it.serviceStatus == 0}
+//    val uncomfirm = orderState.filter { it.orderStatus == 0 && it.serviceStatus == 0}
+    val uncomfirm = orderState.filter { it.orderStatus == 0 }
     val inProfress = orderState.filter { it.orderStatus == 1 }
-    val completed = orderState.filter { it.orderStatus == 2 }
-    val myReservation = appoState.filter { it.accountId == memberNo && it.applyStatus == 0}
-    val myRequest = appoState.filter { it.orderPoster ==  memberNo && it.applyStatus == 0}
+    val completed = orderState.filter { it.orderStatus == 2 || it.orderStatus == 3 }
+//    val myReservation = appoState.filter { it.accountId == memberNo && it.applyStatus == 0}
+    val myReservation = appointmentState.filter { it.accountId == memberNo}
+//    val myRequest = appoState.filter { it.orderPoster ==  memberNo && it.applyStatus == 0}
+    val myRequest = appointmentState.filter { it.orderPoster ==  memberNo}
 
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         Log.d("TAG","getOrderList")
         companionOrderVM.getOrderList(memberNo)
+        companionOrderVM.reSelectOrder()
         companionApplicantVM.getApplicantList(memberNo)
     }
 
@@ -156,24 +159,25 @@ fun CompanionOrderListScreen(
                     }
 
                     CompanionOrderLazy(
-                        orders = orderState.filter { it.serviceStatus != 0},
+//                        orders = orderState.filter { it.serviceStatus != 0},
+                        orders = orderState,
                         onClick = {
+                            /*
                             //要再判斷我預約和預約我的到另一頁
-                            if (it.orderStatus!! < 1 && it.serviceStatus == 0){
-                                coroutineScope.launch {
-                                    companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
+//                            if (it.orderStatus!! == 1 && it.serviceStatus == 0){
+                            if (it.orderStatus!! == 1){
+//                                    companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
 //                                    Log.d("_OrderDt","Details：$it")
 //                                    Log.d("_OrderMember","MemberNo：$memberNo")
-                                    navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
-                                }
+                                    navController.navigate(Screen.CompanionCheckAppointmentScreen.name+"/${it.orderPoster}/${it.orderId}")
                             }else{
-                                coroutineScope.launch {
-                                    companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
+//                                    companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
 //                                    Log.d("_OrderDt","Details：$it")
 //                                    Log.d("_OrderMember","MemberNo：$memberNo")
-                                    navController.navigate(Screen.CompanionOrderDetailsScreen.name)
-                                }
+                                    navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
                             }
+                            */
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
@@ -187,8 +191,8 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = uncomfirm,
                         onClick = {
-                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
-                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
+//                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
@@ -202,14 +206,14 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = inProfress,
                         onClick = {
-                            Log.d("_tag","memberNo：$memberNo , orderPoster： ${it.orderPoster} , orderId：${it.orderId}")
-                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
-                            navController.navigate(Screen.CompanionOrderDetailsScreen.name)
+//                            Log.d("_tag","memberNo：$memberNo , orderPoster： ${it.orderPoster} , orderId：${it.orderId}")
+//                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
 
-                3 -> {//已完成
+                3 -> {//已完成&取消
                     if(completed.isEmpty()){
                         testText = "此欄位沒有訂單"
                     }else{
@@ -218,8 +222,8 @@ fun CompanionOrderListScreen(
                     CompanionOrderLazy(
                         orders = completed,
                         onClick = {
-                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
-                            navController.navigate(Screen.CompanionOrderDetailsScreen.name)
+//                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
@@ -233,8 +237,8 @@ fun CompanionOrderListScreen(
                     CompanionApplicantLazy(
                         orders = myReservation,
                         onClick = {
-                            companionApplicantVM.getApplicantSelect(memberNo,it.accountId!!,it.serviceId!!)
-                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
+//                            companionApplicantVM.getApplicantSelect(memberNo,it.accountId!!,it.serviceId!!)
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
@@ -248,8 +252,8 @@ fun CompanionOrderListScreen(
                     CompanionApplicantLazy(
                         orders = myRequest,
                         onClick = {
-                            companionApplicantVM.getApplicantSelect(memberNo,it.accountId!!,it.serviceId!!)
-                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name)
+//                            companionApplicantVM.getApplicantSelect(memberNo,it.accountId!!,it.serviceId!!)
+                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name+"/${it.accountId}/${it.serviceId}")
                         }
                     )
                 }
@@ -275,6 +279,7 @@ fun CompanionOrderLazy(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         Text(text = "訂單編號: ${order.orderId}", fontSize = 18.sp)
+//                        Text(text = "金額：${order.orderPrice}",fontSize = 18.sp,)
                         Text(text = "狀態：${
                             when(order.orderStatus){
                                 0->"待確認"
@@ -320,16 +325,16 @@ fun CompanionApplicantLazy(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         Text(text = "訂單編號: ${order.orderId}", fontSize = 18.sp)
-                        Text(text = "狀態：${
-                            when(order.orderStatus){
-                                0->"待確認"
-                                1->"進行中"
-                                2->"已完成"
-                                3->"已取消"
-                                else ->"null"
-                            }}",
-                            fontSize = 18.sp,
-                        )
+//                        Text(text = "狀態：${
+//                            when(order.orderStatus){
+//                                0->"待確認"
+//                                1->"進行中"
+//                                2->"已完成"
+//                                3->"已取消"
+//                                else ->"null"
+//                            }}",
+//                            fontSize = 18.sp,
+//                        )
                     }
                 },
                 supportingContent = {
@@ -337,7 +342,7 @@ fun CompanionApplicantLazy(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
-                        Text(text = "訂購人:${order.orderPersonName}")
+                        Text(text = "預約人:${order.accountName}")
                         Text(text = "開始時間：${formatTimestamp(order.startTime!!)}")
                     }
                 },

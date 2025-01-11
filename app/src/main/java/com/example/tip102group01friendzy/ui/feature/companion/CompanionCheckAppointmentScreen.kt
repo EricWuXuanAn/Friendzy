@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,12 +20,17 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +41,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.TabVM
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -43,10 +50,28 @@ fun CompanionCheckAppointmentScreen(
     navController: NavHostController,
     companionApplicantVM: CompanionApplicantVM,
     comOrderVM: CompanionOrderVM,
-    tabVM: TabVM
+    tabVM: TabVM,
+    account: Int,
+    serviceId: Int
     ) {
-    val appoState by companionApplicantVM.appointmentState.collectAsState()
-    val order by comOrderVM.orderDetailsSelectState.collectAsState()
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val memberNo = preferences.getInt("member_no", 0)
+
+    val myAccount by companionApplicantVM.applicantSelectState.collectAsState()
+//    val order by comOrderVM.orderDetailsSelectState.collectAsState()
+//    val selectOrder by remember { mutableStateOf<Applicant?>(null) }
+//    val scpoe = rememberCoroutineScope()
+//    LaunchedEffect(Unit) {
+//        scpoe.launch {
+//            companionApplicantVM.getApplicantSelect()
+//        }
+//    }
+
+    LaunchedEffect(Unit) {
+        companionApplicantVM.getApplicantSelect(memberNo,account,serviceId)
+    }
+
     Column (
         modifier = Modifier.fillMaxSize()
             .background(companionScenery)
@@ -70,6 +95,7 @@ fun CompanionCheckAppointmentScreen(
                 .fillMaxHeight(0.15f)
                 .padding(top = 8.dp)
         ) {
+            /*
             Image(
                 modifier = Modifier
                     .size(120.dp)
@@ -81,6 +107,7 @@ fun CompanionCheckAppointmentScreen(
                 painter = painterResource(R.drawable.friendzy),
                 contentDescription = "memberPhoto",
             )
+            */
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -88,12 +115,12 @@ fun CompanionCheckAppointmentScreen(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "名字：${""}",
+                    text = "名字：${myAccount?.accountName}",
                     fontSize = 24.sp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 20.dp)
-                )
+                )/*
                 Button(
                     onClick = {
 
@@ -118,6 +145,7 @@ fun CompanionCheckAppointmentScreen(
                         )
                     }
                 }
+               */
             }
         }
         HorizontalDivider(modifier = Modifier.padding(6.dp))//分隔線
@@ -125,11 +153,13 @@ fun CompanionCheckAppointmentScreen(
             modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ){
-            Text(text = "我刊登的資訊", fontSize = 28.sp, modifier = Modifier.fillMaxWidth())
-            Text(text = "標題：${order?.service}", fontSize = 20.sp)
-            Text(text = "開始時間：${order?.startTime}", fontSize = 20.sp)
-            Text(text = "結束時間：${order?.endTime}", fontSize = 20.sp)
-            Text(text = "服務地區：", fontSize = 20.sp)
+            Text(text = "刊登資訊", fontSize = 28.sp, modifier = Modifier.fillMaxWidth())
+            Text(text = "標題：${myAccount?.service}", fontSize = 20.sp)
+            Text(text = "開始時間：${formatTimestamp(myAccount?.startTime)}", fontSize = 20.sp)
+            Text(text = "結束時間：${formatTimestamp(myAccount?.endTime)}", fontSize = 20.sp)
+            Text(text = "服務地區：${myAccount?.area}", fontSize = 20.sp)
+            Text(text = "刊登人：${myAccount?.orderPosterName}", fontSize = 20.sp)
+
         }
         Column (
             modifier = Modifier.fillMaxSize(),
@@ -164,9 +194,9 @@ fun CompanionCheckAppointmentScreen(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun PreviewCompanionCheckAppointmentScreen(
-) {
-    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionApplicantVM = CompanionApplicantVM(), comOrderVM = CompanionOrderVM())
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun PreviewCompanionCheckAppointmentScreen(
+//) {
+//    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionApplicantVM = CompanionApplicantVM(), comOrderVM = CompanionOrderVM())
+//}

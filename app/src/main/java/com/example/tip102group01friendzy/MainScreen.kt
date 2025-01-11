@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,8 +53,6 @@ import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrderVM
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionPublishScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionVM
-import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
-import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
 import com.example.tip102group01friendzy.ui.feature.companion.companionScenery
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
@@ -97,6 +96,7 @@ enum class Screen(@StringRes val title: Int) {
     TabMainScreen(title = R.string.TabMainScreen),
     ChatMessageScreen(title = R.string.ChatMessageScreen)
 }
+
 /**
  * Main是一個頁面容器，其他頁面會依照使用者操作被加上來
  */
@@ -120,7 +120,7 @@ fun Main(
     companionOrderVM: CompanionOrderVM = viewModel(),
     comOrderDtlVM: ComOrderDtlVM = viewModel(),
     loginViewModel: LoginViewModel = LoginViewModel(context = LocalContext.current),
-    ) {
+) {
     // 取得儲存在back stack最上層的頁面 //BackStack:儲存歷史資料的容器
     val backStackEntry by navController.currentBackStackEntryAsState()
     // 取得當前頁面的名稱
@@ -161,12 +161,12 @@ fun Main(
             navController = navController,
             startDestination = Screen.EnterScreen.name,
             modifier =
-            if(memberStatus.value){
+            if (memberStatus.value) {
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .background(color = companionScenery)
-            }else{
+            } else {
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
@@ -204,7 +204,7 @@ fun Main(
                 route = Screen.OrderScreen.name
             ) {
 
-               OrderListScreen(navController = navController, orderlistVM = orderlistVM)
+                OrderListScreen(navController = navController, orderlistVM = orderlistVM)
             }
             composable(
                 route = Screen.CustomerScreen.name
@@ -219,14 +219,14 @@ fun Main(
             composable(
                 route = Screen.Favorite_and_BlackListScreen.name
             ) {
-                Favorite_and_BlackListScreen (
+                Favorite_and_BlackListScreen(
                     navController = navController,
                     favorite_and_blacklistVM = favorite_and_bkacklistVM
                 )
             }
 
             composable(
-                route ="${Screen.ReservationScreen.name}/{service_id}",
+                route = "${Screen.ReservationScreen.name}/{service_id}",
                 arguments = listOf(navArgument("service_id") { type = NavType.IntType })
             ) {
                 val serviceId = backStackEntry?.arguments?.getInt("service_id") ?: 0
@@ -235,8 +235,8 @@ fun Main(
                     navController = navController,
                     reservationVM = reservationVM,
                     service_id = serviceId,
-                    
-                )
+
+                    )
             }
 
             composable(
@@ -267,22 +267,27 @@ fun Main(
             composable(route = Screen.SearchWithMapScreen.name) {
                 SearchWithMap(navController = navController, tabVM = tabVM)
             }
-            composable(route = Screen.ReservationConfirmScreen.name){
-                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM)
+            composable(route = Screen.ReservationConfirmScreen.name) {
+                ReservationConfirmScreen(
+                    navController = navController,
+                    reservationConfirmVM = reservationConfirmVM
+                )
             }
 
             //>>>陪伴者
             composable(
                 route = Screen.CompanionScreen.name
-            ){
+            ) {
                 CompanionScreen(
                     navController = navController,
                     companionVM = companionVM,
                     companionMyPublishVM = companionMyPublishVM,
-                    tabVM = tabVM)            }
+                    tabVM = tabVM
+                )
+            }
             composable(
                 route = Screen.CompanionPublishScreen.name
-            ){
+            ) {
                 CompanionPublishScreen(
                     navController = navController,
                     myPublish = companionMyPublishVM,
@@ -292,7 +297,7 @@ fun Main(
 
             composable(
                 route = Screen.CompanionOrderListScreen.name
-            ){
+            ) {
                 CompanionOrderListScreen(
                     navController = navController,
                     companionOrderVM = companionOrderVM,
@@ -303,39 +308,61 @@ fun Main(
             }
 
             composable(
-                route = Screen.CompanionOrderDetailsScreen.name
-            ){
+                route = Screen.CompanionOrderDetailsScreen.name + "/{poster}/{orderId}",
+                arguments = listOf(
+                 navArgument("poster"){type = NavType.IntType}  ,
+                 navArgument("orderId"){type = NavType.IntType}
+                )
+            ) {
+                val poster = it.arguments?.getInt("poster")?:0
+                val orderId = it.arguments?.getInt("orderId")?:0
                 CompanionOrderDetailsScreen(
                     navController = navController,
                     companionOrderVM = companionOrderVM,
-                    tabVM = tabVM
+                    tabVM = tabVM,
+                    orderId = orderId,
+                    poster = poster
                 )
             }
 
             composable(
-                route = Screen.CompanionCheckAppointmentScreen.name
-            ){
+                route = Screen.CompanionCheckAppointmentScreen.name+ "/{account}/{serviceId}",
+                arguments = listOf(
+                    navArgument("account"){type = NavType.IntType}  ,
+                    navArgument("serviceId"){type = NavType.IntType}
+                )
+            ) {
+                val account = it.arguments?.getInt("account")?:0
+                val serviceId = it.arguments?.getInt("serviceId")?:0
+                Log.d("_tag composable1","account:${account},serviceId:${serviceId}")
                 CompanionCheckAppointmentScreen(
                     navController = navController,
                     companionApplicantVM = companionApplicantVM,
                     comOrderVM = companionOrderVM,
-                    tabVM = tabVM
+                    tabVM = tabVM,
+                    account = account,
+                    serviceId = serviceId
                 )
             }
             composable(
-                route = Screen.CompanionLookPublishScreen.name
-            ){
+                route = Screen.CompanionLookPublishScreen.name + "/{service_no}",
+                arguments = listOf(
+                    navArgument("service_no") { type = NavType.IntType }
+                )
+            ) {
+                val serviceNo = it.arguments?.getInt("service_no") ?: 0
                 CompanionLookPublishScreen(
                     navController = navController,
                     companionVM = companionVM,
+                    serviceNo = serviceNo,
                     tabVM = tabVM
                 )
-            //<<<陪伴者
+                //<<<陪伴者
             }
-            composable(route = Screen.TabMainScreen.name){
+            composable(route = Screen.TabMainScreen.name) {
                 TabMainScreen(navController = navController, tabVM = tabVM)
             }
-            composable(route = Screen.ChatMessageScreen.name){
+            composable(route = Screen.ChatMessageScreen.name) {
                 ChatMessageScreen(navController = navController)
             }
 
