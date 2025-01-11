@@ -34,7 +34,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
 import com.example.tip102group01friendzy.ui.feature.customer.PostVM
-import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
+import com.example.tip102group01friendzy.ui.feature.search.SearchWithMapScreen
 
 @Composable
 fun TabMainScreen(
@@ -62,7 +62,8 @@ fun TabMainScreen(
 
 
             when (tabIndex) {
-                0 -> SearchWithMap(navController = navController, tabVM = tabVM)
+//                0 -> SearchWithMapScreen(
+//                    navController = navController, tabVM = tabVM)
                 1 -> CustomerScreen(
                     navController = navController,
                     tabVM = tabVM,

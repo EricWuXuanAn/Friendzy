@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.analytics.ktx)
+    implementation(libs.androidx.foundation.android)
 
 
     testImplementation(libs.junit)
