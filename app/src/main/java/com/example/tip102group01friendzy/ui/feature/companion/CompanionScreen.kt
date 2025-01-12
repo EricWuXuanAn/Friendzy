@@ -1,5 +1,8 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.content.Context
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,18 +28,19 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,10 +50,12 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.feature.customer.switch
+import kotlinx.coroutines.launch
 
 //tab選項內容格式
 class ScreenTabsButton(var name: String = "", var btIcon: Int = R.drawable.icon, var color:Int = R.color.white)
 /**陪伴者背景色*/
+//val companionScenery = Color(red = 208, green = 173, blue = 173, alpha = 255)
 val companionScenery = Color(red = 235, green = 243, blue = 250, alpha = 255)
 //val companionScenery = Color(red = 199, green = 238, blue = 234, alpha = 255)
 
@@ -63,29 +68,36 @@ fun CompanionScreen(
     companionMyPublishVM: CompanionMyPublishVM,
     tabVM: TabVM
     ){
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val memberNo = preferences.getInt("member_no", 0)
+    Log.d("_tab","${memberNo}")
+
     var inputText by remember { mutableStateOf("") }//搜尋內容
-    var tabIndex by remember { mutableIntStateOf(2) }//使用tabs的index編號
-    val companionState by companionVM.companionState.collectAsState()
-    val MyPublishState by companionMyPublishVM.publishListState.collectAsState()
+    val companionState by companionVM.applicantListState.collectAsState()
+//    val companionState by companionMyPublishVM.publishListState.collectAsState()
     var testIten by remember { mutableStateOf("") }//測試用
 
-    var accountStatus by remember { mutableStateOf(true) }
-    var text by remember { mutableStateOf("") }
+    val memberStatus = tabVM.memberStatus.collectAsState().value
+    val coroutineScope = rememberCoroutineScope()
 
+
+//    Log.d("_tagList","PublishList:${companionState}")
 
     val tabs :List<ScreenTabsButton> =listOf(//tab選項內容
         ScreenTabsButton("訂單管理",R.drawable.order_manage,R.color.teal_700),
-//        Tabs("可約時間",R.drawable.date_range,R.color.teal_700),
-//        Tabs(),
-//        Tabs("申請項目",R.drawable.check_list)
     )
 
+    LaunchedEffect(Unit) {
+        companionVM.getApplicantList(memberNo)
+        Log.d("_tag123","publishList")
+    }
+
     Column (
-        modifier = Modifier.fillMaxSize()
-            .background(companionScenery)
-    ){  }
-    Column (
-        modifier = Modifier.fillMaxSize().padding(20.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+            .background(companionScenery),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         //切換身分列
@@ -97,50 +109,19 @@ fun CompanionScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             switch(
-                check = accountStatus
+                check = memberStatus
             ) {
-                accountStatus = it
-                if (!accountStatus){
-                    navController.navigate(Screen.CustomerScreen.name){
-                        popUpTo(Screen.CompanionScreen.name){inclusive = true}
-                    }
-                }
-
-
+                tabVM.setMemberStatus(it)
             }
-//            text = when(accountStatus){
-//                false ->"Customer"
-//                true ->"Companion"
-//            }
             Text(
                 text = "Companion"
             )
             IconButton(
-                onClick = {},
+                onClick = {
+
+                },
             ) { Icon(Icons.Filled.Notifications, contentDescription = "Notification") }
         }
-        /*
-        //↑保留
-        Column {
-            //tab選項點擊功能
-            when(tabIndex){
-                0 ->{//訂單管理
-                    OrderListScreen(
-                        orderlistVM = OrderVM(),
-                        navController = rememberNavController(),
-                    )
-                    testIten = "123"
-                }
-                1 ->{//可預約時間
-                    testIten = "456"
-                }
-                2 ->{//申請項目
-                    testIten = "asd"
-                }
-            }
-        }
-        // ↓點tab隱藏
-        */
         //搜尋框
         Column(
             modifier = Modifier
@@ -177,7 +158,8 @@ fun CompanionScreen(
             modifier = Modifier.padding(top = 4.dp ,bottom = 10.dp), color = colorResource(R.color.teal_700)
         )
         Row (//按鈕列
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(4.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
@@ -186,8 +168,11 @@ fun CompanionScreen(
                     modifier = Modifier
                         .padding(start = 4.dp)
                         .clickable {
-                            when(index){
-                                0 ->{ navController.navigate(route = Screen.CompanionOrderListScreen.name) }
+                            when (index) {
+                                0 -> {
+                                    navController.navigate(route = Screen.CompanionOrderListScreen.name)
+                                }
+
                             }
                         },
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -267,10 +252,12 @@ fun CompanionScreen(
             Spacer(modifier = Modifier.padding(4.dp))
             //服務項目清單
             MyPublishList(
-                publishs = MyPublishState.filter { it.startTime.contains(inputText,true) },
+                publishs = companionState.filter { it.service!!.contains(inputText,true) },
                 onClick = {
-                    companionMyPublishVM.setMyPublish(it)
-//                    navController.navigate(Screen.CompanionLookPublish.name)
+//                        companionVM.getApplicantSelect(serviceId = it.serviceId!!, memberNo = memberNo)
+//                        Log.d("_tagSelect","sevice:${it.serviceId},memberNo:${memberNo}")
+                        navController.navigate(Screen.CompanionLookPublishScreen.name+"/${it.serviceId}")
+//                        navController.navigate(route = "${Screen.CompanionLookPublishScreen.name}/${it.serviceId}")
                 },
                 iconOnClick = {
 
@@ -283,8 +270,8 @@ fun CompanionScreen(
 //推薦的顧客項目列表
 @Composable
 fun MyPublishList(
-    publishs:List<MyPublish>,
-    onClick:(MyPublish) ->Unit,
+    publishs:List<ComPublish>,
+    onClick:(ComPublish) ->Unit,
     iconOnClick:() ->Unit,
 ){
     LazyColumn (
@@ -293,9 +280,6 @@ fun MyPublishList(
         items(publishs) { publish ->
             ListItem(
                 modifier = Modifier.clickable { onClick(publish) },
-                overlineContent = { Text(text = publish.serviceTitle, fontSize = 18.sp)},
-                headlineContent = { Text(text = publish.serviceDetail, fontFamily = FontFamily.Default)},
-                supportingContent = { Text(text = publish.startTime)},
                 colors =  ListItemDefaults.colors(
                     containerColor = companionScenery),
 //                leadingContent = {
@@ -306,6 +290,29 @@ fun MyPublishList(
 //                        contentScale = ContentScale.FillBounds
 //                    )
 //                },
+                overlineContent = {
+                    Text(text = "標題：${publish.service}", fontSize = 18.sp)
+                },
+                headlineContent = {
+                    Text(text = "位置：${publish.area}", fontSize = 14.sp)
+                },
+                supportingContent = {
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ){
+                        Text(text = "刊登者：${publish.posterName}")
+                        Text(text = "開始時間：${formatTimestamp(publish.startTime)}")
+                    }
+                },
+                leadingContent = {
+                    Image(
+                        modifier = Modifier.size(50.dp).padding(end = 10.dp),
+                        painter = painterResource(R.drawable.buddy),
+                        contentDescription = "image"
+                    )
+                }
+                /*
                 trailingContent = {
                     Icon(
                         painter = painterResource(R.drawable.delete),
@@ -314,6 +321,8 @@ fun MyPublishList(
                             .clickable { iconOnClick }
                     )
                 }
+
+                 */
             )
             HorizontalDivider()//分隔線
         }

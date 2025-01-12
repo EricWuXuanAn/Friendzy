@@ -1,9 +1,10 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,44 +23,98 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
-import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter.ofPattern
+
+
+@Composable
+fun SetupAddResult(
+    viewModel: CompanionMyPublishVM,
+    snackbar: SnackbarHostState,
+    onInputClear: () -> Unit,
+) {
+    val addReturn by viewModel.addReturnState.collectAsState()
+    Log.d("_tagPublish1", "viewModel addReturn: $addReturn")
+
+    LaunchedEffect(addReturn) {
+        Log.d("_tagPublish1", "LaunchEffect addReturn: $addReturn")
+        when (addReturn) {//丟給API
+            -1 -> {
+
+                snackbar.showSnackbar("刊登失敗", withDismissAction = true)
+                viewModel.reAddReturn()
+            }
+
+            -2 -> {
+                snackbar.showSnackbar("伺服器呼叫失敗", withDismissAction = true)
+                viewModel.reAddReturn()
+            }
+
+            1 -> {
+                Log.d("_tagPublish1", "call 1 Method")
+                snackbar.showSnackbar("刊登成功", withDismissAction = true)
+                Log.d("_tagPublish1", "call 1 showSnackBar")
+                onInputClear.invoke()
+                Log.d("_tagPublish1", "call 1 onInputClear")
+                viewModel.reAddReturn()
+            }
+
+            else -> {
+                Log.d("_tagPublish1", "call else Method")
+
+            }
+        }
+
+    }
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //陪伴者刊登畫面
 fun CompanionPublishScreen(
     navController: NavHostController,
-    skillVM: SkillVM,
-    locationVM: LocationVM,
+    myPublish: CompanionMyPublishVM,
     tabVM: TabVM
 ) {
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val memberNo = preferences.getInt("member_no", 0)
+    Log.d("_tab", "${memberNo}")
+
     //呼叫VM
-    val skillState by skillVM.skillState.collectAsState()
-    val locationState by locationVM.locationState.collectAsState()
+    val skillState by myPublish.publishSkillState.collectAsState()
+    val areaState by myPublish.publishAreaState.collectAsState()
+    val pubisState by myPublish.setMyPublishState.collectAsState()
+    val addReturn by myPublish.addReturnState.collectAsState()
     //標題輸入文字
     var inputTitleText by remember { mutableStateOf("") }
     //專長輸入文字
@@ -71,12 +126,12 @@ fun CompanionPublishScreen(
     var inputDateEnd by remember { mutableStateOf("") }
     var inputTimeEnd by remember { mutableStateOf("") }
     //設定日期格式
-    val dateFormat = ofPattern("yyyy-MM-dd")
+    val dateFormat = ofPattern("yyyy/MM/dd")
     //DatePickDialog顯示控制
     var shortStartDatePick by remember { mutableStateOf(false) }
     var shortEndDatePick by remember { mutableStateOf(false) }
     //預算輸入文字
-//    var inputBudget by remember { mutableStateOf("") }
+    var inputBudget by remember { mutableStateOf("") }
     //下拉選單輸入文字
     var inputDropdownMenu by remember { mutableStateOf("") }//專長
     var inputCityText by remember { mutableStateOf("") }//城市
@@ -85,8 +140,8 @@ fun CompanionPublishScreen(
     var skillExpanded by remember { mutableStateOf(false) }//專長
     var cityExpanded by remember { mutableStateOf(false) }//城市
     var districtExpanded by remember { mutableStateOf(false) }//區
-    var TimeStartExpanded by remember { mutableStateOf(false) }//開始時間
-    var TimeEndExpanded by remember { mutableStateOf(false) }//結束時間
+    var timeStartExpanded by remember { mutableStateOf(false) }//開始時間
+    var timeEndExpanded by remember { mutableStateOf(false) }//結束時間
     //選時間用的小時數
     val timeList = listOf(
         "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
@@ -94,17 +149,37 @@ fun CompanionPublishScreen(
         "20:00", "21:00", "22:00", "23:00", "24:00"
     )
     //過濾掉重複的城市
-    val cityList = locationState.map { it.city }.distinct()
+    val cityList = areaState.map { it.areaCity }.distinct()
     //過濾出所選城市的所有區
-    val districtList = locationState.filter { it.city == inputCityText }.map { it.district }
+    val districtList = areaState.filter { it.areaCity == inputCityText }.map { it.areaDistricy }
     //專長文字搜尋過濾
-    val skillFiltered = skillState.filter { it.skillName.startsWith(inputDropdownMenu, true) }
+    val skillFiltered =
+        skillState.filter { it.expertiseLabel!!.startsWith(inputDropdownMenu, true) }
     skillExpanded = skillExpanded && skillFiltered.isNotEmpty()
 
-    Column (
-        modifier = Modifier.fillMaxSize()
-            .background(companionScenery)
-    ){  }
+    val scope = rememberCoroutineScope()
+    val snackbar = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        myPublish.getAreaState()
+        myPublish.getSkillState()
+    }
+    SetupAddResult(
+        viewModel = myPublish,
+        snackbar = snackbar,
+        onInputClear = {
+            inputTitleText = ""
+            inputSkillText = ""
+            inputDateStart = ""
+            inputTimeStart = ""
+            inputDateEnd = ""
+            inputTimeEnd = ""
+            inputCityText = ""
+            inputDistrictText = ""
+            inputBudget = ""
+            inputDropdownMenu = ""
+        })
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -125,10 +200,10 @@ fun CompanionPublishScreen(
                 Text(text = "標題：", fontSize = 16.sp)
                 OutlinedTextField(
                     value = inputTitleText,
-                    onValueChange = {inputTitleText = it},
+                    onValueChange = { inputTitleText = it },
                     shape = RoundedCornerShape(15.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("輸入標題") },
+                    placeholder = { Text("輸入標題*") },
                 )
             }
             Spacer(modifier = Modifier.size(8.dp))//間隔
@@ -162,9 +237,9 @@ fun CompanionPublishScreen(
                 ) {
                     skillFiltered.forEach { skill ->
                         DropdownMenuItem(
-                            text = { Text(skill.skillName) },
+                            text = { Text(skill.expertiseLabel!!) },
                             onClick = {
-                                inputDropdownMenu = skill.skillName
+                                inputDropdownMenu = skill.expertiseLabel!!
                                 skillExpanded = false
                             }
                         )
@@ -190,7 +265,7 @@ fun CompanionPublishScreen(
                         //判斷文字方塊是否有這個詞，有就不變 沒有就新增
                         when (inputSkillText.contains(inputDropdownMenu)) {
                             true -> {}
-                            false -> inputSkillText += "$inputDropdownMenu "
+                            false -> inputSkillText += "$inputDropdownMenu, "
                         }
                     }
                 ) { Text("加入選擇專長") }
@@ -201,7 +276,7 @@ fun CompanionPublishScreen(
                     ),
                     modifier = Modifier.fillMaxWidth(1f),
                     onClick = {
-                        inputSkillText = inputSkillText.replace("$inputDropdownMenu ", "")
+                        inputSkillText = inputSkillText.replace("$inputDropdownMenu, ", "")
                     }
                 ) { Text("刪除選擇專長") }
             }
@@ -220,7 +295,7 @@ fun CompanionPublishScreen(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = false,
                     shape = RoundedCornerShape(15.dp),
-                    placeholder = { Text("透過選項輸入專長 限30個字") },
+                    placeholder = { Text("透過選項輸入專長") },
                     enabled = false //禁止打字
                 )
             }
@@ -243,7 +318,7 @@ fun CompanionPublishScreen(
                         .clickable { shortStartDatePick = true },
 //                    singleLine = false,
                     shape = RoundedCornerShape(15.dp),
-                    placeholder = { Text("選日期") },
+                    placeholder = { Text("選日期*") },
                     enabled = false, //禁止打字
                     trailingIcon = {
                         Icon(
@@ -270,9 +345,9 @@ fun CompanionPublishScreen(
                 }
                 //開始時段選單
                 ExposedDropdownMenuBox(
-                    expanded = TimeStartExpanded,
+                    expanded = timeStartExpanded,
                     onExpandedChange = {
-                        TimeStartExpanded = it
+                        timeStartExpanded = it
                         inputTimeStart = ""
                     },
                 ) {
@@ -284,23 +359,23 @@ fun CompanionPublishScreen(
                         value = inputTimeStart,
                         onValueChange = {
                             inputTimeStart = it
-                            TimeStartExpanded = true
+                            timeStartExpanded = true
                         },
-                        placeholder = { Text("選時間") },
+                        placeholder = { Text("選時間*") },
                         shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = TimeStartExpanded) },
+                        trailingIcon = { TrailingIcon(expanded = timeStartExpanded) },
                         enabled = false
                     )
                     ExposedDropdownMenu(
-                        expanded = TimeStartExpanded,
-                        onDismissRequest = { TimeStartExpanded = false },
+                        expanded = timeStartExpanded,
+                        onDismissRequest = { timeStartExpanded = false },
                     ) {
                         timeList.forEach { time ->
                             DropdownMenuItem(
                                 text = { Text(time) },
                                 onClick = {
                                     inputTimeStart = time
-                                    TimeStartExpanded = false
+                                    timeStartExpanded = false
                                 }
                             )
                         }
@@ -344,7 +419,7 @@ fun CompanionPublishScreen(
                         .clickable { shortEndDatePick = true },
 //                    singleLine = false,
                     shape = RoundedCornerShape(15.dp),
-                    placeholder = { Text("選日期") },
+                    placeholder = { Text("選日期*") },
                     enabled = false, //禁止打字
                     trailingIcon = {
                         Icon(
@@ -370,9 +445,9 @@ fun CompanionPublishScreen(
                 }
                 //結束時段選擇
                 ExposedDropdownMenuBox(
-                    expanded = TimeEndExpanded,
+                    expanded = timeEndExpanded,
                     onExpandedChange = {
-                        TimeEndExpanded = it
+                        timeEndExpanded = it
                         inputTimeEnd = ""
                     },
                 ) {
@@ -384,23 +459,23 @@ fun CompanionPublishScreen(
                         value = inputTimeEnd,
                         onValueChange = {
                             inputTimeEnd = it
-                            TimeEndExpanded = true
+                            timeEndExpanded = true
                         },
-                        placeholder = { Text("選時間") },
+                        placeholder = { Text("選時間*") },
                         shape = RoundedCornerShape(15.dp),
-                        trailingIcon = { TrailingIcon(expanded = TimeEndExpanded) },
+                        trailingIcon = { TrailingIcon(expanded = timeEndExpanded) },
                         enabled = false
                     )
                     ExposedDropdownMenu(
-                        expanded = TimeEndExpanded,
-                        onDismissRequest = { TimeEndExpanded = false },
+                        expanded = timeEndExpanded,
+                        onDismissRequest = { timeEndExpanded = false },
                     ) {
                         timeList.forEach { time ->
                             DropdownMenuItem(
                                 text = { Text(time) },
                                 onClick = {
                                     inputTimeEnd = time
-                                    TimeEndExpanded = false
+                                    timeEndExpanded = false
                                 }
                             )
                         }
@@ -455,7 +530,7 @@ fun CompanionPublishScreen(
                             inputDistrictText = ""
                             cityExpanded = true
                         },
-                        placeholder = { Text("城市") },
+                        placeholder = { Text("城市*") },
                         shape = RoundedCornerShape(15.dp),
                         trailingIcon = { TrailingIcon(expanded = cityExpanded) },
                         enabled = false,
@@ -466,9 +541,9 @@ fun CompanionPublishScreen(
                     ) {
                         cityList.forEach { citys ->
                             DropdownMenuItem(
-                                text = { Text(citys) },
+                                text = { Text(citys!!) },
                                 onClick = {
-                                    inputCityText = citys
+                                    inputCityText = citys!!
                                     inputDistrictText = ""
                                     cityExpanded = false
                                 }
@@ -495,7 +570,7 @@ fun CompanionPublishScreen(
                             inputDistrictText = it
                             districtExpanded = true
                         },
-                        placeholder = { Text("區") },
+                        placeholder = { Text("區*") },
                         shape = RoundedCornerShape(15.dp),
                         trailingIcon = { TrailingIcon(expanded = districtExpanded) },
                         enabled = false,
@@ -506,9 +581,9 @@ fun CompanionPublishScreen(
                     ) {
                         districtList.forEach { district ->
                             DropdownMenuItem(
-                                text = { Text(district) },
+                                text = { Text(district!!) },
                                 onClick = {
-                                    inputDistrictText = district
+                                    inputDistrictText = district!!
                                     districtExpanded = false
                                 }
                             )
@@ -517,57 +592,126 @@ fun CompanionPublishScreen(
                 }
             }
             //金額
-            /*
+//            /*
+            Spacer(modifier = Modifier.size(8.dp))//間隔
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "金額：", fontSize = 16.sp)
+                Text(text = "價格：", fontSize = 16.sp)
                 OutlinedTextField(
                     value = inputBudget,
                     onValueChange = { inputBudget = it },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = RoundedCornerShape(15.dp),
-                    placeholder = { Text("輸入金額") },
+                    placeholder = { Text("輸入價格 最少0元*") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
-             */
+//             */
         }
-        Column(
+        Box(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top
             ) {
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.purple_200),
-                        contentColor = Color.DarkGray
-                    ),
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .padding(end = 6.dp),
-                    onClick = {}
-                ) { Text("刊登") }
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                ) {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.purple_200),
+                            contentColor = Color.DarkGray
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .padding(end = 6.dp),
+                        onClick = {
+                            val fields = listOf(
+                                inputTitleText,
+                                inputSkillText,
+                                inputDateStart,
+                                inputTimeStart,
+                                inputDateEnd,
+                                inputTimeEnd,
+                                inputCityText,
+                                inputDistrictText,
+                                inputBudget
+                            ).all { it.isNotBlank() }
+
+                            if (fields) {
+                                Log.d("_tagFields", "Fields")
+                                val area = areaState.filter {
+                                    it.areaCity == inputCityText && it.areaDistricy == inputDistrictText
+                                }.map { it.areaNo }.firstOrNull()
+                                val startTime = combineToEpochMillis(inputDateStart, inputTimeStart)
+                                val endTime = combineToEpochMillis(inputDateEnd, inputTimeEnd)
+
+                                if (startTime > endTime) {
+                                    scope.launch {
+                                        snackbar.showSnackbar(
+                                            "結束時間必須大於開始時間",
+                                            withDismissAction = true
+                                        )
+                                    }
+                                } else {
+                                    val publish = MyPublish(
+                                        memberNo = memberNo,
+                                        service = inputTitleText,
+                                        serviceDetail = inputSkillText,
+                                        startTime = startTime,
+                                        endTime = endTime,
+                                        area = area,
+                                        charge = inputBudget.toDouble(),
+                                    )
+                                    Log.d("_tagPublish1", "publish:${pubisState}")
+                                    myPublish.setPublish(publish)//寫進VM
+                                    myPublish.addPublish(publish)
+//                                Log.d("_tagPublish2","publish:${pubisState}")
+                                }
+                            } else {
+                                scope.launch {
+                                    snackbar.showSnackbar(
+                                        "有*的欄位必須填寫",
+                                        withDismissAction = true
+                                    )
+                                }
+                            }
+//                        Log.d("_tagPublish","memberNo:$memberNo " +
+//                                "title:$inputTitleText " +
+//                                "detail:$inputSkillText " +
+//                                "startDate:$inputDateStart " +
+//                                "startTime:$inputTimeStart " +
+//                                "endDate:$inputDateEnd " +
+//                                "endTime:$inputTimeEnd " +
+//                                "location:$area " +
+//                                "priceval:${inputBudget.toDouble()}")
+
+//                        Log.d("_tagPublish","publish:${pubisState}")
+                        }
+                    ) { Text("刊登") }
+                }
             }
+            SnackbarHost(hostState = snackbar, modifier = Modifier.padding(bottom = 4.dp))
         }
     }
+
 }
+
 
 @Composable
 @Preview(showBackground = true)
 fun PreviewCompanionPublishScreen() {
     CompanionPublishScreen(
         rememberNavController(),
-        skillVM = SkillVM(),
-        locationVM = LocationVM(),
+        CompanionMyPublishVM(),
         tabVM = TabVM()
     )
 }

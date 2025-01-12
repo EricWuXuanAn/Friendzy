@@ -69,6 +69,7 @@ fun CustomerScreen(
     val postListState by customerVM.recommendPostListState.collectAsState()
     val postlists = postListState.filter { it.poster_status == 1 }
     Log.d("tag_custmerScreen","${postlists}")
+    val memberStatus = tabVM.memberStatus.collectAsState().value
 
     Column(
         modifier = Modifier
@@ -84,13 +85,13 @@ fun CustomerScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             switch(
-                check = accountStatus
+                check = memberStatus
             ) {
-                accountStatus = it
-                if (accountStatus == false) {
-                } else {
-                    navController.navigate(Screen.CompanionScreen.name)
-                }
+                tabVM.setMemberStatus(it)
+//                if (accountStatus == false) {
+//                } else {
+//                    navController.navigate(Screen.CompanionScreen.name)
+//                }
             }
 
             Text(text = "Customer")

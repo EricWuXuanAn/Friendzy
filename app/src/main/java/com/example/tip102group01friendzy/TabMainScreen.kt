@@ -1,5 +1,7 @@
 package com.example.tip102group01friendzy
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -10,8 +12,10 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,14 +31,20 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberSceernVM
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionMyPublishVM
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionPublishScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionScreen
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionVM
 import com.example.tip102group01friendzy.ui.feature.companion.LocationVM
 import com.example.tip102group01friendzy.ui.feature.companion.SkillVM
+import com.example.tip102group01friendzy.ui.feature.companion.companionScenery
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
 import com.example.tip102group01friendzy.ui.feature.customer.PostVM
-import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
+import com.example.tip102group01friendzy.ui.feature.search.CompanionInfo
+import com.example.tip102group01friendzy.ui.feature.search.SearchWithMapScreen
+import com.google.android.gms.maps.model.LatLng
 
 @Composable
 fun TabMainScreen(
@@ -43,7 +53,11 @@ fun TabMainScreen(
 ) {
     var switchState by remember { mutableStateOf(false) }
     val tabBarVisibility = tabVM.tabBarVisibility.collectAsState()
-    var tabIndex by remember { mutableStateOf(0) }
+    val showTabIndex by tabVM.showTabIndex.collectAsState()
+    val memberStatus = tabVM.memberStatus.collectAsState()
+
+    Log.d("_showTabIndex", "showTabIndex:$showTabIndex")
+
     val tabs = listOf(
         stringResource(id = R.string.home),
         stringResource(id = R.string.service),
@@ -52,31 +66,63 @@ fun TabMainScreen(
         stringResource(id = R.string.information)
     )
 
+    LaunchedEffect(Unit) {
+        tabVM.tabBarState(true)
+    }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+            modifier = if (memberStatus.value) {
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(color = companionScenery)
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            }
         ) {
 
-
-            when (tabIndex) {
-                0 -> SearchWithMap(navController = navController, tabVM = tabVM)
-                1 -> CustomerScreen(
+            when (showTabIndex) {
+                0 -> SearchWithMapScreen(
                     navController = navController,
-                    tabVM = tabVM,
-                    customerVM = CustomerVM(),
-                    postVM = PostVM()
-                )
+                    defaultLocation = LatLng(25.0330, 121.5654),
+                    showPopup = true,
+                    onMemberSelected = { },
+                    CompanionInfo(
+                        "1", "Nita", "搬家&油漆幫手", "信義區",
+                        LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3
+                    ),
+                    tabVM = tabVM)
 
-                2 -> if (switchState == false) {
-                    PostScreen(navController = navController, postVM = PostVM(), tabVM = tabVM)
+                1 -> if (memberStatus.value) {
+                    CompanionScreen(
+                        navController = navController,
+                        companionVM = CompanionVM(),
+                        companionMyPublishVM = CompanionMyPublishVM(),
+                        tabVM = tabVM
+                    )
                 } else {
+                    CustomerScreen(
+                        navController = navController,
+                        tabVM = tabVM,
+                        customerVM = CustomerVM(),
+                        postVM = PostVM()
+                    )
+                }
+
+                2 -> if (memberStatus.value) {
                     CompanionPublishScreen(
                         navController = navController,
-                        skillVM = SkillVM(),
-                        locationVM = LocationVM(),
+                        myPublish = CompanionMyPublishVM(),
+                        tabVM = tabVM
+                    )
+                } else {
+                    PostScreen(
+                        navController = navController,
+                        postVM = PostVM(),
                         tabVM = tabVM
                     )
                 }
@@ -87,22 +133,23 @@ fun TabMainScreen(
 
                 4 -> MemberScreen(
                     navController = navController,
-                    tabVM = tabVM,
-                    memberVM = MemberSceernVM()
+                    memberVM = viewModel()
                 )
             }
         }
         if (tabBarVisibility.value) {
             TabRow(
-                selectedTabIndex = tabIndex,
+                selectedTabIndex = showTabIndex,
                 containerColor = colorResource(id = R.color.green_200)
             ) {
                 tabs.forEachIndexed { index, title ->
                     Tab(text = { Text(title) },
                         // 判斷此頁籤是否為選取頁籤
-                        selected = index == tabIndex,
+                        selected = index == showTabIndex,
                         // 點擊此頁籤後將選取索引改為此頁籤的索引
-                        onClick = { tabIndex = index },
+                        onClick = {
+                            tabVM.setShowTabIndex(index)
+                        },
                         // 設定選取顏色
                         selectedContentColor = colorResource(R.color.teal_700),
                         // 設定未選取顏色

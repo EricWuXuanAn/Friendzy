@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
+import android.util.Log
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -10,6 +11,8 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -73,6 +76,22 @@ fun formatTimestamp(timestamp: Long?): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
     return dateTime.format(formatter)
 }
+/** 將日期、時間字串轉成毫秒數時間 */
+fun combineToEpochMillis(date: String, time: String): Long {
+    // 定義日期和時間的格式
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+    // 將字串解析為 LocalDate 和 LocalTime
+    val localDate = LocalDate.parse(date, dateFormatter)
+    val localTime = LocalTime.parse(time, timeFormatter)
+    // 組合成 LocalDateTime
+    val localDateTime = LocalDateTime.of(localDate, localTime)
+
+    // 將 LocalDateTime 轉為毫秒數時間戳
+    return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
+
 
 
 //時間的TimePickerDialog 先不使用

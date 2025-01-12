@@ -1,2 +1,0 @@
-# Friendzy
-# ReadMe Test

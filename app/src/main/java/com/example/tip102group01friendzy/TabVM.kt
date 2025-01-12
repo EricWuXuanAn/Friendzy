@@ -13,4 +13,18 @@ class TabVM:ViewModel() {
         _tabBarVisibility.value = enable
     }
 
+    private val _showTabIndex = MutableStateFlow(0)
+    val showTabIndex = _showTabIndex.asStateFlow()
+
+    fun setShowTabIndex(index: Int){
+        _showTabIndex.value = index
+    }
+
+    private val _memberStatus = MutableStateFlow(false)
+    val memberStatus = _memberStatus.asStateFlow()
+
+    fun setMemberStatus(status: Boolean){
+        _memberStatus.value = status
+    }
+
 }
