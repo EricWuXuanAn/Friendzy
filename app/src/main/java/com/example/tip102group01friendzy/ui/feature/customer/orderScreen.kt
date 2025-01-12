@@ -137,30 +137,30 @@ fun OrderListScreen(
         when (tabIndex) {
             0 -> orderList(orders = ordeState, onClick = {
                 scope.launch {
-                   navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
+                   navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
                 }
             })
 
             1 -> orderList(orders = uncomfirm, onClick = {
                 scope.launch {
-                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
+                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
                 }
             })
 
             2 -> orderList(orders = inProfress, onClick = {
                 scope.launch {
-                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
+                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
                 }
             })
 
             3 -> orderList(orders = completed, onClick = {
                 scope.launch {
-                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
+                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
                 }
             })
 
             4 -> orderList(orders = reservation, onClick = {
-               navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_id}")
+               navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
             })
 
             5 -> servicerList(orders = my_request, onClick = {
