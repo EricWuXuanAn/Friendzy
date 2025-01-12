@@ -216,7 +216,6 @@ fun Main(
                 arguments = listOf(navArgument("service_id") { type = NavType.IntType })
             ) {
                 val serviceId = backStackEntry?.arguments?.getInt("service_id") ?: 0
-
                 ReservationScreen(
                     navController = navController,
                     reservationVM = reservationVM,
