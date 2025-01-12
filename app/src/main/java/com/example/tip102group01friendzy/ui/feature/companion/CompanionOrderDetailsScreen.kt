@@ -2,9 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
@@ -35,17 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.TabVM
 
@@ -63,11 +56,38 @@ fun CompanionOrderDetailsScreen(
     val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     val memberNo = preferences.getInt("member_no", 0)
 
-    val orderDtl by companionOrderVM.orderDetailsSelectState.collectAsState()
+    val order by companionOrderVM.orderSelectState.collectAsState()
 //    Log.d("_tagDetails","$orderDtl")
-    var orderStatus =orderDtl?.orderStatus ?:4//訂單狀態
-    var score = orderDtl?.comRate ?: 0  //送出評分
-    var comment = orderDtl?.comRateContent ?:"錯誤"  //評論送出
+    var orderStatus =order?.orderStatus ?:4//訂單狀態
+    var rate = 0  //送出評分
+    rate = if (order?.posterStatus == 1){
+        if (memberNo == order?.orderPoster){
+            order?.comRate?:0
+        }else{
+            order?.cusRate?:0
+        }
+    }else{
+        if (memberNo == order?.orderPoster){
+            order?.cusRate?:0
+        }else{
+            order?.comRate?:0
+        }
+    }
+//    var comment = order?.comRateContent ?:"錯誤"  //評論送出
+    var comment  = "" //評論送出
+    comment = if (order?.posterStatus == 1){
+        if (memberNo == order?.orderPoster){
+            order?.comRateContent ?:"error"
+        }else{
+            order?.cusRateContent ?:"error"
+        }
+    }else{
+        if (memberNo == order?.orderPoster){
+            order?.cusRateContent ?:"error"
+        }else{
+            order?.comRateContent ?:"error"
+        }
+    }
 
     var rating by remember { mutableIntStateOf(0) } // 評分輸入
     var inputText by remember { mutableStateOf("") } //評論輸入
@@ -77,9 +97,9 @@ fun CompanionOrderDetailsScreen(
     val blank = 6.dp
     val testTrue = 1 == 2 //寫code方便看 全顯示用
 
-    LaunchedEffect(orderStatus) {
+    LaunchedEffect(Unit) {
         companionOrderVM.getSelectOrder(memberNo,poster,orderId)
-        Log.d("_tag details","orderStatus：$orderStatus ,score:$score ,comment:$comment")
+        Log.d("_tag details","orderStatus：$orderStatus ,score:$rate ,comment:$comment")
     }
 
     Column (
@@ -125,7 +145,7 @@ fun CompanionOrderDetailsScreen(
                     .padding(start = 8.dp, top = 8.dp),
                 horizontalAlignment = Alignment.End
             ){
-                Text(text = "名字：${ orderDtl?.theirName }",
+                Text(text = "名字：${ order?.theirName }",
                     fontSize = 24.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -139,17 +159,17 @@ fun CompanionOrderDetailsScreen(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Text(text = "訂單編號：${orderDtl?.orderId}", fontSize = 20.sp)
-            Text(text = "標題：${orderDtl?.service}", fontSize = 20.sp)
-            Text(text = "服務金額：${orderDtl?.orderPrice}",
+            Text(text = "訂單編號：${order?.orderId}", fontSize = 20.sp)
+            Text(text = "標題：${order?.service}", fontSize = 20.sp)
+            Text(text = "服務金額：${order?.orderPrice}",
                 fontSize = 20.sp,
                 modifier = Modifier.padding(bottom = blank))
-            Text(text = "刊登人：${orderDtl?.orderPosterName}", fontSize = 20.sp)
-            Text(text = "訂購人：${orderDtl?.orderPersonName}", fontSize = 20.sp)
-            Text(text = "開始時間：${formatTimestamp(orderDtl?.startTime)}", fontSize = 20.sp)
-            Text(text = "結束時間：${formatTimestamp(orderDtl?.endTime)}", fontSize = 20.sp)
+            Text(text = "刊登人：${order?.orderPosterName}", fontSize = 20.sp)
+            Text(text = "訂購人：${order?.orderPersonName}", fontSize = 20.sp)
+            Text(text = "開始時間：${formatTimestamp(order?.startTime)}", fontSize = 20.sp)
+            Text(text = "結束時間：${formatTimestamp(order?.endTime)}", fontSize = 20.sp)
             Text(text = "訂單狀態：${statusList[orderStatus]}", fontSize = 20.sp)
-            if (orderStatus == 2 && score != 0 || testTrue) {
+            if (orderStatus == 2 && rate != 0 || testTrue) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -159,7 +179,7 @@ fun CompanionOrderDetailsScreen(
                             Icon(
                                 imageVector = Icons.Filled.Star,
                                 contentDescription = "Star $i",
-                                tint = if (i <= score) Color(0xFFFFD700) else Color.Gray, // 金色或灰色
+                                tint = if (i <= rate) Color(0xFFFFD700) else Color.Gray, // 金色或灰色
                                 modifier = Modifier
                                     .size(40.dp)
                                     .padding(4.dp)
@@ -171,7 +191,7 @@ fun CompanionOrderDetailsScreen(
             }
         }
         //評論、評分送出隱藏
-        if (score == 0 && orderStatus == 2 || testTrue) {
+        if (rate == 0 && orderStatus == 2 || testTrue) {
             Spacer(modifier = Modifier.size(8.dp))//間隔
             //評分星星
             Row(
@@ -217,8 +237,15 @@ fun CompanionOrderDetailsScreen(
                         if (rating == 0) {
                             noScoreText = "請選擇評分數"
                         }else{
-                            companionOrderVM.setRate(memberNo,orderDtl?.orderPoster!!,rating,inputText)
+                            companionOrderVM.setRate(
+                                memberNo,
+                                order?.orderPoster!!,
+                                order?.posterStatus!!,
+                                rating,
+                                inputText,
+                                order?.orderId!!)
                         }
+                        navController.popBackStack()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(R.color.purple_200),
@@ -252,7 +279,8 @@ fun CompanionOrderDetailsScreen(
                         contentColor = Color.DarkGray
                     ),
                     onClick = {
-                            companionOrderVM.setOrderStatus(orderDtl?.orderId!!,2,memberNo)
+                        companionOrderVM.setOrderStatus(order?.orderId!!,2,memberNo)
+                        navController.popBackStack()
                     }
                 ) { Text("完成訂單") }
             }
@@ -268,7 +296,7 @@ fun CompanionOrderDetailsScreen(
                         contentColor = Color.DarkGray
                     ),
                     onClick = {
-                            companionOrderVM.setOrderStatus(orderDtl?.orderId!!,3,memberNo)
+                            companionOrderVM.setOrderStatus(order?.orderId!!,3,memberNo)
                             navController.popBackStack()
                     },
                 ) { Text("取消訂單") }

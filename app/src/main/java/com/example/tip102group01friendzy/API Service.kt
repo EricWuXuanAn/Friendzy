@@ -97,7 +97,7 @@ interface APIService {
     ): CompanionOrder
 
     //陪伴者改訂單狀態
-    @PUT("rest/companion/order/statusUp")
+    @PUT("rest/companion/order/statusUpdate")
     suspend fun comOrderUpdate(@Body comOrder: CompanionOrder): CompanionOrder
 
     @GET("rest/chatrooms")
@@ -149,6 +149,10 @@ interface APIService {
     //陪伴者刊登新增
     @POST("rest/companion/publish/addPublish")
     suspend fun addPublish(@Body myPublish: MyPublish): Int
+
+    //陪伴者改訂單狀態
+    @PUT("rest/companion/order/rate")
+    suspend fun comOrderUpdateRate(@Body comOrder: CompanionOrder): CompanionOrder
 
 }
 
