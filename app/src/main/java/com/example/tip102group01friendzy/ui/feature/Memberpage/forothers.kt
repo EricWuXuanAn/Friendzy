@@ -19,10 +19,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -94,6 +97,20 @@ fun ForOthers(
             .verticalScroll(rememberScrollState()) // 支援垂直捲動
             .padding(16.dp) // 整體的外邊距
     ) {
+        // 返回按鈕
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = { navController.popBackStack() }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+        }
         Row(
             verticalAlignment = Alignment.Top, // 讓頭像和評價區塊的頂部對齊
             modifier = Modifier.fillMaxWidth() // 填滿整行
@@ -122,13 +139,7 @@ fun ForOthers(
                     .align(Alignment.Top) // 確保與頭像頂部對齊
                     .weight(1f) // 佔據中間剩餘空間
             ) {
-                // 顯示會員暱稱或名字與編號
-                Text(
-                    text = "${memberInfo.nickname?.takeIf { it.isNotBlank() } ?: memberInfo.name ?: ""}",
-                    fontWeight = FontWeight.Bold, // 粗體字
-                    fontSize = 20.sp, // 字體大小
-                    modifier = Modifier.padding(vertical = 8.dp) // 上下間距
-                )
+
             }
 
             // 評價區與按鈕
