@@ -12,6 +12,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,10 +53,8 @@ fun TabMainScreen(
 ) {
     var switchState by remember { mutableStateOf(false) }
     val tabBarVisibility = tabVM.tabBarVisibility.collectAsState()
-//    var tabIndex by remember { mutableStateOf(0) }
 
-    val showTabIndex = tabVM.showTabIndex.collectAsState().value
-    var tabIndex by remember { mutableIntStateOf(showTabIndex) }
+    val showTabIndex by tabVM.showTabIndex.collectAsState()
     val memberStatus = tabVM.memberStatus.collectAsState()
     Log.d("_showTabIndex", "showTabIndex:$showTabIndex")
 
@@ -66,6 +65,10 @@ fun TabMainScreen(
         stringResource(id = R.string.chat),
         stringResource(id = R.string.information)
     )
+
+    LaunchedEffect(Unit) {
+        tabVM.tabBarState(true)
+    }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -130,19 +133,19 @@ fun TabMainScreen(
 
                 4 -> MemberScreen(
                     navController = navController,
-                    memberVM = MemberSceernVM()
+                    memberVM = viewModel()
                 )
             }
         }
         if (tabBarVisibility.value) {
             TabRow(
-                selectedTabIndex = tabIndex,
+                selectedTabIndex = showTabIndex,
                 containerColor = colorResource(id = R.color.green_200)
             ) {
                 tabs.forEachIndexed { index, title ->
                     Tab(text = { Text(title) },
                         // 判斷此頁籤是否為選取頁籤
-                        selected = index == tabIndex,
+                        selected = index == showTabIndex,
                         // 點擊此頁籤後將選取索引改為此頁籤的索引
                         onClick = {
                             tabIndex = index

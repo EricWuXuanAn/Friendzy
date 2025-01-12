@@ -120,7 +120,7 @@ fun Main(
     postVM: PostVM = PostVM(),
     postListVM: PostListVM = PostListVM(),
     reservationConfirmVM: ReservationConfirmVM = ReservationConfirmVM(),
-    tabVM: TabVM = TabVM(),
+    tabVM: TabVM = viewModel(),
     companionVM: CompanionVM = viewModel(),
     companionMyPublishVM: CompanionMyPublishVM = viewModel(),
     companionApplicantVM: CompanionApplicantVM = viewModel(),
@@ -151,16 +151,30 @@ fun Main(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            MainAppBar(
-                currentScreen = currentScreen,
-                //控制有沒有前一頁的箭頭
-                canNavigateBack = navController.previousBackStackEntry != null,
-                /* navigateUp()與popBackStack()都可回前頁，但差別是否從其他app來此app首頁：
-                   navigateUp()：可以回到來源app，較適合用於左上角的"Up"按鈕
-                   popBackStack()：只能單純回到前頁，而無法回到來源app */
-                navigateUp = { navController.navigateUp() },
-                scrollBehavior = scrollBehavior
-            )
+            val route = navController.currentBackStackEntryAsState().value?.destination?.route
+            Log.d("route", "$route")
+            when (route) {
+                Screen.TabMainScreen.name,
+                Screen.SettingScreen.name -> {
+                }
+                Screen.TabMainScreen.name,
+                Screen.ForothersScreen.name -> {
+                }
+
+                else -> {
+                    MainAppBar(
+                        currentScreen = currentScreen,
+                        //控制有沒有前一頁的箭頭
+                        canNavigateBack = navController.previousBackStackEntry != null,
+                        /* navigateUp()與popBackStack()都可回前頁，但差別是否從其他app來此app首頁：
+                           navigateUp()：可以回到來源app，較適合用於左上角的"Up"按鈕
+                           popBackStack()：只能單純回到前頁，而無法回到來源app */
+                        navigateUp = { navController.navigateUp() },
+                        scrollBehavior = scrollBehavior
+                    )
+                }
+            }
+
         }
     )
     { innerPadding ->
