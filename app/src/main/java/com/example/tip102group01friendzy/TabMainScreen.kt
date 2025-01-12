@@ -53,9 +53,9 @@ fun TabMainScreen(
 ) {
     var switchState by remember { mutableStateOf(false) }
     val tabBarVisibility = tabVM.tabBarVisibility.collectAsState()
-
     val showTabIndex by tabVM.showTabIndex.collectAsState()
     val memberStatus = tabVM.memberStatus.collectAsState()
+
     Log.d("_showTabIndex", "showTabIndex:$showTabIndex")
 
     val tabs = listOf(
@@ -85,7 +85,7 @@ fun TabMainScreen(
             }
         ) {
 
-            when (tabIndex) {
+            when (showTabIndex) {
                 0 -> SearchWithMapScreen(
                     navController = navController,
                     defaultLocation = LatLng(25.0330, 121.5654),
@@ -148,9 +148,7 @@ fun TabMainScreen(
                         selected = index == showTabIndex,
                         // 點擊此頁籤後將選取索引改為此頁籤的索引
                         onClick = {
-                            tabIndex = index
-//                            tabVM.setShowTabIndex(index)
-//                                  Log.d("_tabIndex","index:$index")
+                            tabVM.setShowTabIndex(index)
                         },
                         // 設定選取顏色
                         selectedContentColor = colorResource(R.color.teal_700),
