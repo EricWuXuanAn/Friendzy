@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -128,10 +131,12 @@ fun PostScreen(
     var inputTitle by remember { mutableStateOf("") }
     var scpoe = rememberCoroutineScope()
     val snackBar = remember { SnackbarHostState() }
+    var scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(20.dp)
+            .verticalScroll(state = scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -388,7 +393,7 @@ fun PostScreen(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp),
+                .padding(top = 20.dp, bottom = 5.dp),
             onClick = {
                 scpoe.launch {
                     postVM.postOrder(
@@ -419,7 +424,7 @@ fun PostScreen(
 
             }
         ) {
-            Text("Post")
+            Text(modifier = Modifier.fillMaxWidth(),text = "Post", softWrap = false, textAlign = TextAlign.Center)
         }
         SnackbarHost(hostState = snackBar)
     }

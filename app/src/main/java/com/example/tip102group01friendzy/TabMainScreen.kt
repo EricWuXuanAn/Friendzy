@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -25,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -63,7 +66,7 @@ fun TabMainScreen(
         stringResource(id = R.string.service),
         stringResource(id = R.string.post),
         stringResource(id = R.string.chat),
-        stringResource(id = R.string.information)
+        stringResource(id = R.string.info)
     )
 
     LaunchedEffect(Unit) {
@@ -138,12 +141,13 @@ fun TabMainScreen(
             }
         }
         if (tabBarVisibility.value) {
-            TabRow(
+            ScrollableTabRow(
+                edgePadding = 0.dp,
                 selectedTabIndex = showTabIndex,
                 containerColor = colorResource(id = R.color.green_200)
             ) {
                 tabs.forEachIndexed { index, title ->
-                    Tab(text = { Text(title) },
+                    Tab(text = { Text(text = title, softWrap = false) },
                         // 判斷此頁籤是否為選取頁籤
                         selected = index == showTabIndex,
                         // 點擊此頁籤後將選取索引改為此頁籤的索引
