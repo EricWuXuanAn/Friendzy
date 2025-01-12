@@ -41,7 +41,9 @@ import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
 import com.example.tip102group01friendzy.ui.feature.customer.PostScreen
 import com.example.tip102group01friendzy.ui.feature.customer.PostVM
-import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
+import com.example.tip102group01friendzy.ui.feature.search.CompanionInfo
+import com.example.tip102group01friendzy.ui.feature.search.SearchWithMapScreen
+import com.google.android.gms.maps.model.LatLng
 
 @Composable
 fun TabMainScreen(
@@ -55,7 +57,7 @@ fun TabMainScreen(
     val showTabIndex = tabVM.showTabIndex.collectAsState().value
     var tabIndex by remember { mutableIntStateOf(showTabIndex) }
     val memberStatus = tabVM.memberStatus.collectAsState()
-    Log.d("_showTabIndex","showTabIndex:$showTabIndex")
+    Log.d("_showTabIndex", "showTabIndex:$showTabIndex")
 
     val tabs = listOf(
         stringResource(id = R.string.home),
@@ -68,30 +70,38 @@ fun TabMainScreen(
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = if(memberStatus.value){
+            modifier = if (memberStatus.value) {
                 Modifier
                     .fillMaxWidth()
                     .weight(1f)
                     .background(color = companionScenery)
-            }else{
+            } else {
                 Modifier
                     .fillMaxWidth()
                     .weight(1f)
             }
         ) {
 
-
             when (tabIndex) {
-                0 -> SearchWithMap(navController = navController, tabVM = tabVM)
+                0 -> SearchWithMapScreen(
+                    navController = navController,
+                    defaultLocation = LatLng(25.0330, 121.5654),
+                    showPopup = true,
+                    onMemberSelected = { },
+                    CompanionInfo(
+                        "1", "Nita", "搬家&油漆幫手", "信義區",
+                        LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3
+                    ),
+                    tabVM = tabVM)
 
-                1 ->if (memberStatus.value){
+                1 -> if (memberStatus.value) {
                     CompanionScreen(
                         navController = navController,
                         companionVM = CompanionVM(),
                         companionMyPublishVM = CompanionMyPublishVM(),
                         tabVM = tabVM
                     )
-                }else{
+                } else {
                     CustomerScreen(
                         navController = navController,
                         tabVM = tabVM,
@@ -134,10 +144,11 @@ fun TabMainScreen(
                         // 判斷此頁籤是否為選取頁籤
                         selected = index == tabIndex,
                         // 點擊此頁籤後將選取索引改為此頁籤的索引
-                        onClick = {tabIndex = index
+                        onClick = {
+                            tabIndex = index
 //                            tabVM.setShowTabIndex(index)
 //                                  Log.d("_tabIndex","index:$index")
-                                  },
+                        },
                         // 設定選取顏色
                         selectedContentColor = colorResource(R.color.teal_700),
                         // 設定未選取顏色

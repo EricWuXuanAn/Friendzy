@@ -71,8 +71,10 @@ import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmS
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationConfirmVM
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationScreen
 import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
-import com.example.tip102group01friendzy.ui.feature.search.SearchWithMap
+import com.example.tip102group01friendzy.ui.feature.search.CompanionInfo
+import com.example.tip102group01friendzy.ui.feature.search.SearchWithMapScreen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import com.google.android.gms.maps.model.LatLng
 
 enum class Screen(@StringRes val title: Int) {
     LoginScreen(title = R.string.LoginScreen),
@@ -204,7 +206,12 @@ fun Main(
                 route = Screen.OrderScreen.name
             ) {
 
-               OrderListScreen(navController = navController, orderlistVM = orderlistVM, customerVM = customerVM, context = context)
+                OrderListScreen(
+                    navController = navController,
+                    orderlistVM = orderlistVM,
+                    customerVM = customerVM,
+                    context = context
+                )
             }
             composable(
                 route = Screen.CustomerScreen.name
@@ -261,7 +268,8 @@ fun Main(
 
             composable(route = Screen.ForothersScreen.name) {
                 ForOthers(
-                    navController = navController, forothersVM = viewModel())
+                    navController = navController, forothersVM = viewModel()
+                )
             }
 
             composable(route = Screen.PostScreen.name) {
@@ -269,17 +277,30 @@ fun Main(
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
-                SearchWithMap(navController = navController, tabVM = tabVM)
+                SearchWithMapScreen(
+                    navController = navController,
+                    defaultLocation = LatLng(25.0330, 121.5654),
+                    showPopup = true,
+                    onMemberSelected = { } ,
+                    CompanionInfo("1", "Nita", "搬家&油漆幫手", "信義區",
+                        LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3 ),
+                    tabVM = tabVM
+                )
             }
             composable(
                 route = "${Screen.ReservationConfirmScreen.name}/{service_id}",
                 arguments = listOf(navArgument("service_id") { type = NavType.IntType })
-            ){
+            ) {
                 Log.d("tag_", " composable backentry: ${backStackEntry?.arguments}")
 //                val order_id = backStackEntry?.arguments?.getInt("order_id") ?: -1
                 val service_id = backStackEntry?.arguments?.getInt("service_id") ?: -1
 //                Log.d("tag_", " composable order_id: $order_id")
-                ReservationConfirmScreen(navController = navController, reservationConfirmVM = reservationConfirmVM, service_id = service_id, orderVM = OrderVM())
+                ReservationConfirmScreen(
+                    navController = navController,
+                    reservationConfirmVM = reservationConfirmVM,
+                    service_id = service_id,
+                    orderVM = OrderVM()
+                )
 //            composable(route = Screen.ReservationConfirmScreen.name) {
 //                ReservationConfirmScreen(
 //                    navController = navController,
@@ -320,12 +341,12 @@ fun Main(
             composable(
                 route = Screen.CompanionOrderDetailsScreen.name + "/{poster}/{orderId}",
                 arguments = listOf(
-                 navArgument("poster"){type = NavType.IntType}  ,
-                 navArgument("orderId"){type = NavType.IntType}
+                    navArgument("poster") { type = NavType.IntType },
+                    navArgument("orderId") { type = NavType.IntType }
                 )
             ) {
-                val poster = it.arguments?.getInt("poster")?:0
-                val orderId = it.arguments?.getInt("orderId")?:0
+                val poster = it.arguments?.getInt("poster") ?: 0
+                val orderId = it.arguments?.getInt("orderId") ?: 0
                 CompanionOrderDetailsScreen(
                     navController = navController,
                     companionOrderVM = companionOrderVM,
@@ -335,15 +356,15 @@ fun Main(
                 )
             }
             composable(
-                route = Screen.CompanionCheckAppointmentScreen.name+ "/{account}/{serviceId}",
+                route = Screen.CompanionCheckAppointmentScreen.name + "/{account}/{serviceId}",
                 arguments = listOf(
-                    navArgument("account"){type = NavType.IntType}  ,
-                    navArgument("serviceId"){type = NavType.IntType}
+                    navArgument("account") { type = NavType.IntType },
+                    navArgument("serviceId") { type = NavType.IntType }
                 )
             ) {
-                val account = it.arguments?.getInt("account")?:0
-                val serviceId = it.arguments?.getInt("serviceId")?:0
-                Log.d("_tag composable1","account:${account},serviceId:${serviceId}")
+                val account = it.arguments?.getInt("account") ?: 0
+                val serviceId = it.arguments?.getInt("serviceId") ?: 0
+                Log.d("_tag composable1", "account:${account},serviceId:${serviceId}")
                 CompanionCheckAppointmentScreen(
                     navController = navController,
                     companionApplicantVM = companionApplicantVM,
