@@ -1,4 +1,3 @@
-
 package com.example.tip102group01friendzy.ui.feature.Memberpage
 
 import android.content.Context
@@ -29,7 +28,6 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 
 
-
 @Composable
 fun SettingPage(
     navController: NavHostController,
@@ -40,8 +38,8 @@ fun SettingPage(
 
     // 編輯狀態與輸入框的值
     var password by remember { mutableStateOf("**********") } // 顯示用的密碼
-    var nickname by remember { mutableStateOf( "") } // 暱稱
-    var phoneNumber by remember { mutableStateOf( "") } // 手機號碼
+    var nickname by remember { mutableStateOf("") } // 暱稱
+    var phoneNumber by remember { mutableStateOf("") } // 手機號碼
     var newPassword by remember { mutableStateOf("") } // 新密碼輸入框的值
     var confirmPassword by remember { mutableStateOf("") } // 確認密碼輸入框的值
     var passwordError by remember { mutableStateOf(false) } // 密碼錯誤狀態
@@ -74,7 +72,7 @@ fun SettingPage(
             modifier = Modifier.fillMaxWidth()
         ) {
             IconButton(
-                onClick = { navController.navigate(Screen.MemberScreen.name) }
+                onClick = { navController.popBackStack() }
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
@@ -244,8 +242,6 @@ fun SettingPage(
                 }
             )
         }
-
-
     }
 }
 

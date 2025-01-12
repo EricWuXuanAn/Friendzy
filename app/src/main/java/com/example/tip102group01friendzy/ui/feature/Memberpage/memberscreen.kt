@@ -23,6 +23,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,8 +54,11 @@ import com.example.tip102group01friendzy.TabVM
 fun SelectionMenu(
     items: List<String>, // 可供選擇的項目
     tempSelectedItems: MutableSet<String>, // 暫存的選擇清單
-    onConfirm: () -> Unit // 確認按鈕點擊後的處理邏輯
+    onConfirm: (Set<String>) -> Unit, // 確認按鈕點擊後的處理邏輯，傳遞已選擇的結果
+    onClose: () -> Unit // 關閉選擇框的處理邏輯
 ) {
+    var selectedItems by remember { mutableStateOf(tempSelectedItems.toSet()) } // 使用狀態儲存選擇結果
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,12 +74,12 @@ fun SelectionMenu(
                 rowItems.forEach { item ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
-                            checked = item in tempSelectedItems, // 是否已選擇
+                            checked = item in selectedItems, // 是否已選擇
                             onCheckedChange = { isChecked ->
-                                if (isChecked) {
-                                    tempSelectedItems.add(item) // 勾選後新增至暫存清單
+                                selectedItems = if (isChecked) {
+                                    selectedItems + item // 勾選後新增至暫存清單
                                 } else {
-                                    tempSelectedItems.remove(item) // 取消勾選後移出暫存清單
+                                    selectedItems - item // 取消勾選後移出暫存清單
                                 }
                             }
                         )
@@ -85,11 +89,30 @@ fun SelectionMenu(
             }
         }
 
-        Button(
-            onClick = onConfirm, // 點擊後執行確認邏輯
-            modifier = Modifier.align(Alignment.End) // 按鈕靠右對齊
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween, // 確認與取消按鈕對齊
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("確認")
+            Button(
+                onClick = {
+                    onClose() // 關閉選擇框
+                },
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Text("取消")
+            }
+
+            Button(
+                onClick = {
+                    tempSelectedItems.clear()
+                    tempSelectedItems.addAll(selectedItems) // 更新暫存清單
+                    onConfirm(tempSelectedItems) // 回傳已選擇的結果
+                    onClose() // 關閉選擇框
+                },
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Text("確認")
+            }
         }
     }
 }
@@ -176,7 +199,6 @@ fun MemberScreen(
                 )
             }
             // 評價區 - 平均評價
-
             Column {
                 // 陪伴者評價
                 Text(
@@ -205,7 +227,6 @@ fun MemberScreen(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-
         /// 名稱
         Row(
             modifier = Modifier.fillMaxWidth(), // 佔滿寬度
@@ -269,16 +290,18 @@ fun MemberScreen(
                     SelectionMenu(
                         items = cities, // 傳入服務地區清單
                         tempSelectedItems = tempSelectedCities, // 暫存的選擇清單
-                        onConfirm = {
-                            selectedCities = tempSelectedCities.toList() // 更新已選擇的服務地區
+                        onConfirm = { selectedItems ->
+                            selectedCities = selectedItems.toList() // 更新已選擇的服務地區
                             val preferences =
                                 context.getSharedPreferences("settings", Context.MODE_PRIVATE)
                             preferences.edit()
                                 .putStringSet(
                                     "selectedCities",
-                                    tempSelectedCities
+                                    selectedItems
                                 ) // 儲存至 SharedPreferences
                                 .apply()
+                        },
+                        onClose = {
                             isCitiesExpanded = false // 關閉選單
                         }
                     )
@@ -318,16 +341,18 @@ fun MemberScreen(
                     SelectionMenu(
                         items = specialties, // 傳入專長清單
                         tempSelectedItems = tempSelectedSpecialties, // 暫存的選擇清單
-                        onConfirm = {
-                            selectedSpecialties = tempSelectedSpecialties.toList() // 更新已選擇的專長
+                        onConfirm = { selectedItems ->
+                            selectedSpecialties = selectedItems.toList() // 更新已選擇的專長
                             val preferences =
                                 context.getSharedPreferences("settings", Context.MODE_PRIVATE)
                             preferences.edit()
                                 .putStringSet(
                                     "selectedSpecialties",
-                                    tempSelectedSpecialties
+                                    selectedItems
                                 ) // 儲存至 SharedPreferences
                                 .apply()
+                        },
+                        onClose = {
                             isSpecialtiesExpanded = false // 關閉選單
                         }
                     )
