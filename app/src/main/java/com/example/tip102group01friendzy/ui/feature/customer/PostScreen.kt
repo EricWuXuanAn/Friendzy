@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -69,36 +71,36 @@ fun PostScreen(
     var service_content by remember { mutableStateOf("") }
     var post_status by remember { mutableStateOf(0) }
     var service_price by remember { mutableStateOf(0.0) }
-    var startExpendText by remember { mutableStateOf("00:00:00") }
-    var endExpendText by remember { mutableStateOf("00:00:00") }
+    var startExpendText by remember { mutableStateOf("00:00") }
+    var endExpendText by remember { mutableStateOf("00:00") }
     var startExpended by remember { mutableStateOf(false) }
     var endExpended by remember { mutableStateOf(false) }
     var service_poster by remember { mutableIntStateOf(1) }
     val options = listOf(
-        "00:00:00",
-        "01:00:00",
-        "02:00:00",
-        "03:00:00",
-        "04:00:00",
-        "05:00:00",
-        "06:00:00",
-        "07:00:00",
-        "08:00:00",
-        "09:00:00",
-        "10:00:00",
-        "11:00:00",
-        "12:00:00",
-        "13:00:00",
-        "14:00:00",
-        "15:00:00",
-        "16:00:00",
-        "17:00:00",
-        "18:00:00",
-        "19:00:00",
-        "20:00:00",
-        "21:00:00",
-        "22:00:00",
-        "23:00:00"
+        "00:00",
+        "01:00",
+        "02:00",
+        "03:00",
+        "04:00",
+        "05:00",
+        "06:00",
+        "07:00",
+        "08:00",
+        "09:00",
+        "10:00",
+        "11:00",
+        "12:00",
+        "13:00",
+        "14:00",
+        "15:00",
+        "16:00",
+        "17:00",
+        "18:00",
+        "19:00",
+        "20:00",
+        "21:00",
+        "22:00",
+        "23:00"
     )
 
     val dateFormat = ofPattern("YYYY-MM-dd") //設定日期格式
@@ -112,7 +114,7 @@ fun PostScreen(
             LocalDate.now().format(dateFormat)
         )
     }
-    val formatter = ofPattern("yyyy-MM-dd HH:mm:ss")
+    val formatter = ofPattern("yyyy-MM-dd HH:mm")
     val startTime = "$startSelectDate $startExpendText"
     val finishedTime = "$endSelectDate $endExpendText"
     val startTimeFormatter = LocalDateTime.parse(startTime, formatter)
@@ -128,10 +130,12 @@ fun PostScreen(
     var inputTitle by remember { mutableStateOf("") }
     var scpoe = rememberCoroutineScope()
     val snackBar = remember { SnackbarHostState() }
+    var scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(20.dp)
+            .verticalScroll(state = scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -388,7 +392,7 @@ fun PostScreen(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp),
+                .padding(top = 20.dp, bottom = 5.dp),
             onClick = {
                 scpoe.launch {
                     postVM.postOrder(
@@ -413,15 +417,15 @@ fun PostScreen(
                     service_price = 0.0
                     inputTitle = ""
                     service_poster = 1
-                    startExpendText = "00:00:00"
-                    endExpendText = "00:00:00"
+                    startExpendText = "00:00"
+                    endExpendText = "00:00"
                 }
 
             }
         ) {
-            Text("Post")
+            Text(modifier = Modifier.fillMaxWidth(),text = "Post", softWrap = false, textAlign = TextAlign.Center)
         }
-        SnackbarHost(hostState = snackBar)
+        SnackbarHost(hostState = snackBar, modifier = Modifier.padding(bottom = 60.dp))
     }
 }
 

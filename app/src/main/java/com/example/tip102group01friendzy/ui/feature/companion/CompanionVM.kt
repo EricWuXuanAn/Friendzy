@@ -32,7 +32,29 @@ class CompanionVM : ViewModel() {
 //            Log.d("_tagValie111","state:${_applicantSelectState.asStateFlow()}")
         }
     }
+    //預約
+    fun addApplicant(serviceId: Int,memberNo: Int){
+        viewModelScope.launch {
+            val value = fetchAddApplicant(serviceId,memberNo)
+        }
+    }
+    //預約API
+    private suspend fun fetchAddApplicant(serviceId: Int,memberNo: Int):Int{
+        try {
+            val applicant = RetrofitInstance.api.comAddApplicant(
+                Applicant(
+                    serviceId = serviceId,
+                    memberNo = memberNo
+                )
+            )
+            return applicant
+        }catch (e:Exception){
+            return -2
+        }
+    }
 
+
+    //取得所有刊登項目API
     private suspend fun fetchPublishList(memberNo: Int): List<ComPublish>{
         try {
             val list = RetrofitInstance.api.showAllPublish(memberNo)
@@ -41,7 +63,7 @@ class CompanionVM : ViewModel() {
             return emptyList()
         }
     }
-
+    //取得刊登項目詳細資料API
     private suspend fun fetchPublishDetail(serviceId: Int,memberNo: Int):ComPublish{
         try {
             val publish = RetrofitInstance.api.showPublishDetail(serviceId,memberNo)

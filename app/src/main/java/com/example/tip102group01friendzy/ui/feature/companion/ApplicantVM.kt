@@ -8,50 +8,81 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CompanionApplicantVM():ViewModel(){
+class CompanionApplicantVM():ViewModel() {
     //全部應徵者
     private val _applicantListState = MutableStateFlow(emptyList<Applicant>())
     val appointmentState = _applicantListState.asStateFlow()
+
     //單個應徵者細項
     private val _applicantSelectState = MutableStateFlow<Applicant?>(null)
     val applicantSelectState = _applicantSelectState.asStateFlow()
+
     //全部應徵者基本資訊
-    fun getApplicantList(memberNo: Int){
+    fun getApplicantList(memberNo: Int) {
         viewModelScope.launch {
             val value = fetchAppointment(memberNo)
             _applicantListState.value = value
         }
     }
+
     //單個應徵者詳細資訊
-    fun getApplicantSelect(memberNo: Int,account: Int,serviceId: Int){
+    fun getApplicantSelect(memberNo: Int, account: Int, serviceId: Int) {
         viewModelScope.launch {
-            val value = fetchAppointmentById(memberNo,account,serviceId)
+            val value = fetchAppointmentById(memberNo, account, serviceId)
             _applicantSelectState.update { value }
         }
     }
-    //確認
 
+    //確認&拒絕
+    fun setApplicantStatus(serviceId: Int, account: Int, reject: Int) {
+        viewModelScope.launch {
+            val value = fetchStatusUpdate(
+                Applicant(
+                    serviceId = serviceId,
+                    accountId = account,
+                    reject = reject
+                )
+            )
+        }
+    }
 
 
     //呼叫API取得全部應徵者基本資訊
-    private suspend fun fetchAppointment(memberNo: Int) :List<Applicant>{
-       try {
-           val list = RetrofitInstance.api.showAllApplicants(memberNo)
-           return  list
-       }catch (e:Exception){
-           return emptyList()
-       }
-    }
-    //呼叫API取得單個應徵者詳細資訊
-    private suspend fun fetchAppointmentById( memberNo: Int,account: Int,serviceId: Int):Applicant{
+    private suspend fun fetchAppointment(memberNo: Int): List<Applicant> {
         try {
-            val appointment = RetrofitInstance.api.showApplicantByAccount(memberNo,account,serviceId)
+            val list = RetrofitInstance.api.showAllApplicants(memberNo)
+            return list
+        } catch (e: Exception) {
+            return emptyList()
+        }
+    }
+
+    //呼叫API取得單個應徵者詳細資訊
+    private suspend fun fetchAppointmentById(
+        memberNo: Int,
+        account: Int,
+        serviceId: Int
+    ): Applicant {
+        try {
+            val appointment =
+                RetrofitInstance.api.showApplicantByAccount(memberNo, account, serviceId)
             return appointment
-        }catch (e:Exception){
+        } catch (e: Exception) {
             return Applicant()
         }
     }
 
+    //呼叫API更改應徵者狀態
+    private suspend fun fetchStatusUpdate(applicant: Applicant): Applicant {
+        try {
+            val status = RetrofitInstance.api.comAppointUpdateRate(
+                applicant
+            )
+            return status
+        } catch (e: Exception) {
+            return Applicant()
+        }
+    }
 }
 
 data class Applicant(
@@ -78,6 +109,7 @@ data class Applicant(
     var applyStatus:Int? =null,//應徵的狀態
     var applicationResult:Int? =null,//應徵結果
 
+    var memberNo: Int? = null,
     var reject:Int? = null,//拒絕狀態
 
 ){

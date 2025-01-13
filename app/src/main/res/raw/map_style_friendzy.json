@@ -70,7 +70,7 @@
     "elementType": "all",
     "stylers": [
       {
-        "color": "#f0228c"
+        "color": "#F5EFFF"
       },
       {
         "visibility": "on"
@@ -82,7 +82,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#f9c3d4"
+        "color": "#E5D9F2"
       }
     ]
   }

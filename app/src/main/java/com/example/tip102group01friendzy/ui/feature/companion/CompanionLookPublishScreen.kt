@@ -51,8 +51,8 @@ fun CompanionLookPublishScreen(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
-    val detail by companionVM.applicantSelectState.collectAsState()
-    Log.d("_tagDetail01", "detail:$detail")
+    val order by companionVM.applicantSelectState.collectAsState()
+    Log.d("_tagDetail01", "detail:$order")
     val context = LocalContext.current
     val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     val memberNo = preferences.getInt("member_no", 0)
@@ -95,7 +95,7 @@ fun CompanionLookPublishScreen(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "名字：${detail.posterName}",
+                    text = "名字：${order.posterName}",
                     fontSize = 24.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -127,8 +127,8 @@ fun CompanionLookPublishScreen(
             }
         }
         HorizontalDivider(modifier = Modifier.padding(6.dp))//分隔線
-        Text(text = "標題：${detail.service}", fontSize = 24.sp)
-        Text(text = "內容：${detail.serviceDetail}", fontSize = 24.sp)
+        Text(text = "標題：${order.service}", fontSize = 24.sp)
+        Text(text = "內容：${order.serviceDetail}", fontSize = 24.sp)
         /*
         Image(//再設最大上限
             painter = painterResource(R.drawable.friendzy),
@@ -141,9 +141,9 @@ fun CompanionLookPublishScreen(
             )
         )
          */
-        Text(text = "開始時間：${formatTimestamp(detail?.startTime)}", fontSize = 24.sp)
-        Text(text = "結束時間：${formatTimestamp(detail?.endTime)}", fontSize = 24.sp)
-        Text(text = "所在地區：${detail?.area}", fontSize = 24.sp)
+        Text(text = "開始時間：${formatTimestamp(order?.startTime)}", fontSize = 24.sp)
+        Text(text = "結束時間：${formatTimestamp(order?.endTime)}", fontSize = 24.sp)
+        Text(text = "所在地區：${order?.area}", fontSize = 24.sp)
 //        Text(text = "金費：xxx元", fontSize = 24.sp)
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -163,7 +163,8 @@ fun CompanionLookPublishScreen(
                         contentColor = Color.DarkGray
                     ),
                     onClick = {
-
+                        companionVM.addApplicant(serviceId = order.serviceId!!, memberNo = memberNo)
+                        navController.popBackStack()
                     }
                 ) { Text("預約", fontSize = 24.sp) }
                 Button(
@@ -173,7 +174,7 @@ fun CompanionLookPublishScreen(
                         contentColor = Color.DarkGray
                     ),
                     onClick = {
-
+                        navController.popBackStack()
                     }
                 ) { Text("再想想", fontSize = 24.sp) }
             }

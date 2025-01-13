@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Notifications
@@ -79,8 +81,6 @@ fun CompanionScreen(
     var testIten by remember { mutableStateOf("") }//測試用
 
     val memberStatus = tabVM.memberStatus.collectAsState().value
-    val coroutineScope = rememberCoroutineScope()
-
 
 //    Log.d("_tagList","PublishList:${companionState}")
 
@@ -294,12 +294,12 @@ fun MyPublishList(
                     Text(text = "標題：${publish.service}", fontSize = 18.sp)
                 },
                 headlineContent = {
-                    Text(text = "位置：${publish.area}", fontSize = 14.sp)
+//                    Text(text = "位置：${publish.area}", fontSize = 14.sp)
                 },
                 supportingContent = {
-                    Row (
+                    Column (
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalAlignment = Alignment.Start
                     ){
                         Text(text = "刊登者：${publish.posterName}")
                         Text(text = "開始時間：${formatTimestamp(publish.startTime)}")
