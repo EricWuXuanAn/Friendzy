@@ -10,6 +10,7 @@ data class CompanionInfo(
     val memberName: String,
     val location: LatLng,
     val s: String,
-    val avatar3: Int)
+    val avatar3: Int,
+)
 
 //CompanionInfo("1", "Nita", "搬家&油漆幫手", "信義區",LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3 ),

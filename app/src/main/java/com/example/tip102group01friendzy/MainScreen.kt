@@ -43,9 +43,7 @@ import com.example.tip102group01friendzy.ui.feature.account.LoginViewModel
 import com.example.tip102group01friendzy.ui.feature.account.RegisterScreen
 import com.example.tip102group01friendzy.ui.feature.account.RegisterViewModel
 import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageScreen
-import com.example.tip102group01friendzy.ui.feature.chat.ChatMessageViewModel
 import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
-import com.example.tip102group01friendzy.ui.feature.chat.ChatroomViewModel
 import com.example.tip102group01friendzy.ui.feature.companion.ComOrderDtlVM
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionApplicantVM
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionCheckAppointmentScreen
