@@ -161,16 +161,16 @@ fun ForOwnSereen(
                     .clip(CircleShape) // 圖片裁剪為圓形
                     .border(BorderStroke(1.dp, Color(0x3C645959)), CircleShape) // 圓形邊框
                     .clickable {
-                        if (ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.READ_MEDIA_IMAGES
-                            ) == PackageManager.PERMISSION_GRANTED
-                        ) {
-                            pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        } else {
-                            // 如果沒有權限，請求權限
-                            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                        }
+//                        if (ContextCompat.checkSelfPermission(
+//                                context,
+//                                Manifest.permission.READ_MEDIA_IMAGES
+//                            ) == PackageManager.PERMISSION_GRANTED
+//                        ) {
+//                            pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+//                        } else {
+//                            // 如果沒有權限，請求權限
+//                            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                        }
                     },
                 contentScale = ContentScale.Crop // 裁剪圖片，保持比例並填滿框
             )
@@ -217,7 +217,7 @@ fun ForOwnSereen(
                 // 聊聊按鈕
                 Button(
                     onClick = {
-                        navController.navigate(Screen.ChatroomScreen.name) // 跳轉到聊聊頁面
+//                        navController.navigate(Screen.ChatroomScreen.name) // 跳轉到聊聊頁面
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
                     modifier = Modifier.padding(horizontal = 8.dp) // 增加按鈕間距
@@ -367,74 +367,74 @@ fun ForOwnSereen(
             }
         }
 // 收藏與黑名單按鈕
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween, // 按鈕間距
-            modifier = Modifier.fillMaxWidth() // 填滿整行
-        ) {
-            // 收藏按鈕
-            Button(
-                onClick = { showCollectDialog = true }, // 點擊觸發收藏對話框
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
-                modifier = Modifier
-                    .width(16.dp) // 按鈕寬度
-                    .height(16.dp) // 按鈕高度
-            ) {
-                Text(text = "收藏", color = Color.Black, fontSize = 18.sp) // 按鈕文字
-            }
-
-            // 黑名單按鈕
-            Button(
-                onClick = { showBlacklistDialog = true }, // 點擊觸發黑名單對話框
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
-                modifier = Modifier
-                    .width(16.dp) // 按鈕寬度
-                    .height(16.dp) // 按鈕高度
-            ) {
-                Text(text = "黑名單", color = Color.Black, fontSize = 18.sp) // 按鈕文字
-            }
-        }
-        // 收藏確認對話框
-        if (showCollectDialog) {
-            AlertDialog(
-                onDismissRequest = { showCollectDialog = false }, // 點擊背景關閉
-                title = { Text(text = "收藏") }, // 對話框標題
-                text = { Text(text = "是否將該用戶加入收藏？") }, // 對話框內容
-                confirmButton = {
-                    Button(onClick = {
-                        showCollectDialog = false
-                        // 加入收藏邏輯
-                    }) {
-                        Text("確認")
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = { showCollectDialog = false }) {
-                        Text("取消")
-                    }
-                }
-            )
-        }
-
-        // 黑名單確認對話框
-        if (showBlacklistDialog) {
-            AlertDialog(
-                onDismissRequest = { showBlacklistDialog = false }, // 點擊背景關閉
-                title = { Text(text = "黑名單") }, // 對話框標題
-                text = { Text(text = "是否將該用戶加入黑名單？") }, // 對話框內容
-                confirmButton = {
-                    Button(onClick = {
-                        showBlacklistDialog = false
-                        // 加入黑名單邏輯
-                    }) {
-                        Text("確認")
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = { showBlacklistDialog = false }) {
-                        Text("取消")
-                    }
-                }
-            )
-        }
+//        Row(
+//            horizontalArrangement = Arrangement.SpaceBetween, // 按鈕間距
+//            modifier = Modifier.fillMaxWidth() // 填滿整行
+//        ) {
+//            // 收藏按鈕
+//            Button(
+//                onClick = { showCollectDialog = true }, // 點擊觸發收藏對話框
+//                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
+//                modifier = Modifier
+//                    .width(16.dp) // 按鈕寬度
+//                    .height(16.dp) // 按鈕高度
+//            ) {
+//                Text(text = "收藏", color = Color.Black, fontSize = 18.sp) // 按鈕文字
+//            }
+//
+//            // 黑名單按鈕
+//            Button(
+//                onClick = { showBlacklistDialog = true }, // 點擊觸發黑名單對話框
+//                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
+//                modifier = Modifier
+//                    .width(16.dp) // 按鈕寬度
+//                    .height(16.dp) // 按鈕高度
+//            ) {
+//                Text(text = "黑名單", color = Color.Black, fontSize = 18.sp) // 按鈕文字
+//            }
+//        }
+//        // 收藏確認對話框
+//        if (showCollectDialog) {
+//            AlertDialog(
+//                onDismissRequest = { showCollectDialog = false }, // 點擊背景關閉
+//                title = { Text(text = "收藏") }, // 對話框標題
+//                text = { Text(text = "是否將該用戶加入收藏？") }, // 對話框內容
+//                confirmButton = {
+//                    Button(onClick = {
+//                        showCollectDialog = false
+//                        // 加入收藏邏輯
+//                    }) {
+//                        Text("確認")
+//                    }
+//                },
+//                dismissButton = {
+//                    Button(onClick = { showCollectDialog = false }) {
+//                        Text("取消")
+//                    }
+//                }
+//            )
+//        }
+//
+//        // 黑名單確認對話框
+//        if (showBlacklistDialog) {
+//            AlertDialog(
+//                onDismissRequest = { showBlacklistDialog = false }, // 點擊背景關閉
+//                title = { Text(text = "黑名單") }, // 對話框標題
+//                text = { Text(text = "是否將該用戶加入黑名單？") }, // 對話框內容
+//                confirmButton = {
+//                    Button(onClick = {
+//                        showBlacklistDialog = false
+//                        // 加入黑名單邏輯
+//                    }) {
+//                        Text("確認")
+//                    }
+//                },
+//                dismissButton = {
+//                    Button(onClick = { showBlacklistDialog = false }) {
+//                        Text("取消")
+//                    }
+//                }
+//            )
+//        }
     }
 }
