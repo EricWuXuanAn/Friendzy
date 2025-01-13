@@ -53,7 +53,7 @@ fun TabMainScreen(
     var switchState by remember { mutableStateOf(false) }
     val tabBarVisibility = tabVM.tabBarVisibility.collectAsState()
     val showTabIndex by tabVM.showTabIndex.collectAsState()
-    val memberStatus = tabVM.memberStatus.collectAsState()
+    val memberStatus by tabVM.memberStatus.collectAsState()
 
     Log.d("_showTabIndex", "showTabIndex:$showTabIndex")
 
@@ -72,7 +72,7 @@ fun TabMainScreen(
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = if (memberStatus.value) {
+            modifier = if (memberStatus) {
                 Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -93,7 +93,7 @@ fun TabMainScreen(
                     CompanionInfo("1", "Johnny", "Love to travel and explore new places", "信義區", LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3),
                     tabVM = tabVM)
 
-                1 -> if (memberStatus.value) {
+                1 -> if (memberStatus) {
                     CompanionScreen(
                         navController = navController,
                         companionVM = viewModel(),
@@ -109,7 +109,7 @@ fun TabMainScreen(
                     )
                 }
 
-                2 -> if (memberStatus.value) {
+                2 -> if (memberStatus) {
                     CompanionPublishScreen(
                         navController = navController,
                         myPublish = CompanionMyPublishVM(),

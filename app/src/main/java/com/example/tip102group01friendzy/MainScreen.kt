@@ -34,6 +34,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.tip102group01friendzy.ui.feature.Memberpage.ForOthers
+import com.example.tip102group01friendzy.ui.feature.Memberpage.ForOwnSereen
 import com.example.tip102group01friendzy.ui.feature.Memberpage.MemberScreen
 import com.example.tip102group01friendzy.ui.feature.Memberpage.SettingPage
 import com.example.tip102group01friendzy.ui.feature.account.ForgetPasswordScreen
@@ -99,7 +100,8 @@ enum class Screen(@StringRes val title: Int) {
     CompanionLookPublishScreen(title = R.string.CompanionLookPublishScreen),
     TabMainScreen(title = R.string.TabMainScreen),
     ChatMessageScreen(title = R.string.ChatMessageScreen),
-    ForothersScreen(title = R.string.forothers)
+    ForothersScreen(title = R.string.forothers),
+    ForOwnScreen(title = R.string.forown)
 }
 
 /**
@@ -157,6 +159,9 @@ fun Main(
                 }
                 Screen.TabMainScreen.name,
                 Screen.ForothersScreen.name -> {
+                }
+                Screen.TabMainScreen.name,
+                Screen.ForOwnScreen.name -> {
                 }
 
                 else -> {
@@ -271,7 +276,7 @@ fun Main(
                 )
             }
             composable(route = Screen.SettingScreen.name) {
-                SettingPage(navController = navController, settingVM = viewModel())
+                SettingPage(navController = navController, settingVM = viewModel(), tabVM)
             }
 
             composable(route = Screen.MemberScreen.name) {
@@ -281,6 +286,11 @@ fun Main(
             composable(route = Screen.ForothersScreen.name) {
                 ForOthers(
                     navController = navController, forothersVM = viewModel()
+                )
+            }
+            composable(route = Screen.ForOwnScreen.name) {
+                ForOwnSereen(
+                    navController = navController, forownscreenVM = viewModel()
                 )
             }
 
