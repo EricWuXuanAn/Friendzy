@@ -2,6 +2,12 @@ package com.example.tip102group01friendzy
 
 import com.example.tip102group01friendzy.ui.feature.account.MemberInfo
 import com.example.tip102group01friendzy.ui.feature.chat.Chatroom
+import com.example.tip102group01friendzy.ui.feature.companion.Applicant
+import com.example.tip102group01friendzy.ui.feature.companion.ComArea
+import com.example.tip102group01friendzy.ui.feature.companion.ComPublish
+import com.example.tip102group01friendzy.ui.feature.companion.ComSkill
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
+import com.example.tip102group01friendzy.ui.feature.companion.MyPublish
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
@@ -11,13 +17,6 @@ import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
 import com.example.tip102group01friendzy.ui.feature.customer.requestDelete
 import com.example.tip102group01friendzy.ui.feature.customer.selectedOrderListRequest
 import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
-import android.accounts.Account
-import com.example.tip102group01friendzy.ui.feature.companion.Applicant
-import com.example.tip102group01friendzy.ui.feature.companion.ComArea
-import com.example.tip102group01friendzy.ui.feature.companion.ComPublish
-import com.example.tip102group01friendzy.ui.feature.companion.ComSkill
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
-import com.example.tip102group01friendzy.ui.feature.companion.MyPublish
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -31,7 +30,6 @@ import retrofit2.http.Path
 import java.lang.reflect.Member
 import java.net.CookieManager
 import java.net.CookiePolicy
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder as CompanionOrder1
 
 interface APIService {
     //    @Multipart 不要打開
