@@ -26,12 +26,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import com.example.tip102group01friendzy.TabVM
 
 
 @Composable
 fun SettingPage(
     navController: NavHostController,
-    settingVM: SettingViewModel
+    settingVM: SettingViewModel,
+    tabVM: TabVM
 ) {
     // 觀察 ViewModel 的會員資料
     val memberInfo by settingVM.memberInfo.collectAsState()
@@ -225,7 +227,9 @@ fun SettingPage(
                         onClick = {
                             // 清除登入資料
                             clearLoginData(context)
-
+                            tabVM.tabBarState(true)
+                            tabVM.setMemberStatus(false)
+                            tabVM.setShowTabIndex(0)
                             // 導航到 Login 頁面
                             navController.navigate(Screen.LoginScreen.name) {
                                 popUpTo(0) // 清空導航堆疊，防止返回到其他頁面
@@ -313,10 +317,3 @@ fun EditableRow(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SettingPagePreview() {
-    val navController = rememberNavController()
-    val settingVM = SettingViewModel() // 假設有無參數建構子，實際情況請修改
-    SettingPage(navController = navController, settingVM = settingVM)
-}

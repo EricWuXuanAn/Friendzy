@@ -1,8 +1,22 @@
 package com.example.tip102group01friendzy.ui.feature.Memberpage
 
+import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
+import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +28,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -25,6 +43,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,17 +56,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
 
 @Composable
@@ -62,7 +91,7 @@ fun SelectionMenu(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFDCD0F0)) // 設定背景顏色
+            .background(Color(0xFFDCD0F0), shape = RoundedCornerShape(12.dp))
             .padding(8.dp) // 外邊距
     ) {
         // 將項目分為多行，每行最多 3 個
@@ -117,25 +146,41 @@ fun SelectionMenu(
     }
 }
 
-fun generateStars(score: Int?): String {
-    if (score == null || score < 0) return "☆☆☆☆☆"
-    val filledStars = "★".repeat(score.coerceAtMost(5)) // 滿星部分
-    val emptyStars = "☆".repeat(5 - score.coerceAtMost(5)) // 空星部分
-    return filledStars + emptyStars
+@Composable
+fun generateStars(score: Int?): AnnotatedString {
+    if (score == null || score < 0) return buildAnnotatedString {
+        withStyle(style = SpanStyle(color = Color(0xFFFBCA1C))) {
+            append("☆☆☆☆☆")
+        }
+    }
+
+    val filledStars = score.coerceAtMost(5) // 滿星部分
+    val emptyStars = 5 - filledStars // 空星部分
+
+    return buildAnnotatedString {
+        withStyle(style = SpanStyle(color = Color(0xFFFBCA1C))) {
+            append("★".repeat(filledStars)) // 黃色的滿星
+        }
+        withStyle(style = SpanStyle(color = Color(0xFFFBCA1C))) {
+            append("☆".repeat(emptyStars)) // 灰色的空星
+        }
+    }
 }
+
 
 @Composable
 fun MemberScreen(
     navController: NavHostController,
-    memberVM: MemberSceernVM
+    memberVM: MemberSceernVM,
 ) {
     // 觀察 ViewModel 的會員資料
     val memberInfo by memberVM.memberInfo.collectAsState()
+
     // 使用 remember 保存輸入框的狀態（專長與自我介紹）
-    // 使用 MutableState 管理狀態
     var selectedSpecialties by remember { mutableStateOf(listOf<String>()) } // 已選專長
     var tempSelectedSpecialties by remember { mutableStateOf(mutableSetOf<String>()) } // 暫存選擇專長
     var isSpecialtiesExpanded by remember { mutableStateOf(false) } // 是否展開選單
+
     // 預設的專長清單
     val specialties = listOf("攝影", "設計", "編程", "翻譯", "教學", "寫作")
 
@@ -145,24 +190,51 @@ fun MemberScreen(
         "台中市", "彰化縣", "南投縣", "雲林縣", "嘉義市", "嘉義縣", "台南市",
         "高雄市", "屏東縣", "宜蘭縣", "花蓮縣", "台東縣", "澎湖縣", "金門縣", "連江縣"
     )
-    // 使用 MutableState 管理狀態
+
     var selectedCities by remember { mutableStateOf(listOf<String>()) } // 已選地區
     var tempSelectedCities by remember { mutableStateOf(mutableSetOf<String>()) } // 暫存選擇地區
     var isCitiesExpanded by remember { mutableStateOf(false) } // 是否展開選單
-    // 暫存選擇項目
+
+    // 自我介紹區塊的狀態
     var isEditingSelfIntroduction by remember { mutableStateOf(false) }  // 是否處於編輯自我介紹的狀態
     var tempSelfIntroduction by remember { mutableStateOf("") } // 暫存的自我介紹內容
     var selfIntroduction by remember { mutableStateOf("") } // 自我介紹的最終內容
+    var tempProfileImageUri by remember { mutableStateOf<Uri?>(null) } // 暫存頭像圖片 URI
 
     val context = LocalContext.current
+
+    // **建立圖片挑選啟動器**
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri: Uri? ->
+            if (uri != null) {
+                tempProfileImageUri = uri
+            }
+        }
+    )
+
+    // **建立權限請求啟動器**
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { isGranted ->
+            if (isGranted.any { it.value }) {
+                pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            } else {
+                Toast.makeText(context, "需要存取相片權限才能選擇頭像", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+    // 觀察會員資料，並初始化會員資料
     LaunchedEffect(Unit) {
-        // 初始化時從後端抓取會員資料
         memberVM.fetchMemberInfo(context)
     }
+
     LaunchedEffect(memberInfo) {
         selfIntroduction = memberInfo.introduction ?: ""
     }
-    // 初始化時載入儲存的服務地區資料
+
+    // 初始化服務地區與專長資料
     LaunchedEffect(Unit) {
         val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
         val savedCities = preferences.getStringSet("selectedCities", emptySet()) ?: emptySet()
@@ -172,144 +244,196 @@ fun MemberScreen(
         selectedCities = savedCities.toList()
         selectedSpecialties = savedSpecialties.toList()
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()) // 支援垂直捲動
-            .padding(16.dp) // 外邊距
+            .verticalScroll(rememberScrollState())
+            .padding(20.dp)
     ) {
+        // 頭像區塊
         Row(
-            verticalAlignment = Alignment.CenterVertically, // 垂直居中對齊
-            horizontalArrangement = Arrangement.SpaceBetween, // 元件之間保持間距
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // 頭像
-            Box(
+            Image(
+                painter = if (tempProfileImageUri != null) {
+                    rememberAsyncImagePainter(tempProfileImageUri)
+                } else {
+                    painterResource(R.drawable.friendzy)
+                },
+                contentDescription = "頭像",
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.icon),
-                    contentDescription = "Avatar",
-                    tint = Color.DarkGray,
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-            // 評價區 - 平均評價
-            Column {
-                // 陪伴者評價
-                Text(
-                    text = "陪伴者評價：${generateStars(memberInfo.companionScore)}",
-                    fontSize = 14.sp,
-                    color = Color.Black
-                )
-
-                // 顧客評價
-                Text(
-                    text = "顧客評價：${generateStars(memberInfo.customerScore)}",
-                    fontSize = 14.sp,
-                    color = Color.Black
-                )
-            }
-            // 設定按鈕
-            IconButton(onClick = {
-                navController.navigate(Screen.SettingScreen.name) // 跳轉到設定頁面
-            }) {
-                // 使用自訂圖標替換預設 Icons.Default.Settings
-                Image(
-                    painter = painterResource(id = R.drawable.set), // 自訂圖標
-                    contentDescription = "Settings",
-                    modifier = Modifier.size(24.dp), // 設定圖標大
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        /// 名稱
-        Row(
-            modifier = Modifier.fillMaxWidth(), // 佔滿寬度
-            verticalAlignment = Alignment.CenterVertically, // 垂直居中
-            horizontalArrangement = Arrangement.SpaceBetween // 左右間距
-        ) {
-            // 名稱顯示
-            // 顯示會員暱稱或名字與編號
-            Text(
-                text = "${memberInfo.nickname?.takeIf { it.isNotBlank() } ?: memberInfo.name ?: ""}\nNo.${memberInfo.memberNo ?: ""}", // 暱稱或名字與編號
-                fontWeight = FontWeight.Bold, // 粗體字
-                fontSize = 20.sp, // 字體大小
-                modifier = Modifier.padding(vertical = 8.dp) // 上下間距
+                    .border(BorderStroke(1.dp, Color(0x3C645959)), CircleShape)
+                    .clickable {
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.READ_MEDIA_IMAGES
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                permissionLauncher.launch(
+                                    arrayOf(
+                                        READ_MEDIA_IMAGES,
+                                        READ_MEDIA_VIDEO,
+                                        READ_MEDIA_VISUAL_USER_SELECTED
+                                    )
+                                )
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                permissionLauncher.launch(
+                                    arrayOf(
+                                        READ_MEDIA_IMAGES,
+                                        READ_MEDIA_VIDEO
+                                    )
+                                )
+                            } else {
+                                permissionLauncher.launch(arrayOf(READ_EXTERNAL_STORAGE))
+                            }
+                        }
+                    },
+                contentScale = ContentScale.Crop
             )
 
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // 評價區
+            Column {
+                // 陪伴者評價
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "陪伴者評價：",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = generateStars(memberInfo.companionScore),
+                        fontSize = 16.sp,
+                        style = TextStyle.Default // 文字樣式（讓星星正常渲染）
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp)) // 分隔線
+
+                // 顧客評價
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "顧客評價：",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = generateStars(memberInfo.customerScore),
+                        fontSize = 16.sp,
+                        style = TextStyle.Default // 文字樣式（讓星星正常渲染）
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // 設定按鈕
+            IconButton(onClick = {
+                navController.navigate(Screen.SettingScreen.name)
+            }) {
+                Image(
+                    painter = painterResource(id = R.drawable.set),
+                    contentDescription = "Settings",
+                    modifier = Modifier.size(24.dp),
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-
-        // 服務地區區
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween // 使用 SpaceBetween 讓名稱和按鈕分開
         ) {
+            // 顯示會員名稱和ID
+            Text(
+                text = "${memberInfo.nickname?.takeIf { it.isNotBlank() } ?: memberInfo.name ?: ""}\nNo.${memberInfo.memberNo ?: ""}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            // 切換視角的按鈕和文字
             Column(
-                modifier = Modifier
-                    .fillMaxSize() // 充滿整個畫面
-                    .padding(16.dp) // 外邊距
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                // 服務地區區塊
+                IconButton(onClick = {
+                    navController.navigate(Screen.ForOwnScreen.name) // 切換顯示的視角
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Person,
+                        contentDescription = "切換視角",
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp)) // 按鈕和文字之間的間隔
+
+                Text(
+                    text = "預覽",
+                    style = TextStyle(fontSize = 16.sp, color = Color.Black),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // 服務地區選擇
                 Text(
                     text = "服務地區",
-                    fontWeight = FontWeight.Bold, // 粗體字
-                    modifier = Modifier.padding(bottom = 8.dp) // 與下一個元素的間距
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth() // 充滿父容器的寬度
-                        .background(Color(0xFFDCD0F0)) // 設定背景顏色
-                        .clickable { isCitiesExpanded = true } // 點擊後展開選單
-                        .padding(16.dp) // 內邊距
+                        .fillMaxWidth()
+                        .background(Color(0xFFDCD0F0), shape = RoundedCornerShape(12.dp))
+                        .clickable { isCitiesExpanded = true }
+                        .padding(16.dp)
                 ) {
                     if (selectedCities.isEmpty()) {
-                        // 若未選擇任何服務地區，顯示提示文字
                         Text(
                             text = "請選擇服務地區",
                             color = Color.DarkGray
                         )
                     } else {
-                        // 顯示已選擇的服務地區
                         Text(
-                            text = selectedCities.joinToString(", ") // 將清單轉為逗號分隔的字串
+                            text = selectedCities.joinToString(", ")
                         )
                     }
                 }
 
                 if (isCitiesExpanded) {
-                    // 若選單展開，顯示選單內容
                     SelectionMenu(
-                        items = cities, // 傳入服務地區清單
-                        tempSelectedItems = tempSelectedCities, // 暫存的選擇清單
+                        items = cities,
+                        tempSelectedItems = tempSelectedCities,
                         onConfirm = { selectedItems ->
-                            selectedCities = selectedItems.toList() // 更新已選擇的服務地區
+                            selectedCities = selectedItems.toList()
                             val preferences =
                                 context.getSharedPreferences("settings", Context.MODE_PRIVATE)
-                            preferences.edit()
-                                .putStringSet(
-                                    "selectedCities",
-                                    selectedItems
-                                ) // 儲存至 SharedPreferences
-                                .apply()
+                            preferences.edit().putStringSet("selectedCities", selectedItems).apply()
                         },
-                        onClose = {
-                            isCitiesExpanded = false // 關閉選單
-                        }
+                        onClose = { isCitiesExpanded = false }
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp)) // 增加空白間距
+                Spacer(modifier = Modifier.height(20.dp))
 
-                // 專長區塊
+                // 專長選擇
                 Text(
                     text = "專長",
                     fontWeight = FontWeight.Bold,
@@ -318,18 +442,16 @@ fun MemberScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFDCD0F0))
+                        .background(Color(0xFFDCD0F0), shape = RoundedCornerShape(12.dp))
                         .clickable { isSpecialtiesExpanded = true }
                         .padding(16.dp)
                 ) {
                     if (selectedSpecialties.isEmpty()) {
-                        // 若未選擇任何專長，顯示提示文字
                         Text(
                             text = "請選擇專長",
                             color = Color.DarkGray
                         )
                     } else {
-                        // 顯示已選擇的專長
                         Text(
                             text = selectedSpecialties.joinToString(", ")
                         )
@@ -337,104 +459,113 @@ fun MemberScreen(
                 }
 
                 if (isSpecialtiesExpanded) {
-                    // 若選單展開，顯示選單內容
                     SelectionMenu(
-                        items = specialties, // 傳入專長清單
-                        tempSelectedItems = tempSelectedSpecialties, // 暫存的選擇清單
+                        items = specialties,
+                        tempSelectedItems = tempSelectedSpecialties,
                         onConfirm = { selectedItems ->
-                            selectedSpecialties = selectedItems.toList() // 更新已選擇的專長
+                            selectedSpecialties = selectedItems.toList()
                             val preferences =
                                 context.getSharedPreferences("settings", Context.MODE_PRIVATE)
-                            preferences.edit()
-                                .putStringSet(
-                                    "selectedSpecialties",
-                                    selectedItems
-                                ) // 儲存至 SharedPreferences
+                            preferences.edit().putStringSet("selectedSpecialties", selectedItems)
                                 .apply()
                         },
-                        onClose = {
-                            isSpecialtiesExpanded = false // 關閉選單
-                        }
+                        onClose = { isSpecialtiesExpanded = false }
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
+                // 自我介紹區塊
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 0.dp) // 確保與其他區塊對齊
+                ) {
+                    // 自我介紹標題
+                    Text(
+                        text = "自我介紹",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
 
-            // 自我介紹區塊
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                // 標題
-                Text(
-                    text = "自我介紹",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                // 判斷是否正在編輯
-                if (isEditingSelfIntroduction) {
-                    // 編輯模式
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color(0xFFDCD0F0)) // 背景顏色設定為 #DCD0F0
-                            .padding(8.dp)
-                    ) {
-                        // 自我介紹輸入框
-                        TextField(
-                            value = tempSelfIntroduction, // 暫存輸入內容
-                            onValueChange = { tempSelfIntroduction = it }, // 更新暫存內容
-                            placeholder = { Text("請輸入您的自我介紹") }, // 提示文字
+                    // 判斷是否正在編輯
+                    if (isEditingSelfIntroduction) {
+                        // 編輯模式
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth() // 佔滿寬度
-                                .height(120.dp) // 設定高度
-                                .background(Color(0xFFDCD0F0)) // 背景顏色設定為 #DCD0F0
-                        )
+                                .fillMaxWidth()
+                                .background(
+                                    Color(0xFFDCD0F0),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) // 與顯示模式相同的外框顏色
+                                .padding(4.dp) // 確保內部輸入框有邊距
+                        ) {
+                            TextField(
+                                value = tempSelfIntroduction,
+                                onValueChange = { tempSelfIntroduction = it },
+                                placeholder = {
+                                    Text(
+                                        if (memberInfo.introduction.isNullOrBlank()) {
+                                            "請輸入您的自我介紹"
+                                        } else {
+                                            memberInfo.introduction!!
+                                        }
+                                    )
+                                },
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent, // 無焦點背景
+                                    unfocusedContainerColor = Color.Transparent, // 非焦點背景
+                                    disabledContainerColor = Color.Transparent // 禁用背景
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .clip(RoundedCornerShape(12.dp)) // 讓輸入框圓角一致
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp)) // 按鈕與輸入框間距
 
                         // 確認按鈕
                         Button(
                             onClick = {
-
-                                isEditingSelfIntroduction = false // 結束編輯模式
-
-                                // 傳送更新資料到後端
+                                isEditingSelfIntroduction = false
                                 memberVM.updateIntroduction(context, tempSelfIntroduction)
                             },
-                            modifier = Modifier.align(Alignment.End) // 按鈕靠右
+                            modifier = Modifier.align(Alignment.End)
                         ) {
                             Text("確認")
                         }
+                    } else {
+                        // 顯示模式
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    Color(0xFFDCD0F0),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) // 背景與圓角
+                                .height(200.dp)
+                                .clickable {
+                                    // 進入編輯模式，並將現有資料填充至 tempSelfIntroduction
+                                    isEditingSelfIntroduction = true
+                                    tempSelfIntroduction = memberInfo.introduction ?: ""
+                                }
+                                .padding(16.dp)
+                        ) {
+                            // 顯示自我介紹內容或提示文字
+                            Text(
+                                text = if (!memberInfo.introduction.isNullOrBlank()) memberInfo.introduction!! else "點擊編輯您的自我介紹",
+                                color = if (memberInfo.introduction.isNullOrBlank()) Color.DarkGray else Color.Black,
+                                fontSize = 16.sp
+                            )
+                        }
                     }
-                } else {
-                    // 顯示模式
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color(0xFFDCD0F0)) // 背景顏色設定為 #DCD0F0
-                            .height(180.dp) // 設定高度
-                            .clickable { isEditingSelfIntroduction = true } // 點擊切換為編輯模式
-                            .padding(16.dp) // 內邊距
-                    ) {
-                        // 顯示自我介紹內容或提示文字
-                        Text(
-                            text = if (!memberInfo.introduction.isNullOrBlank()) memberInfo.introduction!! else "點擊編輯您的自我介紹",
-                            color = if (memberInfo.introduction.isNullOrBlank()) Color.DarkGray else Color.Black
-                        )
-
-                    }
-                }
-            }
-
-
-            // 增加間距，讓內容向上排列
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
+
+
 
 
 

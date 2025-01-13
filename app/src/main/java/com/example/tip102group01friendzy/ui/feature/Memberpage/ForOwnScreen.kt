@@ -1,6 +1,14 @@
 package com.example.tip102group01friendzy.ui.feature.Memberpage
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,34 +52,32 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 
-
 @Composable
-fun ForOthers(
+fun ForOwnSereen(
     navController: NavHostController,
-    forothersVM: forothersVM
+    forownscreenVM: forownscreenVM
 ) {
     // 狀態變數：控制收藏對話框是否顯示
     var showCollectDialog by remember { mutableStateOf(false) }
     // 狀態變數：控制黑名單對話框是否顯示
     var showBlacklistDialog by remember { mutableStateOf(false) }
 // 觀察 ViewModel 的會員資料
-    val memberInfo by forothersVM.memberInfo.collectAsState()
+    val memberInfo by forownscreenVM.memberInfo.collectAsState()
     var selfIntroduction by remember { mutableStateOf("") } // 自我介紹的最終內容
-
 
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         // 初始化時從後端抓取會員資料
-        forothersVM.fetchMemberInfo(context)
+        forownscreenVM.fetchMemberInfo(context)
     }
     LaunchedEffect(memberInfo) {
         selfIntroduction = memberInfo.introduction ?: ""
@@ -93,6 +99,22 @@ fun ForOthers(
         val specialties = preferences.getStringSet("selectedSpecialties", emptySet())?.toList() ?: emptyList()
         savedSpecialties.value = specialties // 更新 savedSpecialties 的值
     }
+
+    // 頭像圖片選擇邏輯
+    var tempProfileImageUri by remember { mutableStateOf<Uri?>(null) }
+    val pickImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        tempProfileImageUri = uri
+    }
+    // 定義權限請求
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) {
+            // 使用者授予權限後執行選擇圖片的邏輯
+            pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } else {
+            // 權限拒絕，處理這種情況
+            Toast.makeText(context, "權限被拒絕，無法選擇圖片", Toast.LENGTH_SHORT).show()
+        }
+    }
     // 整體布局
     Column(
         modifier = Modifier
@@ -113,20 +135,44 @@ fun ForOthers(
                     contentDescription = "Back"
                 )
             }
+            Text(
+                text = "回到會員主頁",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 8.dp)
+            )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Row(
-            verticalAlignment = Alignment.Top, // 讓頭像和評價區塊的頂部對齊
             modifier = Modifier.fillMaxWidth() // 填滿整行
         ) {
             // 頭像框
             Image(
-                painter = painterResource(R.drawable.friendzy),
-                contentDescription = "friendzy",
+                painter = if (tempProfileImageUri != null) {
+                    rememberAsyncImagePainter(tempProfileImageUri) // 如果有選擇的圖片，則顯示選擇的圖片
+                } else {
+                    painterResource(R.drawable.friendzy) // 否則顯示預設圖片
+                },
+                contentDescription = "頭像",
                 modifier = Modifier
                     .size(80.dp) // 設定頭像框大小
                     .clip(CircleShape) // 圖片裁剪為圓形
-                    .border(BorderStroke(1.dp, Color(0x3C645959)), CircleShape),
-                contentScale = ContentScale.Crop
+                    .border(BorderStroke(1.dp, Color(0x3C645959)), CircleShape) // 圓形邊框
+                    .clickable {
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.READ_MEDIA_IMAGES
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        } else {
+                            // 如果沒有權限，請求權限
+                            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        }
+                    },
+                contentScale = ContentScale.Crop // 裁剪圖片，保持比例並填滿框
             )
 
             Spacer(modifier = Modifier.width(16.dp)) // 頭像與評價區之間的水平間距
@@ -242,10 +288,21 @@ fun ForOthers(
                     .background(Color(0xFFDCD0F0)) // 設定背景顏色 (淡紫色)
                     .padding(16.dp) // 內邊距為 16.dp
             ) {
+                if (savedCities.value.isEmpty()) {
+                    // 若無服務地區資料，顯示提示文字
                     Text(
-                        text = "台北市,新北市", // 以逗號分隔的地區列表
-                        color = Color.Black
-                    ) // 文字顏色為黑色
+                        text = "尚未選擇服務地區", // 提示內容
+                        color = Color.DarkGray // 顏色為深灰色
+                    )
+                } else {
+                    // 顯示儲存的服務地區列表，用逗號分隔
+                    Text(
+                        text = savedCities.value.joinToString(", "), // 以逗號分隔的地區列表
+                        color = Color.Black // 文字顏色為黑色
+                    )
+                }
+
+
             }
 
             Spacer(modifier = Modifier.height(16.dp)) // 增加 16.dp 的垂直間距
@@ -263,13 +320,21 @@ fun ForOthers(
                     .background(Color(0xFFDCD0F0)) // 設定背景顏色 (淡紫色)
                     .padding(16.dp) // 內邊距為 16.dp
             ) {
+                if (savedSpecialties.value.isEmpty()) {
+                    // 若無專長資料，顯示提示文字
                     Text(
-                        text = "攝影, 設計",
+                        text = "尚未選擇專長", // 提示內容
+                        color = Color.DarkGray // 顏色為深灰色
+                    )
+                } else {
+                    // 顯示儲存的專長列表，用逗號分隔
+                    Text(
+                        text = savedSpecialties.value.joinToString(", "), // 以逗號分隔的專長列表
                         color = Color.Black // 文字顏色為黑色
                     )
-
                 }
             }
+        }
 
         Spacer(modifier = Modifier.height(32.dp)) // 增加空隙
 
@@ -299,91 +364,77 @@ fun ForOthers(
                     color = if (memberInfo.introduction.isNullOrBlank()) Color.DarkGray else Color.Black
                 )
 
+            }
         }
-    }
 // 收藏與黑名單按鈕
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween, // 按鈕間距
-        modifier = Modifier.fillMaxWidth() // 填滿整行
-    ) {
-        // 收藏按鈕
-        Button(
-            onClick = { showCollectDialog = true }, // 點擊觸發收藏對話框
-            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
-            modifier = Modifier
-                .width(16.dp) // 按鈕寬度
-                .height(16.dp) // 按鈕高度
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween, // 按鈕間距
+            modifier = Modifier.fillMaxWidth() // 填滿整行
         ) {
-            Text(text = "收藏", color = Color.Black, fontSize = 18.sp) // 按鈕文字
+            // 收藏按鈕
+            Button(
+                onClick = { showCollectDialog = true }, // 點擊觸發收藏對話框
+                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
+                modifier = Modifier
+                    .width(16.dp) // 按鈕寬度
+                    .height(16.dp) // 按鈕高度
+            ) {
+                Text(text = "收藏", color = Color.Black, fontSize = 18.sp) // 按鈕文字
+            }
+
+            // 黑名單按鈕
+            Button(
+                onClick = { showBlacklistDialog = true }, // 點擊觸發黑名單對話框
+                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
+                modifier = Modifier
+                    .width(16.dp) // 按鈕寬度
+                    .height(16.dp) // 按鈕高度
+            ) {
+                Text(text = "黑名單", color = Color.Black, fontSize = 18.sp) // 按鈕文字
+            }
+        }
+        // 收藏確認對話框
+        if (showCollectDialog) {
+            AlertDialog(
+                onDismissRequest = { showCollectDialog = false }, // 點擊背景關閉
+                title = { Text(text = "收藏") }, // 對話框標題
+                text = { Text(text = "是否將該用戶加入收藏？") }, // 對話框內容
+                confirmButton = {
+                    Button(onClick = {
+                        showCollectDialog = false
+                        // 加入收藏邏輯
+                    }) {
+                        Text("確認")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { showCollectDialog = false }) {
+                        Text("取消")
+                    }
+                }
+            )
         }
 
-        // 黑名單按鈕
-        Button(
-            onClick = { showBlacklistDialog = true }, // 點擊觸發黑名單對話框
-            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 設定按鈕背景顏色
-            modifier = Modifier
-                .width(16.dp) // 按鈕寬度
-                .height(16.dp) // 按鈕高度
-        ) {
-            Text(text = "黑名單", color = Color.Black, fontSize = 18.sp) // 按鈕文字
+        // 黑名單確認對話框
+        if (showBlacklistDialog) {
+            AlertDialog(
+                onDismissRequest = { showBlacklistDialog = false }, // 點擊背景關閉
+                title = { Text(text = "黑名單") }, // 對話框標題
+                text = { Text(text = "是否將該用戶加入黑名單？") }, // 對話框內容
+                confirmButton = {
+                    Button(onClick = {
+                        showBlacklistDialog = false
+                        // 加入黑名單邏輯
+                    }) {
+                        Text("確認")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { showBlacklistDialog = false }) {
+                        Text("取消")
+                    }
+                }
+            )
         }
     }
-    // 收藏確認對話框
-    if (showCollectDialog) {
-        AlertDialog(
-            onDismissRequest = { showCollectDialog = false }, // 點擊背景關閉
-            title = { Text(text = "收藏") }, // 對話框標題
-            text = { Text(text = "是否將該用戶加入收藏？") }, // 對話框內容
-            confirmButton = {
-                Button(onClick = {
-                    showCollectDialog = false
-                    // 加入收藏邏輯
-                }) {
-                    Text("確認")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showCollectDialog = false }) {
-                    Text("取消")
-                }
-            }
-        )
-    }
-
-    // 黑名單確認對話框
-    if (showBlacklistDialog) {
-        AlertDialog(
-            onDismissRequest = { showBlacklistDialog = false }, // 點擊背景關閉
-            title = { Text(text = "黑名單") }, // 對話框標題
-            text = { Text(text = "是否將該用戶加入黑名單？") }, // 對話框內容
-            confirmButton = {
-                Button(onClick = {
-                    showBlacklistDialog = false
-                    // 加入黑名單邏輯
-                }) {
-                    Text("確認")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showBlacklistDialog = false }) {
-                    Text("取消")
-                }
-            }
-        )
-    }
 }
-    }
-
-@Preview(showBackground = true)
-@Composable
-fun ForOthersPreview() {
-    val fakeForOthersVM = forothersVM() // 替換為你的實際 ViewModel
-    val navController = rememberNavController() // 使用 NavHostController
-
-    // 預覽 ForOthers 介面
-    ForOthers(
-        navController = navController,
-        forothersVM = fakeForOthersVM
-    )
-}
-

@@ -79,5 +79,6 @@
     <string name="cancle">Cancle</string>
     <string name="alreadyRegistered">\"Email already registered.\"</string>
     <string name="forothers">forothers</string>
+    <string name="forown">forown</string>
 
 </resources>

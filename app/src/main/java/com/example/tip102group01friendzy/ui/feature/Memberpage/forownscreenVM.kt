@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class forothersVM: ViewModel() {
+class forownscreenVM: ViewModel() {
     // 使用 MutableStateFlow 存儲會員信息，提供雙向數據綁定的能力
     private val _memberInfo = MutableStateFlow(MemberModel.MemberInfo(null, null, null, null, null,null,null,null,null,null))
     val memberInfo: StateFlow<MemberModel.MemberInfo> = _memberInfo // 暴露為只讀的 StateFlow 給外部觀察
@@ -38,6 +38,7 @@ class forothersVM: ViewModel() {
 
     // 從 SharedPreferences 獲取 email
     private fun getEmailFromPreferences(context: Context): String? {
-        return "john.doe@example.com"
+        val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        return preferences.getString("email", null)
     }
 }
