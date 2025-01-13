@@ -2,6 +2,12 @@ package com.example.tip102group01friendzy
 
 import com.example.tip102group01friendzy.ui.feature.account.MemberInfo
 import com.example.tip102group01friendzy.ui.feature.chat.Chatroom
+import com.example.tip102group01friendzy.ui.feature.companion.Applicant
+import com.example.tip102group01friendzy.ui.feature.companion.ComArea
+import com.example.tip102group01friendzy.ui.feature.companion.ComPublish
+import com.example.tip102group01friendzy.ui.feature.companion.ComSkill
+import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
+import com.example.tip102group01friendzy.ui.feature.companion.MyPublish
 import com.example.tip102group01friendzy.ui.feature.customer.Black_List
 import com.example.tip102group01friendzy.ui.feature.customer.Favorite_List
 import com.example.tip102group01friendzy.ui.feature.customer.OrderList
