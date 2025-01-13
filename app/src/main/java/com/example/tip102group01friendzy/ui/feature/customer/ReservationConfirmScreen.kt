@@ -191,7 +191,7 @@ fun ReservationConfirmScreen(
                     navController.popBackStack()
                 }
             ) {
-                Text(text = stringResource(R.string.Confirm))
+                Text(text = stringResource(R.string.Confirm), modifier = Modifier.weight(1.0f), textAlign = TextAlign.Center)
             }
             Button(
                 modifier = Modifier.weight(0.3f),
@@ -212,7 +212,7 @@ fun ReservationConfirmScreen(
                     navController.popBackStack()
                 }
             ) {
-                Text(text = "Decline")
+                Text(text = "Decline", textAlign = TextAlign.Center, modifier = Modifier.weight(1.0f))
             }
         }
     }
