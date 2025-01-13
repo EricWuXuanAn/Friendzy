@@ -17,12 +17,6 @@ import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
 import com.example.tip102group01friendzy.ui.feature.customer.requestDelete
 import com.example.tip102group01friendzy.ui.feature.customer.selectedOrderListRequest
 import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
-import com.example.tip102group01friendzy.ui.feature.companion.Applicant
-import com.example.tip102group01friendzy.ui.feature.companion.ComArea
-import com.example.tip102group01friendzy.ui.feature.companion.ComPublish
-import com.example.tip102group01friendzy.ui.feature.companion.ComSkill
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder
-import com.example.tip102group01friendzy.ui.feature.companion.MyPublish
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Response
