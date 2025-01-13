@@ -140,7 +140,7 @@ fun CompanionOrderDetailsScreen(
         )
         Row(
             modifier = Modifier
-                .fillMaxHeight(0.15f)
+//                .fillMaxHeight(0.2f)
                 .padding(top = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -156,7 +156,7 @@ fun CompanionOrderDetailsScreen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+//                    .fillMaxSize()
                     .padding(start = 8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
@@ -165,7 +165,7 @@ fun CompanionOrderDetailsScreen(
                     fontSize = 24.sp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
+//                        .fillMaxHeight(0.5f)
                         .padding(bottom = 20.dp)
                 )
 //                /*
@@ -175,7 +175,7 @@ fun CompanionOrderDetailsScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .fillMaxHeight()
+//                        .fillMaxHeight()
                         .padding(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent,//背景顏色
@@ -184,12 +184,13 @@ fun CompanionOrderDetailsScreen(
                     border = BorderStroke(1.dp, Color.Black)//外框樣式
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxSize(),
+//                        modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(text = "聊聊", modifier = Modifier.padding(end = 2.dp))
                         Icon(
+                            modifier = Modifier.size(20.dp),
                             painter = painterResource(R.drawable.chat),
                             contentDescription = "聊聊",
                         )

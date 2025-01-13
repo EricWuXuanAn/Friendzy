@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 
 @Composable
@@ -74,24 +75,23 @@ fun CompanionLookPublishScreen(
         //顧客資(頭像、名字、聊天鈕)
         Row(
             modifier = Modifier
-                .fillMaxHeight(0.15f)
+//                .fillMaxHeight(0.15f)
                 .padding(top = 8.dp)
         ) {
             Image(
+                alignment = Alignment.CenterStart,
                 modifier = Modifier
-                    .size(120.dp)
+                    .padding(5.dp)
+                    .size(90.dp)
                     .clip(CircleShape)
-                    .border(
-                        2.dp, Color.DarkGray,
-                        CircleShape
-                    ),
+                    .border(width = 2.dp, color = Color.Gray, shape = CircleShape),
                 painter = painterResource(R.drawable.friendzy),
-                contentDescription = "memberPhoto",
+                contentDescription = "Image"
             )
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 8.dp, top = 8.dp),
+//                    .fillMaxSize()
+                    .padding(start = 8.dp),
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
@@ -103,7 +103,7 @@ fun CompanionLookPublishScreen(
                 )
                 Button(
                     onClick = {
-
+                        navController.navigate(Screen.ChatroomScreen.name)
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
@@ -115,10 +115,12 @@ fun CompanionLookPublishScreen(
                     border = BorderStroke(1.dp, Color.Black)//外框樣式
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Text(text = "聊聊", modifier = Modifier.padding(2.dp))
                         Icon(
+                            modifier = Modifier.size(20.dp),
                             painter = painterResource(R.drawable.chat),
                             contentDescription = "聊聊",
                         )

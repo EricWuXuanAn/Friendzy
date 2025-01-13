@@ -73,7 +73,7 @@ fun formatTimestamp(timestamp: Long?): String {
         .toLocalDateTime()
 
     // 格式化為 yyyy/MM/dd HH:mm
-    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
     return dateTime.format(formatter)
 }
 /** 將日期、時間字串轉成毫秒數時間 */

@@ -116,6 +116,7 @@ fun CompanionOrderListScreen(
             ScrollableTabRow(
                 selectedTabIndex = tabIndex,
                 containerColor = companionScenery,
+                edgePadding = 0.dp
             ) {
                 tabList.forEachIndexed { index, tabs ->
                     Tab(

@@ -76,7 +76,8 @@ fun CompanionCheckAppointmentScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp),
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //預約人的資訊
@@ -84,12 +85,14 @@ fun CompanionCheckAppointmentScreen(
         Text(
             text = "預約人",
             fontSize = 24.sp,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
             textAlign = TextAlign.Center
         )
         Row(
             modifier = Modifier
-                .fillMaxHeight(0.15f)
+//                .fillMaxHeight(0.15f)
                 .padding(top = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -105,7 +108,7 @@ fun CompanionCheckAppointmentScreen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+//                    .fillMaxSize()
                     .padding(start = 8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
@@ -114,7 +117,7 @@ fun CompanionCheckAppointmentScreen(
                     fontSize = 24.sp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
+//                        .fillMaxHeight(0.5f)
                         .padding(bottom = 20.dp)
                 )
 //                /*
@@ -124,7 +127,7 @@ fun CompanionCheckAppointmentScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .fillMaxHeight()
+//                        .fillMaxHeight()
                         .padding(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent,//背景顏色
@@ -133,12 +136,13 @@ fun CompanionCheckAppointmentScreen(
                     border = BorderStroke(1.dp, Color.Black)//外框樣式
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxSize(),
+//                        modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(text = "聊聊", modifier = Modifier.padding(end = 2.dp))
                         Icon(
+                            modifier = Modifier.size(20.dp),
                             painter = painterResource(R.drawable.chat),
                             contentDescription = "聊聊",
                         )
@@ -161,8 +165,8 @@ fun CompanionCheckAppointmentScreen(
 
         }
         Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom
+            modifier = Modifier.fillMaxSize().padding(4.dp),
+            verticalArrangement = Arrangement.Top
         ){
             Row(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
