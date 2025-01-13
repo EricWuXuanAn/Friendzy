@@ -248,7 +248,7 @@ fun CompanionScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.Start
         ) {
-            Text("我的刊登項目", fontSize = 28.sp)
+            Text("推薦項目", fontSize = 28.sp)
             Spacer(modifier = Modifier.padding(4.dp))
             //服務項目清單
             MyPublishList(
