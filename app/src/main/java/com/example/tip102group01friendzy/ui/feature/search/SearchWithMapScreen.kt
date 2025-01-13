@@ -247,7 +247,7 @@ fun FloatingSearchBar() {
             ) {
                 // 搜索圖標
                 Image(
-                    painter = painterResource(id = android.R.drawable.ic_menu_search), // 預設資源
+                    painter = painterResource(id = android.R.drawable.ic_search_category_default), // 預設資源
                     contentDescription = "Cute Icon",
                     contentScale = ContentScale.Crop,
                     colorFilter = ColorFilter.tint(Color.Gray) // 插圖顏色可調整
