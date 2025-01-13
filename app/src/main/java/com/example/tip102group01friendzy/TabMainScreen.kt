@@ -103,8 +103,8 @@ fun TabMainScreen(
                 1 -> if (memberStatus.value) {
                     CompanionScreen(
                         navController = navController,
-                        companionVM = CompanionVM(),
-                        companionMyPublishVM = CompanionMyPublishVM(),
+                        companionVM = viewModel(),
+                        companionMyPublishVM = viewModel(),
                         tabVM = tabVM
                     )
                 } else {

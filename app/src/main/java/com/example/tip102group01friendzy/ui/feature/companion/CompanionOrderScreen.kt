@@ -69,10 +69,10 @@ fun CompanionOrderListScreen(
     val uncomfirm = orderState.filter { it.orderStatus == 0 }
     val inProfress = orderState.filter { it.orderStatus == 1 }
     val completed = orderState.filter { it.orderStatus == 2 || it.orderStatus == 3 }
-//    val myReservation = appoState.filter { it.accountId == memberNo && it.applyStatus == 0}
-    val myReservation = appointmentState.filter { it.accountId == memberNo}
-//    val myRequest = appoState.filter { it.orderPoster ==  memberNo && it.applyStatus == 0}
-    val myRequest = appointmentState.filter { it.orderPoster ==  memberNo}
+    val myReservation = appointmentState.filter { it.accountId == memberNo && it.applyStatus == 0}
+//    val myReservation = appointmentState.filter { it.accountId == memberNo}
+    val myRequest = appointmentState.filter { it.orderPoster ==  memberNo && it.applyStatus == 0}
+//    val myRequest = appointmentState.filter { it.orderPoster ==  memberNo}
 
     val coroutineScope = rememberCoroutineScope()
 

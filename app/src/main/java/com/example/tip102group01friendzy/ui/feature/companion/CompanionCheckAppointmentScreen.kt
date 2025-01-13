@@ -23,9 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,15 +37,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
-import kotlinx.coroutines.launch
 
 
 @Composable
 //陪伴者確認預約(確認訂單)
 fun CompanionCheckAppointmentScreen(
     navController: NavHostController,
-    companionApplicantVM: CompanionApplicantVM,
+    applicantVM: CompanionApplicantVM,
     comOrderVM: CompanionOrderVM,
     tabVM: TabVM,
     account: Int,
@@ -58,7 +55,7 @@ fun CompanionCheckAppointmentScreen(
     val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     val memberNo = preferences.getInt("member_no", 0)
 
-    val myAccount by companionApplicantVM.applicantSelectState.collectAsState()
+    val myAccount by applicantVM.applicantSelectState.collectAsState()
 //    val order by comOrderVM.orderDetailsSelectState.collectAsState()
 //    val selectOrder by remember { mutableStateOf<Applicant?>(null) }
 //    val scpoe = rememberCoroutineScope()
@@ -69,7 +66,7 @@ fun CompanionCheckAppointmentScreen(
 //    }
 
     LaunchedEffect(Unit) {
-        companionApplicantVM.getApplicantSelect(memberNo,account,serviceId)
+        applicantVM.getApplicantSelect(memberNo,account,serviceId)
     }
 
     Column (
@@ -93,41 +90,41 @@ fun CompanionCheckAppointmentScreen(
         Row(
             modifier = Modifier
                 .fillMaxHeight(0.15f)
-                .padding(top = 8.dp)
+                .padding(top = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            /*
             Image(
+                alignment = Alignment.CenterStart,
                 modifier = Modifier
-                    .size(120.dp)
+                    .padding(5.dp)
+                    .size(90.dp)
                     .clip(CircleShape)
-                    .border(
-                        2.dp, Color.DarkGray,
-                        CircleShape
-                    ),
+                    .border(width = 2.dp, color = Color.Gray, shape = CircleShape),
                 painter = painterResource(R.drawable.friendzy),
-                contentDescription = "memberPhoto",
+                contentDescription = "Image"
             )
-            */
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 8.dp, top = 8.dp),
-                horizontalAlignment = Alignment.End
+                    .padding(start = 8.dp),
+                horizontalAlignment = Alignment.End,
             ) {
                 Text(
                     text = "名字：${myAccount?.accountName}",
                     fontSize = 24.sp,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxHeight(0.5f)
                         .padding(bottom = 20.dp)
-                )/*
+                )
+//                /*
                 Button(
                     onClick = {
-
+                        navController.navigate(Screen.ChatroomScreen.name)
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .fillMaxHeight(0.6f)
+                        .fillMaxHeight()
                         .padding(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent,//背景顏色
@@ -136,16 +133,18 @@ fun CompanionCheckAppointmentScreen(
                     border = BorderStroke(1.dp, Color.Black)//外框樣式
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "聊聊", modifier = Modifier.padding(2.dp))
+                        Text(text = "聊聊", modifier = Modifier.padding(end = 2.dp))
                         Icon(
                             painter = painterResource(R.drawable.chat),
                             contentDescription = "聊聊",
                         )
                     }
                 }
-               */
+//               */
             }
         }
         HorizontalDivider(modifier = Modifier.padding(6.dp))//分隔線
@@ -176,7 +175,12 @@ fun CompanionCheckAppointmentScreen(
                         contentColor = Color.DarkGray
                     ),
                     onClick = {
-
+                        applicantVM.setApplicantStatus(
+                            serviceId =  myAccount?.serviceId!!,
+                            account = myAccount?.accountId!!,
+                            reject = 0,
+                        )
+                        navController.popBackStack()
                     }
                 ) { Text("確認") }
                 Button(
@@ -186,7 +190,12 @@ fun CompanionCheckAppointmentScreen(
                         contentColor = Color.DarkGray
                     ),
                     onClick = {
-
+                        applicantVM.setApplicantStatus(
+                            serviceId =  myAccount?.serviceId!!,
+                            account = myAccount?.accountId!!,
+                            reject = 1,
+                        )
+                        navController.popBackStack()
                     },
                 ) { Text("拒絕") }
             }
@@ -194,9 +203,16 @@ fun CompanionCheckAppointmentScreen(
     }
 }
 
-//@Composable
-//@Preview(showBackground = true)
-//fun PreviewCompanionCheckAppointmentScreen(
-//) {
-//    CompanionCheckAppointmentScreen(rememberNavController(),tabVM = TabVM(), companionApplicantVM = CompanionApplicantVM(), comOrderVM = CompanionOrderVM())
-//}
+@Composable
+@Preview(showBackground = true)
+fun PreviewCompanionCheckAppointmentScreen(
+) {
+    CompanionCheckAppointmentScreen(
+        navController = rememberNavController(),
+        applicantVM = CompanionApplicantVM(),
+        tabVM = TabVM(),
+        comOrderVM = CompanionOrderVM(),
+        account = 1,
+        serviceId = 1,
+    )
+}

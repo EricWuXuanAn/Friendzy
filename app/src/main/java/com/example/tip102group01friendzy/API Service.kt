@@ -11,7 +11,6 @@ import com.example.tip102group01friendzy.ui.feature.customer.addPostResponse
 import com.example.tip102group01friendzy.ui.feature.customer.requestDelete
 import com.example.tip102group01friendzy.ui.feature.customer.selectedOrderListRequest
 import com.example.tip102group01friendzy.ui.feature.customer.selectedPostList
-import android.accounts.Account
 import com.example.tip102group01friendzy.ui.feature.companion.Applicant
 import com.example.tip102group01friendzy.ui.feature.companion.ComArea
 import com.example.tip102group01friendzy.ui.feature.companion.ComPublish
@@ -31,7 +30,6 @@ import retrofit2.http.Path
 import java.lang.reflect.Member
 import java.net.CookieManager
 import java.net.CookiePolicy
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionOrder as CompanionOrder1
 
 interface APIService {
     //    @Multipart 不要打開
@@ -150,10 +148,17 @@ interface APIService {
     @POST("rest/companion/publish/addPublish")
     suspend fun addPublish(@Body myPublish: MyPublish): Int
 
-    //陪伴者改訂單狀態
+    //陪伴者改訂單評價
     @PUT("rest/companion/order/rate")
     suspend fun comOrderUpdateRate(@Body comOrder: CompanionOrder): CompanionOrder
 
+    //陪伴者改應徵者狀態
+    @PUT("rest/companion/appoint/statusUpdate")
+    suspend fun comAppointUpdateRate(@Body applicant: Applicant): Applicant
+
+    //陪伴者刊登新增
+    @POST("rest/companion/publish/addApplicant")
+    suspend fun comAddApplicant(@Body serviceId: Int, memberNo: Int): Int
 }
 
 
@@ -168,6 +173,7 @@ object RetrofitInstance {
     val api: APIService by lazy {
         Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8080/friendzy-new-web/")
+//            .baseUrl("http://10.2.17.94:8080/friendzy-new-web/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
