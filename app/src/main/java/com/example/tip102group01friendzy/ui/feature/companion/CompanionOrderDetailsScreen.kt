@@ -2,6 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.tip102group01friendzy.R
+import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 
 @Composable
@@ -140,7 +142,8 @@ fun CompanionOrderDetailsScreen(
         Row(
             modifier = Modifier
                 .fillMaxHeight(0.15f)
-                .padding(top = 8.dp)
+                .padding(top = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 alignment = Alignment.CenterStart,
@@ -155,18 +158,48 @@ fun CompanionOrderDetailsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 8.dp, top = 8.dp),
-                horizontalAlignment = Alignment.End
+                    .padding(start = 8.dp),
+                horizontalAlignment = Alignment.End,
             ) {
                 Text(
                     text = "名字：${order?.theirName}",
                     fontSize = 24.sp,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxHeight(0.5f)
                         .padding(bottom = 20.dp)
                 )
+//                /*
+                Button(
+                    onClick = {
+                        navController.navigate(Screen.ChatroomScreen.name)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .fillMaxHeight()
+                        .padding(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,//背景顏色
+                        contentColor = Color.Black//內容顏色
+                    ),
+                    border = BorderStroke(1.dp, Color.Black)//外框樣式
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "聊聊", modifier = Modifier.padding(end = 2.dp))
+                        Icon(
+                            painter = painterResource(R.drawable.chat),
+                            contentDescription = "聊聊",
+                        )
+                    }
+                }
+//               */
             }
         }
+
         HorizontalDivider(modifier = Modifier.padding(6.dp))//分隔線
 
         Column(

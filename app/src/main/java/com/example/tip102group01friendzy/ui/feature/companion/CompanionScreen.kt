@@ -294,12 +294,12 @@ fun MyPublishList(
                     Text(text = "標題：${publish.service}", fontSize = 18.sp)
                 },
                 headlineContent = {
-                    Text(text = "位置：${publish.area}", fontSize = 14.sp)
+//                    Text(text = "位置：${publish.area}", fontSize = 14.sp)
                 },
                 supportingContent = {
-                    Row (
+                    Column (
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalAlignment = Alignment.Start
                     ){
                         Text(text = "刊登者：${publish.posterName}")
                         Text(text = "開始時間：${formatTimestamp(publish.startTime)}")

@@ -109,6 +109,7 @@ data class Applicant(
     var applyStatus:Int? =null,//應徵的狀態
     var applicationResult:Int? =null,//應徵結果
 
+    var memberNo: Int? = null,
     var reject:Int? = null,//拒絕狀態
 
 ){

@@ -41,7 +41,12 @@ class CompanionVM : ViewModel() {
     //預約API
     private suspend fun fetchAddApplicant(serviceId: Int,memberNo: Int):Int{
         try {
-            val applicant = RetrofitInstance.api.comAddApplicant(serviceId,memberNo)
+            val applicant = RetrofitInstance.api.comAddApplicant(
+                Applicant(
+                    serviceId = serviceId,
+                    memberNo = memberNo
+                )
+            )
             return applicant
         }catch (e:Exception){
             return -2

@@ -158,7 +158,7 @@ interface APIService {
 
     //陪伴者刊登新增
     @POST("rest/companion/publish/addApplicant")
-    suspend fun comAddApplicant(@Body serviceId: Int, memberNo: Int): Int
+    suspend fun comAddApplicant(@Body applicant: Applicant): Int
 }
 
 
