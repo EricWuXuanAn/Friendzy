@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -167,21 +168,21 @@ fun MessageBubble(
     ) {
         Surface(
             shape = RoundedCornerShape(8.dp),
-            color = if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+            color = if (isCurrentUser) colorResource(R.color.teal_200) else colorResource(R.color.green_200),
             modifier = Modifier
                 .padding(horizontal = 8.dp)
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(
                     text = message.content,
-                    color = Color.White,
+                    color = Color.Black,
                     modifier = Modifier
                         .padding(8.dp)
                 )
                 Text(
                     text = SimpleDateFormat("HH:mm", Locale.getDefault())
                         .format(Date(message.timestamp)),
-                    color = Color.White.copy(alpha = 0.7f),
+                    color = Color.Black.copy(alpha = 0.7f),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .padding(top = 4.dp)

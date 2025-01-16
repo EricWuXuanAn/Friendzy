@@ -3,6 +3,7 @@ package com.example.tip102group01friendzy.ui.feature.chat
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -36,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -104,6 +108,7 @@ fun ChatroomScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
+                .background(Color.Transparent)
         ) {
             getChatroomLists(
                 chatrooms.filter { it.OtherUserName.contains(searchChatroom, true) },
@@ -133,6 +138,9 @@ fun getChatroomLists(
             // 用來建立Lists內容物
             Log.d("tag_chatroomScreen", "room_user_one: ${chatroom.room_user_one}, room_user_two: ${chatroom.room_user_two}")
             ListItem(
+                colors = ListItemDefaults.colors(
+                    containerColor = Color.Transparent
+                ),
                 modifier = Modifier.clickable {
                     onClick(chatroom)
                 },
