@@ -77,7 +77,8 @@ import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-
+import java.io.File
+import kotlin.io.outputStream
 
 @Composable
 fun SelectionMenu(
@@ -208,7 +209,19 @@ fun MemberScreen(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri: Uri? ->
             if (uri != null) {
-                tempProfileImageUri = uri
+                // **儲存圖片 URI 到 SharedPreferences** (修改部分)
+                val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                sharedPreferences.edit().putString("profile_image_uri", uri.toString()).apply()  // 儲存 URI
+
+                // 將圖片存到本地端（如果有需要）
+                val fileName = "profile_image_${System.currentTimeMillis()}.jpg"
+                val file = File(context.filesDir, fileName)
+                context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    file.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+                tempProfileImageUri = uri // 更新臨時的 URI
             }
         }
     )
@@ -224,6 +237,15 @@ fun MemberScreen(
             }
         }
     )
+// **畫面初始化時，從 SharedPreferences 讀取已選擇的圖片 URI
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    val savedUriString = sharedPreferences.getString("profile_image_uri", null)  // 讀取儲存的 URI
+
+// **設定初始的頭像圖片 URI
+    val initialProfileImageUri = savedUriString?.let { Uri.parse(it) } // 從 SharedPreferences 讀取 URI
+
+// 設定初始的頭像圖片 URI
+    tempProfileImageUri = initialProfileImageUri ?: tempProfileImageUri  // 使用儲存的 URI，若沒有則保持原本的 URI
 
     // 觀察會員資料，並初始化會員資料
     LaunchedEffect(Unit) {
@@ -258,17 +280,14 @@ fun MemberScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-                painter = if (tempProfileImageUri != null) {
-                    rememberAsyncImagePainter(tempProfileImageUri)
-                } else {
-                    painterResource(R.drawable.friendzy)
-                },
+                painter = rememberAsyncImagePainter(tempProfileImageUri ?: R.drawable.friendzy), // 如果有選擇圖片，顯示選擇的圖片，否則顯示預設圖片
                 contentDescription = "頭像",
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
                     .border(BorderStroke(1.dp, Color(0x3C645959)), CircleShape)
                     .clickable {
+                        // 這裡保持原本的邏輯來選擇圖片
                         if (ContextCompat.checkSelfPermission(
                                 context,
                                 Manifest.permission.READ_MEDIA_IMAGES
@@ -276,6 +295,7 @@ fun MemberScreen(
                         ) {
                             pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         } else {
+                            // 若需要權限，則請求相應權限
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                                 permissionLauncher.launch(
                                     arrayOf(

@@ -59,6 +59,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
+import java.io.File
 
 @Composable
 fun ForOwnSereen(
@@ -100,21 +101,12 @@ fun ForOwnSereen(
         savedSpecialties.value = specialties // 更新 savedSpecialties 的值
     }
 
-    // 頭像圖片選擇邏輯
-    var tempProfileImageUri by remember { mutableStateOf<Uri?>(null) }
-    val pickImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        tempProfileImageUri = uri
-    }
-    // 定義權限請求
-    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) {
-            // 使用者授予權限後執行選擇圖片的邏輯
-            pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        } else {
-            // 權限拒絕，處理這種情況
-            Toast.makeText(context, "權限被拒絕，無法選擇圖片", Toast.LENGTH_SHORT).show()
-        }
-    }
+// **讀取頭像 URI**
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    val savedProfileImageUri = sharedPreferences.getString("profile_image_uri", null)
+    val profileImageUri = savedProfileImageUri?.let { Uri.parse(it) }
+
+
     // 整體布局
     Column(
         modifier = Modifier
@@ -150,29 +142,17 @@ fun ForOwnSereen(
         ) {
             // 頭像框
             Image(
-                painter = if (tempProfileImageUri != null) {
-                    rememberAsyncImagePainter(tempProfileImageUri) // 如果有選擇的圖片，則顯示選擇的圖片
+                painter = if (profileImageUri != null) {
+                    rememberAsyncImagePainter(profileImageUri) // 使用儲存的頭像 URI
                 } else {
-                    painterResource(R.drawable.friendzy) // 否則顯示預設圖片
+                    painterResource(R.drawable.friendzy) // 預設圖片
                 },
                 contentDescription = "頭像",
                 modifier = Modifier
-                    .size(80.dp) // 設定頭像框大小
-                    .clip(CircleShape) // 圖片裁剪為圓形
-                    .border(BorderStroke(1.dp, Color(0x3C645959)), CircleShape) // 圓形邊框
-                    .clickable {
-//                        if (ContextCompat.checkSelfPermission(
-//                                context,
-//                                Manifest.permission.READ_MEDIA_IMAGES
-//                            ) == PackageManager.PERMISSION_GRANTED
-//                        ) {
-//                            pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-//                        } else {
-//                            // 如果沒有權限，請求權限
-//                            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-//                        }
-                    },
-                contentScale = ContentScale.Crop // 裁剪圖片，保持比例並填滿框
+                    .size(80.dp)
+                    .clip(CircleShape)
+                    .border(BorderStroke(1.dp, Color(0x3C645959)), CircleShape),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.width(16.dp)) // 頭像與評價區之間的水平間距
