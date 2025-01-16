@@ -27,7 +27,6 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -165,7 +164,8 @@ fun PostScreen(
                     .height(70.dp),
                 value = inputTitle,
                 onValueChange = { inputTitle = it },
-                label = { Text(text = "Type your title!", fontSize = 13.sp) }
+                label = { Text(text = "Type your title!", fontSize = 13.sp) },
+                shape = RoundedCornerShape(15.dp)
             )
             OutlinedTextField(
                 modifier = Modifier
@@ -174,7 +174,8 @@ fun PostScreen(
                     .height(70.dp),
                 value = service_content,
                 onValueChange = { service_content = it },
-                label = { Text(text = "Type your content", fontSize = 13.sp) }
+                label = { Text(text = "Type your content", fontSize = 13.sp) },
+                shape = RoundedCornerShape(15.dp)
             )
 
             Spacer(
@@ -343,15 +344,16 @@ fun PostScreen(
                 .fillMaxWidth()
                 .padding(top = 10.dp, start = 5.dp, end = 5.dp)
         ) {
-            TextField(
+            OutlinedTextField(
                 modifier = Modifier.weight(0.8f),
                 value = service_poster.toString(),
                 onValueChange = { service_poster = it.toInt() },
                 label = { Text("請輸入會員ID") },
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
+                ),
+                shape = RoundedCornerShape(15.dp)
             )
         }
         Row(
@@ -360,27 +362,28 @@ fun PostScreen(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            TextField(
+            OutlinedTextField(
                 modifier = Modifier.weight(0.7f),
                 value = post_status.toString(),
                 onValueChange = { post_status = it.toInt() },
                 label = { Text(text = "0 為顧客 , 1 為陪伴者") },
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
+                ),
+                shape = RoundedCornerShape(15.dp)
             )
 
-            TextField(
+            OutlinedTextField(
                 modifier = Modifier.weight(0.4f),
                 value = service_price.toString(),
                 onValueChange = { service_price = it.toDouble() },
                 label = { Text(text = "訂單價格: ") },
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-
-                )
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                ),
+                shape = RoundedCornerShape(15.dp)
             )
         }
 
