@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -70,7 +71,6 @@ fun SetupAddResult(
         Log.d("_tagPublish1", "LaunchEffect addReturn: $addReturn")
         when (addReturn) {//丟給API
             -1 -> {
-
                 snackbar.showSnackbar("刊登失敗", withDismissAction = true)
                 viewModel.reAddReturn()
             }
@@ -82,9 +82,9 @@ fun SetupAddResult(
 
             1 -> {
                 Log.d("_tagPublish1", "call 1 Method")
+                onInputClear.invoke()
                 snackbar.showSnackbar("刊登成功", withDismissAction = true)
                 Log.d("_tagPublish1", "call 1 showSnackBar")
-                onInputClear.invoke()
                 Log.d("_tagPublish1", "call 1 onInputClear")
                 viewModel.reAddReturn()
             }
@@ -181,7 +181,6 @@ fun CompanionPublishScreen(
             inputBudget = ""
             inputDropdownMenu = ""
         })
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -200,7 +199,21 @@ fun CompanionPublishScreen(
                     .padding(top = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "標題：", fontSize = 16.sp)
+                Text(text = "標題：", fontSize = 16.sp,
+                    //damo用
+                    modifier = Modifier.clickable {
+                        inputTitleText = "我是標題"
+                        inputSkillText = "Web Development, Photography,"
+                        inputDateStart = "2025/02/01"
+                        inputTimeStart = "13:00"
+                        inputDateEnd = "2025/02/01"
+                        inputTimeEnd = "15:00"
+                        inputCityText = "Taipei"
+                        inputDistrictText = "Xinyi"
+                        inputBudget = "0"
+                        inputDropdownMenu = "Web Development"
+                    }
+                )
                 OutlinedTextField(
                     value = inputTitleText,
                     onValueChange = { inputTitleText = it },
@@ -291,7 +304,21 @@ fun CompanionPublishScreen(
                     .padding(top = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "專長：", fontSize = 16.sp)
+                Text(text = "專長：", fontSize = 16.sp,
+                    //damo用
+                    modifier = Modifier.clickable {
+                        inputTitleText = "我是標題"
+                        inputSkillText = "Web Development, Photography,"
+                        inputDateStart = "2025/02/01"
+                        inputTimeStart = "18:00"
+                        inputDateEnd = "2025/02/01"
+                        inputTimeEnd = "15:00"
+                        inputCityText = "Taipei"
+                        inputDistrictText = "Xinyi"
+                        inputBudget = "0"
+                        inputDropdownMenu = "Web Development"
+                    }
+                    )
                 OutlinedTextField(
                     value = inputSkillText,
                     onValueChange = { inputSkillText = it },
