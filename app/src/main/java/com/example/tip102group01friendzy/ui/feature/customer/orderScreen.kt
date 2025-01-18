@@ -54,7 +54,7 @@ fun OrderListScreen(
     val uncomfirm = ordeState.filter { it.order_status == 0 &&  (it.order_person == order_person || it.order_poster.toInt() == order_person)}
     val inProfress = ordeState.filter { it.order_status == 1 && (it.order_person == order_person || it.order_poster.toInt() == order_person)}
     val completed = ordeState.filter { it.order_status == 2 && (it.order_person == order_person || it.order_poster.toInt() == order_person)}
-    val reservation = ordeState.filter { it.order_status == 3 &&(it.order_person == order_person || it.order_poster.toInt() == order_person)}
+    val reservation = ordeState.filter { it.order_status == 3 && (it.order_person == order_person || it.order_poster.toInt() == order_person)}
     Log.d("tag_un", "unknowCode: $reservation")
     val my_request = my_requestList.filter { it.service_status == 0 && it.service_poster == order_person}
     Log.d("tag_un", "myRequest: $my_request")

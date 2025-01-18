@@ -295,7 +295,7 @@ fun Main(
             }
 
             composable(route = Screen.PostScreen.name) {
-                PostScreen(navController = navController, postVM = postVM, tabVM = tabVM)
+                PostScreen(navController = navController, postVM = postVM, tabVM = tabVM, context = context)
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
@@ -412,7 +412,7 @@ fun Main(
             }
             //<<<陪伴者
             composable(route = Screen.TabMainScreen.name) {
-                TabMainScreen(navController = navController, tabVM = tabVM)
+                TabMainScreen(navController = navController, tabVM = tabVM, context = context)
             }
             composable(
                 "${Screen.ChatMessageScreen.name}/{roomNo}",
