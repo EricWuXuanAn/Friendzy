@@ -2,6 +2,7 @@ package com.example.tip102group01friendzy.ui.feature.companion
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,10 +45,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 //訂單明細頁面
@@ -57,8 +62,9 @@ fun CompanionOrderDetailsScreen(
     companionOrderVM: CompanionOrderVM,
     tabVM: TabVM,
     orderId: Int,
-    poster: Int
-) {//評論評分要在處裡
+    poster: Int,
+    chatroomViewModel: ChatroomViewModel = viewModel(),
+    ) {//評論評分要在處裡
     val context = LocalContext.current
     val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     val memberNo = preferences.getInt("member_no", 0)
@@ -105,6 +111,8 @@ fun CompanionOrderDetailsScreen(
     val blank = 6.dp
     val testTrue = 1 == 2 //寫code方便看 全顯示用
 
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
         companionOrderVM.getSelectOrder(memberNo, poster, orderId)
         Log.d("_tag details", "orderStatus：$orderStatus ,score:$rate ,comment:$comment")
@@ -130,14 +138,14 @@ fun CompanionOrderDetailsScreen(
     ) {
         //顧客資(頭像、名字、聊天鈕)
 
-        Text(
-            text = "對方",
-            fontSize = 24.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            textAlign = TextAlign.Center
-        )
+//        Text(
+//            text = "對方",
+//            fontSize = 24.sp,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(top = 8.dp),
+//            textAlign = TextAlign.Center
+//        )
         Row(
             modifier = Modifier
 //                .fillMaxHeight(0.2f)
@@ -171,7 +179,15 @@ fun CompanionOrderDetailsScreen(
 //                /*
                 Button(
                     onClick = {
-                        navController.navigate(Screen.ChatroomScreen.name)
+                        scope.launch {
+                            handleChatNavigation(
+                                currentUserId = memberNo,
+                                otherUserId = order?.theirId!!,
+                                chatroomViewModel = chatroomViewModel,
+                                navController = navController,
+                                context = context
+                            )
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
@@ -216,8 +232,8 @@ fun CompanionOrderDetailsScreen(
             )
             Text(text = "刊登人：${order?.orderPosterName}", fontSize = 20.sp)
             Text(text = "訂購人：${order?.orderPersonName}", fontSize = 20.sp)
-            Text(text = "開始時間：${formatTimestamp(order?.startTime)}", fontSize = 20.sp)
-            Text(text = "結束時間：${formatTimestamp(order?.endTime)}", fontSize = 20.sp)
+            Text(text = "開始時間：${formatTimetamp(order?.startTime)}", fontSize = 20.sp)
+            Text(text = "結束時間：${formatTimetamp(order?.endTime)}", fontSize = 20.sp)
             Text(text = "訂單狀態：${statusList[orderStatus]}", fontSize = 20.sp)
             if (orderStatus == 2 && rate != 0 || testTrue) {
                 Row(
@@ -361,6 +377,29 @@ fun CompanionOrderDetailsScreen(
 
         }
 
+    }
+}
+
+private suspend fun handleChatNavigation(
+    currentUserId: Int,
+    otherUserId: Int,
+    chatroomViewModel: ChatroomViewModel,
+    navController: NavController,
+    context: Context
+){
+    try {
+        var roomNo = chatroomViewModel.checkChatroomExists(currentUserId, otherUserId)
+
+        if (roomNo == null){
+            roomNo = chatroomViewModel.createAndGetChatroom(otherUserId)
+        }
+        if(roomNo != null){
+            navController.navigate("${Screen.ChatMessageScreen.name}/${roomNo}")
+        }else{
+            Toast.makeText(context,"無法創建聊天室，請稍後再試", Toast.LENGTH_SHORT).show()
+        }
+    }catch (e: Exception){
+        Toast.makeText(context,"發生錯誤: ${e.message}", Toast.LENGTH_SHORT).show()
     }
 }
 

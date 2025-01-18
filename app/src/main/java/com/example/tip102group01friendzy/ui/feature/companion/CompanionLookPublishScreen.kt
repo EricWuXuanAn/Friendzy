@@ -9,7 +9,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -143,8 +142,8 @@ fun CompanionLookPublishScreen(
             )
         )
          */
-        Text(text = "開始時間：${formatTimestamp(order?.startTime)}", fontSize = 24.sp)
-        Text(text = "結束時間：${formatTimestamp(order?.endTime)}", fontSize = 24.sp)
+        Text(text = "開始時間：${formatTimetamp(order?.startTime)}", fontSize = 24.sp)
+        Text(text = "結束時間：${formatTimetamp(order?.endTime)}", fontSize = 24.sp)
         Text(text = "所在地區：${order?.area}", fontSize = 24.sp)
 //        Text(text = "金費：xxx元", fontSize = 24.sp)
         Column(

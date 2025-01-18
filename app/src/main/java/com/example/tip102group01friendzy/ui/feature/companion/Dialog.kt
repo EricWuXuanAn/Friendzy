@@ -1,6 +1,5 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
-import android.util.Log
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -66,7 +65,7 @@ fun PublishDatePicker(
 }
 
 /**JSON時間轉換String*/
-fun formatTimestamp(timestamp: Long?): String {
+fun formatDatestamp(timestamp: Long?): String {
     // 將 Timestamp 轉為 LocalDateTime
     val dateTime = Instant.ofEpochMilli(timestamp ?: return "")
         .atZone(ZoneId.systemDefault())
@@ -74,6 +73,17 @@ fun formatTimestamp(timestamp: Long?): String {
 
     // 格式化為 yyyy/MM/dd HH:mm
     val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+    return dateTime.format(formatter)
+}
+/**JSON時間轉換String*/
+fun formatTimetamp(timestamp: Long?): String {
+    // 將 Timestamp 轉為 LocalDateTime
+    val dateTime = Instant.ofEpochMilli(timestamp ?: return "")
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+
+    // 格式化為 yyyy/MM/dd HH:mm
+    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
     return dateTime.format(formatter)
 }
 /** 將日期、時間字串轉成毫秒數時間 */

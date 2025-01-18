@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.companion
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,7 +9,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,11 +35,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
+import com.example.tip102group01friendzy.ui.feature.chat.ChatroomViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -46,6 +51,7 @@ import com.example.tip102group01friendzy.TabVM
 fun CompanionCheckAppointmentScreen(
     navController: NavHostController,
     applicantVM: CompanionApplicantVM,
+    chatroomViewModel: ChatroomViewModel = viewModel(),
     comOrderVM: CompanionOrderVM,
     tabVM: TabVM,
     account: Int,
@@ -56,7 +62,10 @@ fun CompanionCheckAppointmentScreen(
     val memberNo = preferences.getInt("member_no", 0)
 
     val myAccount by applicantVM.applicantSelectState.collectAsState()
-//    val order by comOrderVM.orderDetailsSelectState.collectAsState()
+    val scope = rememberCoroutineScope()
+
+
+//      val scope = rememberCoroutineScope()  val order by comOrderVM.orderDetailsSelectState.collectAsState()
 //    val selectOrder by remember { mutableStateOf<Applicant?>(null) }
 //    val scpoe = rememberCoroutineScope()
 //    LaunchedEffect(Unit) {
@@ -82,14 +91,14 @@ fun CompanionCheckAppointmentScreen(
     ) {
         //預約人的資訊
         //預約人
-        Text(
-            text = "預約人",
-            fontSize = 24.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            textAlign = TextAlign.Center
-        )
+//        Text(
+//            text = "預約人",
+//            fontSize = 24.sp,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(top = 8.dp),
+//            textAlign = TextAlign.Center
+//        )
         Row(
             modifier = Modifier
 //                .fillMaxHeight(0.15f)
@@ -123,7 +132,15 @@ fun CompanionCheckAppointmentScreen(
 //                /*
                 Button(
                     onClick = {
-                        navController.navigate(Screen.ChatroomScreen.name)
+                        scope.launch {
+                            handleChatNavigation(
+                                currentUserId = memberNo,
+                                otherUserId = myAccount?.accountId!!,
+                                chatroomViewModel = chatroomViewModel,
+                                navController = navController,
+                                context = context
+                            )
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
@@ -158,8 +175,8 @@ fun CompanionCheckAppointmentScreen(
         ){
             Text(text = "刊登資訊", fontSize = 28.sp, modifier = Modifier.fillMaxWidth())
             Text(text = "標題：${myAccount?.service}", fontSize = 20.sp)
-            Text(text = "開始時間：${formatTimestamp(myAccount?.startTime)}", fontSize = 20.sp)
-            Text(text = "結束時間：${formatTimestamp(myAccount?.endTime)}", fontSize = 20.sp)
+            Text(text = "開始時間：${formatTimetamp(myAccount?.startTime)}", fontSize = 20.sp)
+            Text(text = "結束時間：${formatTimetamp(myAccount?.endTime)}", fontSize = 20.sp)
             Text(text = "服務地區：${myAccount?.area}", fontSize = 20.sp)
             Text(text = "刊登人：${myAccount?.orderPosterName}", fontSize = 20.sp)
 
@@ -204,6 +221,29 @@ fun CompanionCheckAppointmentScreen(
                 ) { Text("拒絕") }
             }
         }
+    }
+}
+
+private suspend fun handleChatNavigation(
+    currentUserId: Int,
+    otherUserId: Int,
+    chatroomViewModel: ChatroomViewModel,
+    navController: NavController,
+    context: Context
+){
+    try {
+        var roomNo = chatroomViewModel.checkChatroomExists(currentUserId, otherUserId)
+
+        if (roomNo == null){
+            roomNo = chatroomViewModel.createAndGetChatroom(otherUserId)
+        }
+        if(roomNo != null){
+            navController.navigate("${Screen.ChatMessageScreen.name}/${roomNo}")
+        }else{
+            Toast.makeText(context,"無法創建聊天室，請稍後再試", Toast.LENGTH_SHORT).show()
+        }
+    }catch (e: Exception){
+        Toast.makeText(context,"發生錯誤: ${e.message}", Toast.LENGTH_SHORT).show()
     }
 }
 

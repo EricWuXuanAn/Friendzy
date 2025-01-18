@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Notifications
@@ -35,7 +33,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +49,6 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import com.example.tip102group01friendzy.TabVM
 import com.example.tip102group01friendzy.ui.feature.customer.switch
-import kotlinx.coroutines.launch
 
 //tab選項內容格式
 class ScreenTabsButton(var name: String = "", var btIcon: Int = R.drawable.icon, var color:Int = R.color.white)
@@ -302,7 +298,7 @@ fun MyPublishList(
                         horizontalAlignment = Alignment.Start
                     ){
                         Text(text = "刊登者：${publish.posterName}")
-                        Text(text = "開始時間：${formatTimestamp(publish.startTime)}")
+                        Text(text = "開始時間：${formatDatestamp(publish.startTime)}")
                     }
                 },
                 leadingContent = {

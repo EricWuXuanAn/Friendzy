@@ -300,7 +300,7 @@ fun CompanionOrderLazy(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         Text(text = "訂購人:${order.orderPersonName}")
-                        Text(text = "開始時間：${formatTimestamp(order.startTime)}")
+                        Text(text = "開始時間：${formatDatestamp(order.startTime)}")
                     }
                 },
             )
@@ -344,7 +344,7 @@ fun CompanionApplicantLazy(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         Text(text = "預約人:${order.accountName}")
-                        Text(text = "開始時間：${formatTimestamp(order.startTime!!)}")
+                        Text(text = "開始時間：${formatDatestamp(order.startTime!!)}")
                     }
                 },
             )
