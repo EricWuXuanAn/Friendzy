@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,11 +45,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.TabVM
 import kotlinx.coroutines.delay
@@ -64,8 +63,12 @@ import java.time.format.DateTimeFormatter.ofPattern
 fun PostScreen(
     navController: NavHostController,
     postVM: PostVM,
-    tabVM: TabVM
+    tabVM: TabVM,
+    context: Context
+
 ) {
+    val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    val servicePoster = preferences.getInt("member_no", 0)
     tabVM.tabBarState(true)
     var service_content by remember { mutableStateOf("") }
     var post_status by remember { mutableStateOf(0) }
@@ -339,43 +342,43 @@ fun PostScreen(
             }
 
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp, start = 5.dp, end = 5.dp)
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.weight(0.8f),
-                value = service_poster.toString(),
-                onValueChange = { service_poster = it.toInt() },
-                label = { Text("請輸入會員ID") },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(15.dp)
-            )
-        }
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(top = 10.dp, start = 5.dp, end = 5.dp)
+//        ) {
+//            OutlinedTextField(
+//                modifier = Modifier.weight(0.8f),
+//                value = service_poster.toString(),
+//                onValueChange = { service_poster = it.toInt() },
+//                label = { Text("請輸入會員ID") },
+//                colors = TextFieldDefaults.colors(
+//                    focusedContainerColor = Color.Transparent,
+//                    unfocusedContainerColor = Color.Transparent
+//                ),
+//                shape = RoundedCornerShape(15.dp)
+//            )
+//        }
         Row(
             modifier = Modifier
                 .padding(top = 20.dp, start = 5.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            OutlinedTextField(
-                modifier = Modifier.weight(0.7f),
-                value = post_status.toString(),
-                onValueChange = { post_status = it.toInt() },
-                label = { Text(text = "0 為顧客 , 1 為陪伴者") },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(15.dp)
-            )
+//            OutlinedTextField(
+//                modifier = Modifier.weight(0.7f),
+//                value = post_status.toString(),
+//                onValueChange = { post_status = it.toInt() },
+//                label = { Text(text = "0 為顧客 , 1 為陪伴者") },
+//                colors = TextFieldDefaults.colors(
+//                    focusedContainerColor = Color.Transparent,
+//                    unfocusedContainerColor = Color.Transparent
+//                ),
+//                shape = RoundedCornerShape(15.dp)
+//            )
 
             OutlinedTextField(
-                modifier = Modifier.weight(0.4f),
+                modifier = Modifier.weight(0.8f),
                 value = service_price.toString(),
                 onValueChange = { service_price = it.toDouble() },
                 label = { Text(text = "訂單價格: ") },
@@ -401,10 +404,10 @@ fun PostScreen(
                     postVM.postOrder(
                         service = inputTitle,
                         service_charge = service_price,
-                        post_status = post_status,
+                        post_status = 0,
                         start_time = stratTimestamp,
                         finished_time = finishedTimestamp,
-                        service_poster = service_poster,
+                        service_poster = servicePoster,
                         service_status = 0,
                         service_detail = service_content
                     )
@@ -464,8 +467,9 @@ fun getDatePicker(
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun PostScreenPreview() {
-    PostScreen(rememberNavController(), postVM = PostVM(), tabVM = TabVM())
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun PostScreenPreview() {
+//    PostScreen(rememberNavController(), postVM = PostVM(), tabVM = TabVM()
+//    )
+//}

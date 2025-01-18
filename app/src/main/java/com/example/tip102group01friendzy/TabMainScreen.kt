@@ -1,5 +1,6 @@
 package com.example.tip102group01friendzy
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +26,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -35,7 +34,6 @@ import com.example.tip102group01friendzy.ui.feature.chat.ChatroomScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionMyPublishVM
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionPublishScreen
 import com.example.tip102group01friendzy.ui.feature.companion.CompanionScreen
-import com.example.tip102group01friendzy.ui.feature.companion.CompanionVM
 import com.example.tip102group01friendzy.ui.feature.companion.companionScenery
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerScreen
 import com.example.tip102group01friendzy.ui.feature.customer.CustomerVM
@@ -48,7 +46,8 @@ import com.google.android.gms.maps.model.LatLng
 @Composable
 fun TabMainScreen(
     navController: NavHostController = rememberNavController(),
-    tabVM: TabVM = viewModel()
+    tabVM: TabVM = viewModel(),
+    context: Context
 ) {
     var switchState by remember { mutableStateOf(false) }
     val tabBarVisibility = tabVM.tabBarVisibility.collectAsState()
@@ -119,7 +118,8 @@ fun TabMainScreen(
                     PostScreen(
                         navController = navController,
                         postVM = PostVM(),
-                        tabVM = tabVM
+                        tabVM = tabVM,
+                        context = context
                     )
                 }
 
