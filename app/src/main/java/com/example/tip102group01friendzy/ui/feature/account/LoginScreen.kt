@@ -57,10 +57,28 @@ import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
 
 @Composable
+fun SetupLoginState(viewModel: LoginViewModel, navController: NavHostController) {
+    val loginState by viewModel.loginState.collectAsState()
+    // todo 有功能型的 LaunchEffect 可以考慮往外拆，讓程式碼更精簡
+    LaunchedEffect(Unit) {
+        Log.d("tag_", "LaunchedEffect_login")
+        if (loginState != null) {
+            navController.navigate(Screen.TabMainScreen.name) {
+                popUpTo(Screen.LoginScreen.name) { inclusive = true }
+            }
+        }
+    }
+}
+
+// todo 程式碼蠻乾淨的，感覺有定期整理
+// todo 記得定期用 codeFormat
+// todo 另外拉一個 Model 層
+@Composable
 fun LoginScreen(
     navController: NavHostController,
     loginViewModel: LoginViewModel
 ) {
+    // todo 用不到的程式碼記得拔除
 //    //設置偏好設定
 //    val context = LocalContext.current
 //    val preferences = context.getSharedPreferences("setting", Context.MODE_PRIVATE)
@@ -68,32 +86,28 @@ fun LoginScreen(
     val snackbarMessage by loginViewModel.snackbarMessage.collectAsState()
     val snackbarTrigger by loginViewModel.snackbarTrigger.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // todo 理論上除非有特殊需求，不然不應該用到 coroutineScope
     val scope = rememberCoroutineScope()
 
     val loginState by loginViewModel.loginState.collectAsState()
 
+    // todo 這樣寫還蠻不錯的，如果比較容易有變動的東西，抽出來往前放比較清楚
     val accountOrPasswordEmptyMessage = stringResource(R.string.acc_pass_empty)
     val emailFormatErrorMessage = stringResource(R.string.errorEmail)
 
-    LaunchedEffect(Unit) {
-        Log.d("tag_","LaunchedEffect_login")
-        if (loginState != null){
-            navController.navigate(Screen.TabMainScreen.name){
-                popUpTo(Screen.LoginScreen.name){inclusive=true}
-            }
-        }
-    }
+    SetupLoginState(viewModel = loginViewModel, navController = navController)
 
     LaunchedEffect(snackbarMessage) {
-        snackbarMessage?.let{
+        snackbarMessage?.let {
             snackbarHostState.showSnackbar(message = it)
         }
     }
 
     LaunchedEffect(loginState) {
-        if(loginState != null){
-            navController.navigate(Screen.TabMainScreen.name){
-                popUpTo(Screen.LoginScreen.name){inclusive = true}
+        if (loginState != null) {
+            navController.navigate(Screen.TabMainScreen.name) {
+                popUpTo(Screen.LoginScreen.name) { inclusive = true }
             }
         }
     }
@@ -105,7 +119,7 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .padding(top=150.dp)
+            .padding(top = 150.dp)
     ) {
         Log.d("tag_", "LoginScreen - Column")
 
@@ -151,7 +165,7 @@ fun LoginScreen(
                         contentDescription = "password"
                     )
                 },
-                isError = loginViewModel.mpassword.value.isNotBlank() && loginViewModel.mpassword.value.count() <8,
+                isError = loginViewModel.mpassword.value.isNotBlank() && loginViewModel.mpassword.value.count() < 8,
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Clear,
@@ -176,15 +190,14 @@ fun LoginScreen(
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
+            modifier = Modifier.fillMaxWidth(0.8f)
         ) {
 
             Button(
                 onClick = {
-                    scope.launch {
-                        loginViewModel.login()
-                    }
+                    // todo 應該是使用 ViewModelScope ，跟生命週期有關係
+                    loginViewModel.login()
+
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.purple_200),
@@ -203,6 +216,7 @@ fun LoginScreen(
             ) {
                 TextButton(
                     onClick = {
+                        // todo 不可以直接這樣改 viewModel 資料
                         loginViewModel.mpassword.value = ""
                         navController.navigate(Screen.ForgetPasswordScreen.name)
                     } //跳轉畫面到忘記密碼頁
@@ -228,11 +242,14 @@ fun LoginScreen(
 
             }
         }
-        LaunchedEffect (snackbarTrigger){
-            if (snackbarMessage != null){
+
+        // todo 拉出來寫，不要塞在 UI 區塊裡面
+        LaunchedEffect(snackbarTrigger) {
+            if (snackbarMessage != null) {
                 scope.launch {
                     snackbarHostState.showSnackbar(
-                        message = when(snackbarMessage){
+                        message = when (snackbarMessage) {
+                            // todo 要設定常數，不可以直接這樣寫，很難維護
                             "empty_fields" -> accountOrPasswordEmptyMessage
                             "invalid_email" -> emailFormatErrorMessage
                             else -> snackbarMessage ?: ""
@@ -243,10 +260,10 @@ fun LoginScreen(
                 }
             }
         }
-        Box (
+        Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
-        ){
+        ) {
             SnackbarHost(
                 hostState = snackbarHostState,
                 modifier = Modifier.padding(bottom = 100.dp)

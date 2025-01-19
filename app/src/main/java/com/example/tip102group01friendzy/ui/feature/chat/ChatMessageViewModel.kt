@@ -9,6 +9,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+// todo 把聊天室寫出來很優秀
 class ChatMessageViewModel : ViewModel() {
     private val database = FirebaseDatabase.getInstance()
 

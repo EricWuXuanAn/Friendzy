@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,15 +59,23 @@ import com.google.firebase.Firebase
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@Composable
+fun SetupTabBarState(tabVM: TabVM){
+    LaunchedEffect(Unit) {
+        tabVM.tabBarState(true)
+    }
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatroomScreen(
     navController: NavHostController,
     chatroomViewModel: ChatroomViewModel = viewModel(),
-    tabVM: TabVM = TabVM()
+    tabVM: TabVM = viewModel()
 ) {
-    tabVM.tabBarState(true)
+    // todo 會改變 UI 狀態盡量包在 LaunchEffect 裡
+    SetupTabBarState(tabVM)
     var searchChatroom by remember { mutableStateOf("") }
     val chatrooms by chatroomViewModel.chatroomState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())

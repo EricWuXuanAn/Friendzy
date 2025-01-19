@@ -13,6 +13,7 @@ class ForgetPasswordViewModel : ViewModel(){
     var OTP = mutableStateOf("")
 
     val emailRegex = Patterns.EMAIL_ADDRESS
+    // todo 善用 get 蠻聰明的
     val isValidEmail: Boolean
         get() = emailRegex.matcher(email.value).matches()
 
