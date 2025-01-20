@@ -48,6 +48,7 @@ class OrderTabsButton(
     var btIcon: Int = R.drawable.icon,
     var title: String = ""
 )
+
 //陪伴者訂單管理
 @Composable
 fun CompanionOrderListScreen(
@@ -59,25 +60,22 @@ fun CompanionOrderListScreen(
     val context = LocalContext.current
     val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     val memberNo = preferences.getInt("member_no", 0)
-    Log.d("_tab","${memberNo}")
+    Log.d("_tab", "${memberNo}")
 
     var tabIndex by remember { mutableIntStateOf(0) }
     var testText by remember { mutableStateOf("") }
     val appointmentState by companionApplicantVM.appointmentState.collectAsState()
     val orderState by companionOrderVM.orderListState.collectAsState()
-//    val uncomfirm = orderState.filter { it.orderStatus == 0 && it.serviceStatus == 0}
     val uncomfirm = orderState.filter { it.orderStatus == 0 }
     val inProfress = orderState.filter { it.orderStatus == 1 }
     val completed = orderState.filter { it.orderStatus == 2 || it.orderStatus == 3 }
-    val myReservation = appointmentState.filter { it.accountId == memberNo && it.applyStatus == 0}
-//    val myReservation = appointmentState.filter { it.accountId == memberNo}
-    val myRequest = appointmentState.filter { it.orderPoster ==  memberNo && it.applyStatus == 0}
-//    val myRequest = appointmentState.filter { it.orderPoster ==  memberNo}
+    val myReservation = appointmentState.filter { it.accountId == memberNo && it.applyStatus == 0 }
+    val myRequest = appointmentState.filter { it.orderPoster == memberNo && it.applyStatus == 0 }
 
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        Log.d("TAG","getOrderList")
+        Log.d("TAG", "getOrderList")
         companionOrderVM.getOrderList(memberNo)
         companionOrderVM.reSelectOrder()
         companionApplicantVM.getApplicantList(memberNo)
@@ -94,7 +92,7 @@ fun CompanionOrderListScreen(
         OrderTabsButton(stringResource(R.string.my_request), R.drawable.request_24, "我應徵"),//要再改
     )
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(companionScenery)
@@ -138,8 +136,7 @@ fun CompanionOrderListScreen(
                             Text(
                                 text = tabs.name,
                                 textAlign = TextAlign.Center,
-
-                                )
+                            )
                         }
                     }
                 }
@@ -153,108 +150,86 @@ fun CompanionOrderListScreen(
             Text(testText, fontSize = 24.sp)
             when (tabIndex) {
                 0 -> {//全部
-                    if(orderState.isEmpty()){
+                    if (orderState.isEmpty()) {
                         testText = "此欄位沒有訂單"
-                    }else{
+                    } else {
                         testText = ""
                     }
-
                     CompanionOrderLazy(
-//                        orders = orderState.filter { it.serviceStatus != 0},
                         orders = orderState,
                         onClick = {
-                            /*
-                            //要再判斷我預約和預約我的到另一頁
-//                            if (it.orderStatus!! == 1 && it.serviceStatus == 0){
-                            if (it.orderStatus!! == 1){
-//                                    companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
-//                                    Log.d("_OrderDt","Details：$it")
-//                                    Log.d("_OrderMember","MemberNo：$memberNo")
-                                    navController.navigate(Screen.CompanionCheckAppointmentScreen.name+"/${it.orderPoster}/${it.orderId}")
-                            }else{
-//                                    companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
-//                                    Log.d("_OrderDt","Details：$it")
-//                                    Log.d("_OrderMember","MemberNo：$memberNo")
-                                    navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
-                            }
-                            */
-                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name + "/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
 
                 1 -> {//待確認
-                    if(uncomfirm.isEmpty()){
+                    if (uncomfirm.isEmpty()) {
                         testText = "此欄位沒有訂單"
-                    }else{
+                    } else {
                         testText = ""
                     }
                     CompanionOrderLazy(
                         orders = uncomfirm,
                         onClick = {
 //                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
-                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name + "/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
 
                 2 -> {//進行中
-                    if(inProfress.isEmpty()){
+                    if (inProfress.isEmpty()) {
                         testText = "此欄位沒有訂單"
-                    }else{
+                    } else {
                         testText = ""
                     }
                     CompanionOrderLazy(
                         orders = inProfress,
                         onClick = {
-//                            Log.d("_tag","memberNo：$memberNo , orderPoster： ${it.orderPoster} , orderId：${it.orderId}")
-//                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
-                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name + "/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
 
                 3 -> {//已完成&取消
-                    if(completed.isEmpty()){
+                    if (completed.isEmpty()) {
                         testText = "此欄位沒有訂單"
-                    }else{
+                    } else {
                         testText = ""
                     }
                     CompanionOrderLazy(
                         orders = completed,
                         onClick = {
-//                            companionOrderVM.getSelectOrder(memberNo,it.orderPoster!!,it.orderId!!)
-                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name + "/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
 
                 4 -> {//來應徵
-                    if(myReservation.isEmpty()){
+                    if (myReservation.isEmpty()) {
                         testText = "此欄位沒有訂單"
-                    }else{
+                    } else {
                         testText = ""
                     }
                     CompanionApplicantLazy(
                         orders = myReservation,
                         onClick = {
-//                            companionApplicantVM.getApplicantSelect(memberNo,it.accountId!!,it.serviceId!!)
-                            navController.navigate(Screen.CompanionOrderDetailsScreen.name+"/${it.orderPoster}/${it.orderId}")
+                            navController.navigate(Screen.CompanionOrderDetailsScreen.name + "/${it.orderPoster}/${it.orderId}")
                         }
                     )
                 }
 
                 5 -> {//我應徵
-                    if(myRequest.isEmpty()){
+                    if (myRequest.isEmpty()) {
                         testText = "此欄位沒有訂單"
-                    }else{
+                    } else {
                         testText = ""
                     }
                     CompanionApplicantLazy(
                         orders = myRequest,
                         onClick = {
-//                            companionApplicantVM.getApplicantSelect(memberNo,it.accountId!!,it.serviceId!!)
-                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name+"/${it.accountId}/${it.serviceId}")
+                            navController.navigate(Screen.CompanionCheckAppointmentScreen.name + "/${it.accountId}/${it.serviceId}")
                         }
                     )
                 }
@@ -274,31 +249,33 @@ fun CompanionOrderLazy(
                 modifier = Modifier.clickable { onClick(order) },
                 colors = ListItemDefaults.colors(containerColor = companionScenery),
                 overlineContent = {
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
-                    ){
+                    ) {
                         Text(text = "訂單編號: ${order.orderId}", fontSize = 18.sp)
 //                        Text(text = "金額：${order.orderPrice}",fontSize = 18.sp,)
-                        Text(text = "狀態：${
-                            when(order.orderStatus){
-                                0->"待確認"
-                                1->"進行中"
-                                2->"已完成"
-                                3->"已取消"
-                                else ->"null"
-                            }}",
+                        Text(
+                            text = "狀態：${
+                                when (order.orderStatus) {
+                                    0 -> "待確認"
+                                    1 -> "進行中"
+                                    2 -> "已完成"
+                                    3 -> "已取消"
+                                    else -> "null"
+                                }
+                            }",
                             fontSize = 18.sp,
                         )
                     }
                 },
                 headlineContent = { Text(text = "訂單標題: ${order.service}") },
                 supportingContent = {
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
-                    ){
+                    ) {
                         Text(text = "訂購人:${order.orderPersonName}")
                         Text(text = "開始時間：${formatDatestamp(order.startTime)}")
                     }
@@ -308,6 +285,7 @@ fun CompanionOrderLazy(
         }
     }
 }
+
 @Composable
 fun CompanionApplicantLazy(
     orders: List<Applicant>,
@@ -320,29 +298,19 @@ fun CompanionApplicantLazy(
                 colors = ListItemDefaults.colors(containerColor = companionScenery),
                 headlineContent = { Text(text = "訂單標題: ${order.service}") },
                 overlineContent = {
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
-                    ){
+                    ) {
                         Text(text = "訂單編號: ${order.orderId}", fontSize = 18.sp)
-//                        Text(text = "狀態：${
-//                            when(order.orderStatus){
-//                                0->"待確認"
-//                                1->"進行中"
-//                                2->"已完成"
-//                                3->"已取消"
-//                                else ->"null"
-//                            }}",
-//                            fontSize = 18.sp,
-//                        )
                     }
                 },
                 supportingContent = {
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
-                    ){
+                    ) {
                         Text(text = "預約人:${order.accountName}")
                         Text(text = "開始時間：${formatDatestamp(order.startTime!!)}")
                     }

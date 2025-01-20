@@ -375,6 +375,18 @@ fun CompanionOrderDetailsScreen(
                 }
             }
 
+        }else if(order?.serviceStatus == 0 && order?.orderPoster == memberNo){
+            Button(
+                modifier = Modifier.fillMaxWidth(0.5f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.purple_200),
+                    contentColor = Color.DarkGray
+                ),
+                onClick = {
+                    companionOrderVM.setOrderStatus(order?.orderId!!, 3, memberNo)
+                    navController.popBackStack()
+                },
+            ) { Text("取消訂單") }
         }
 
     }
