@@ -37,7 +37,6 @@ import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun OrderListScreen(
     orderlistVM: OrderVM,
@@ -45,19 +44,21 @@ fun OrderListScreen(
     navController: NavHostController,
     context: Context
 ) {
+    var tabIndex by remember { mutableStateOf(0) }
     val my_requestList by customerVM.recommendPostListState.collectAsState()
     val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     val order_person = preferences.getInt("member_no", 0)
-    var tabIndex by remember { mutableStateOf(0) }
     val ordeState by orderlistVM.orderList.collectAsState()
-    Log.d("tag_orderState", "orderState: $ordeState")
-    val uncomfirm = ordeState.filter { it.order_status == 0 &&  (it.order_person == order_person || it.order_poster.toInt() == order_person)}
-    val inProfress = ordeState.filter { it.order_status == 1 && (it.order_person == order_person || it.order_poster.toInt() == order_person)}
-    val completed = ordeState.filter { it.order_status == 2 && (it.order_person == order_person || it.order_poster.toInt() == order_person)}
-    val reservation = ordeState.filter { it.order_status == 3 && (it.order_person == order_person || it.order_poster.toInt() == order_person)}
-    Log.d("tag_un", "unknowCode: $reservation")
-    val my_request = my_requestList.filter { it.service_status == 0 && it.service_poster == order_person}
-    Log.d("tag_un", "myRequest: $my_request")
+    val uncomfirm =
+        ordeState.filter { it.order_status == 0 && (it.order_person == order_person || it.order_poster.toInt() == order_person) }
+    val inProfress =
+        ordeState.filter { it.order_status == 1 && (it.order_person == order_person || it.order_poster.toInt() == order_person) }
+    val completed =
+        ordeState.filter { it.order_status == 2 && (it.order_person == order_person || it.order_poster.toInt() == order_person) }
+    val reservation =
+        ordeState.filter { it.order_status == 3 && (it.order_person == order_person || it.order_poster.toInt() == order_person) }
+    val my_request =
+        my_requestList.filter { it.service_status == 0 && it.service_poster == order_person }
 
     val tab = listOf(
         stringResource(R.string.order_List),
@@ -137,7 +138,7 @@ fun OrderListScreen(
         when (tabIndex) {
             0 -> orderList(orders = ordeState, onClick = {
                 scope.launch {
-                   navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
+                    navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
                 }
             })
 
@@ -160,7 +161,7 @@ fun OrderListScreen(
             })
 
             4 -> orderList(orders = reservation, onClick = {
-               navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
+                navController.navigate(route = "${Screen.CompanionOrderDetailsScreen.name}/${it.order_poster}/${it.order_id}")
             })
 
             5 -> servicerList(orders = my_request, onClick = {
@@ -182,15 +183,25 @@ fun orderList(
             ListItem(
                 modifier = Modifier.clickable {
                     Log.d("tag_", "order: $order")
-                    onClick(order) },
+                    onClick(order)
+                },
                 headlineContent = { Text(text = "order Title: ${order.order_title}") },
                 overlineContent = { Text(text = "Order ID: ${order.order_id}", fontSize = 18.sp) },
                 supportingContent = { Text(text = "Order Person:${order.member_name}") },
                 trailingContent = {
+//                    Text(
+//                        text = "Order Price: \n${order.order_price}",
+//                        fontSize = 14.sp,
+//                        textAlign = TextAlign.Center
+//                    )
                     Text(
-                        text = "Order Price: \n${order.order_price}",
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center
+                        text = order.order_status.let {
+                            when (it) {
+                                0 -> "unconfirmed"
+                                1 -> "In Progress"
+                                else -> "Completed"
+                            }
+                        }
                     )
                 }
             )
@@ -198,6 +209,7 @@ fun orderList(
         }
     }
 }
+
 @Composable
 fun servicerList(
     orders: List<Post>,
@@ -208,9 +220,15 @@ fun servicerList(
             ListItem(
                 modifier = Modifier.clickable {
                     Log.d("tag_", "order: $order")
-                    onClick(order) },
+                    onClick(order)
+                },
                 headlineContent = { Text(text = "order Title: ${order.service}") },
-                overlineContent = { Text(text = "Order ID: ${order.service_id}", fontSize = 18.sp) },
+                overlineContent = {
+                    Text(
+                        text = "Order ID: ${order.service_id}",
+                        fontSize = 18.sp
+                    )
+                },
                 supportingContent = { Text(text = "Order Person:${order.member_name}") },
                 trailingContent = {
                     Text(
@@ -224,11 +242,3 @@ fun servicerList(
         }
     }
 }
-
-
-
-//@Composable
-//@Preview(showBackground = true)
-//fun OrderListScreenPreview() {
-//    OrderListScreen(orderlistVM = OrderVM(), navController = rememberNavController())
-//}

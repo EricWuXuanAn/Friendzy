@@ -152,13 +152,6 @@ fun getFavList(
                             contentDescription = "chat"
                         )
                     }
-//                    Icon(
-//                        modifier = Modifier
-//                            .size(20.dp)
-//                            .clickable { navController.navigate(Screen.ChatroomScreen.name) },
-//                        painter = painterResource(id = R.drawable.chat),
-//                        contentDescription = "chat"
-//                    )
                 }
             )
 
@@ -237,9 +230,3 @@ private suspend fun handleChatNavigation(
     }
 }
 
-//
-//@Composable
-//@Preview(showBackground = true)
-//fun Favorite_and_BlackListScreenPreview() {
-//    Favorite_and_BlackListScreen(rememberNavController(), Favorite_and_Black_ListVM())
-//}

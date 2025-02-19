@@ -1,6 +1,5 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -34,11 +33,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.delay
@@ -57,18 +54,13 @@ fun ReservationConfirmScreen(
     service_id: Int,
     orderVM: OrderVM
 ) {
-//    Log.d("tag_pass", "order_idPass $order_id")
     val scope = rememberCoroutineScope()
     var snackbarHostState = remember { SnackbarHostState() }
     val dateFormat = ofPattern("YYYY-MM-dd")
     var startDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
     var endDate by remember { mutableStateOf(LocalDate.now().format(dateFormat)) }
-//    var startTime by remember { mutableStateOf("HH") }
-//    var endTime by remember { mutableStateOf("HH") }
     var location by remember { mutableStateOf("台北") }
     var orderState by remember { mutableStateOf<Post?>(null) }
-    Log.d("tag_222", "orderState: $orderState")
-
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -216,11 +208,4 @@ fun ReservationConfirmScreen(
             }
         }
     }
-}
-
-
-@Composable
-@Preview(showBackground = true)
-fun RSCpreview() {
-    ReservationConfirmScreen(rememberNavController(), ReservationConfirmVM(), service_id = 1, orderVM = OrderVM())
 }

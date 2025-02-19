@@ -16,4 +16,7 @@
     <color name="yellow_200">#FFF164</color>
     <color name="pink_200">#F6A8C1</color>
     <color name="purple_700">#FF3700B3</color>
+    <color name="purple_2">#FFF7F3FF</color>
+    <color name="purple_3">#ffe4c4</color>
+
 </resources>

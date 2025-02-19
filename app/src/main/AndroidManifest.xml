@@ -40,11 +40,11 @@
              See README(https://goo.gl/l4GJaQ) for more. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@android:drawable/ic_dialog_info" />
+            android:resource="@drawable/friendzy" />
         <!-- 會改變訊息圖示顏色 參看 https://goo.gl/6BKBk7 -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/purple_700" />
+            android:resource="@color/purple_200" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />

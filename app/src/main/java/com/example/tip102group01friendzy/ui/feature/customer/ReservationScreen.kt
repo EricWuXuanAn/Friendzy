@@ -1,6 +1,7 @@
 package com.example.tip102group01friendzy.ui.feature.customer
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,10 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,12 +33,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.tip102group01friendzy.R
 import com.example.tip102group01friendzy.Screen
 import kotlinx.coroutines.launch
@@ -71,8 +72,6 @@ fun ReservationScreen(
             .atZone(ZoneId.systemDefault())
             .toLocalDateTime().format(dateFormat)
     }
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,76 +80,76 @@ fun ReservationScreen(
     ) {
 
         Text(
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(bottom = 20.dp),
             text = "Check Him/Her Out",
             fontSize = 25.sp,
             fontFamily = FontFamily.Cursive
         )
-        HorizontalDivider()
+//        HorizontalDivider()
         Row(
-            Modifier
+            verticalAlignment = Alignment.CenterVertically,
+           modifier =  Modifier
                 .fillMaxWidth()
-                .padding(5.dp),
-//            horizontalArrangement = Arrangement.Start
+                .height(123.dp)
+                .background(color = colorResource(R.color.purple_2), shape = RoundedCornerShape(20.dp))
+                .border(width = 2.dp, shape = RoundedCornerShape(20.dp), color = colorResource(R.color.purple_200)),
         ) {
             Image(
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
-                    .padding(5.dp)
-                    .size(90.dp)
+                    .padding(10.dp)
+                    .size(80.dp)
                     .clip(CircleShape)
                     .border(width = 2.dp, color = Color.Gray, shape = CircleShape),
                 painter = painterResource(R.drawable.friendzy),
                 contentDescription = "image"
             )
             Text(
-                text = "Name: \n ${selectedPost?.member_name}",
+                text = "Name: ${selectedPost?.member_name} \nPrice: ${selectedPost?.service_charge}",
                 modifier = Modifier.padding(10.dp),
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                lineHeight = 30.sp
             )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 30.dp),
+                    .padding(end = 16.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                Button(
+                IconButton(
                     onClick = {navController.navigate(Screen.ChatroomScreen.name)},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.purple_200),
-                        contentColor = Color.DarkGray
-                    )
                 ) {
                     Icon(
-                        modifier = Modifier.size(25.dp),
+                        modifier = Modifier.size(32.dp),
                         painter = painterResource(R.drawable.chat),
                         contentDescription = "chat"
                     )
                 }
             }
         }
-        HorizontalDivider()
+//        HorizontalDivider()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(350.dp)
                 .padding(10.dp)
         ) {
-            Text(text = "TiTle: \n${selectedPost?.service}", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
-            Text(text = "Content: \n${selectedPost?.service_detail}", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
-            Text(text = "Available: ", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
+            Text(text = "TiTle: ", fontSize = 22.sp, modifier = Modifier.padding(start = 10.dp, top = 25.dp), fontWeight = FontWeight.Bold)
+            Text(text = "${selectedPost?.service}", fontSize = 21.sp, modifier = Modifier.padding(start = 10.dp, bottom = 8.dp, top = 5.dp))
+            Text(text = "Content: ", fontSize = 22.sp, modifier = Modifier.padding(start = 10.dp, top = 16.dp), fontWeight = FontWeight.Bold)
+            Text(text = "${selectedPost?.service_detail}", fontSize = 21.sp, modifier = Modifier.padding(start = 10.dp, bottom = 8.dp, top = 5.dp))
+            Text(text = "Available: ", fontSize = 22.sp, modifier = Modifier.padding(top = 16.dp, start = 10.dp, bottom = 8.dp), fontWeight = FontWeight.Bold)
             Text(
                 text = "Start: ${startTimeFormatter}",
-                fontSize = 20.sp,
-                modifier = Modifier.padding(10.dp)
+                fontSize = 21.sp,
+                modifier = Modifier.padding(start = 10.dp)
             )
             Text(
                 text = "End: ${finishedTimeFormatter}",
-                fontSize = 20.sp,
-                modifier = Modifier.padding(10.dp)
+                fontSize = 21.sp,
+                modifier = Modifier.padding(start = 10.dp, top = 5.dp)
             )
-//            Text(text = "Location: $location", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
-            Text(text = "Price: ${selectedPost?.service_charge}", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
+//            Text(text = "Price: ${selectedPost?.service_charge}", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
         }
     }
     Row(
@@ -172,7 +171,7 @@ fun ReservationScreen(
                     navController.popBackStack() //回到上一頁
                 }
             }) {
-            Text(text = "Book it !", modifier = Modifier.weight(1.0f), textAlign = TextAlign.Center, softWrap = false)
+            Text(text = "Book it !", modifier = Modifier.weight(1.0f), textAlign = TextAlign.Center, softWrap = false, fontSize = 18.sp)
         }
         Button(
             modifier = Modifier.weight(0.3f).padding(bottom = 15.dp),
@@ -181,17 +180,10 @@ fun ReservationScreen(
                 contentColor = Color.DarkGray
             ),
             onClick = {
-                    navController.popBackStack() //回到上一頁
+                    navController.popBackStack()
             }
         ) {
-            Text(text = stringResource(R.string.cancle), modifier = Modifier.weight(1.0f), textAlign = TextAlign.Center)
+            Text(text = stringResource(R.string.cancle), modifier = Modifier.weight(1.0f), textAlign = TextAlign.Center, fontSize = 18.sp)
         }
     }
-}
-
-
-@Composable
-@Preview(showBackground = true)
-fun ReservationScreenPreview() {
-    ReservationScreen(rememberNavController(), ReservationVM(), service_id = 1)
 }

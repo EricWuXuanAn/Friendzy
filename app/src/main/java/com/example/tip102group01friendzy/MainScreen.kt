@@ -1,8 +1,17 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.tip102group01friendzy
 
 import android.content.Context
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -28,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -73,6 +81,7 @@ import com.example.tip102group01friendzy.ui.feature.customer.ReservationVM
 import com.example.tip102group01friendzy.ui.feature.search.CompanionInfo
 import com.example.tip102group01friendzy.ui.feature.search.SearchWithMapScreen
 import com.example.tip102group01friendzy.ui.theme.TIP102Group01FriendzyTheme
+import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.android.gms.maps.model.LatLng
 
 enum class Screen(@StringRes val title: Int) {
@@ -107,7 +116,7 @@ enum class Screen(@StringRes val title: Int) {
 /**
  * Main是一個頁面容器，其他頁面會依照使用者操作被加上來
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun Main(
     startDestination: String,
@@ -157,9 +166,11 @@ fun Main(
                 Screen.TabMainScreen.name,
                 Screen.SettingScreen.name -> {
                 }
+
                 Screen.TabMainScreen.name,
                 Screen.ForothersScreen.name -> {
                 }
+
                 Screen.TabMainScreen.name,
                 Screen.ForOwnScreen.name -> {
                 }
@@ -181,7 +192,27 @@ fun Main(
         }
     )
     { innerPadding ->
-        NavHost(
+        AnimatedNavHost(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 1500 },
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = LinearEasing
+                    )
+                ) +
+                        fadeIn(animationSpec = tween(durationMillis = 500))
+            },
+                exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -1500 },
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = LinearEasing
+                    )
+                ) +
+                        fadeOut(animationSpec = tween(durationMillis = 500))
+            },
             navController = navController,
             startDestination = Screen.EnterScreen.name,
             modifier =
@@ -295,7 +326,12 @@ fun Main(
             }
 
             composable(route = Screen.PostScreen.name) {
-                PostScreen(navController = navController, postVM = postVM, tabVM = tabVM, context = context)
+                PostScreen(
+                    navController = navController,
+                    postVM = postVM,
+                    tabVM = tabVM,
+                    context = context
+                )
             }
 
             composable(route = Screen.SearchWithMapScreen.name) {
@@ -303,9 +339,11 @@ fun Main(
                     navController = navController,
                     defaultLocation = LatLng(25.0330, 121.5654),
                     showPopup = true,
-                    onMemberSelected = { } ,
-                    CompanionInfo("1", "Nita", "搬家&油漆幫手", "信義區",
-                        LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3 ),
+                    onMemberSelected = { },
+                    CompanionInfo(
+                        "1", "Nita", "搬家&油漆幫手", "信義區",
+                        LatLng(25.0330, 121.5654), "專長1", R.drawable.avatar3
+                    ),
                     tabVM = tabVM
                 )
             }

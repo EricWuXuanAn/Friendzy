@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -143,7 +144,7 @@ fun PostScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp),
+                .padding(top = 10.dp, start = 3.dp),
             text = "Post Your Event!",
             textAlign = TextAlign.Center,
             fontFamily = FontFamily.Cursive,
@@ -156,14 +157,14 @@ fun PostScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(5.dp),
+                    .padding(top = 5.dp, start = 5.dp),
                 text = "Event Title:",
-                fontSize = 17.sp
+                fontSize = 18.sp
             )
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 15.dp)
+                    .padding(top = 5.dp)
                     .height(70.dp),
                 value = inputTitle,
                 onValueChange = { inputTitle = it },
@@ -186,7 +187,7 @@ fun PostScreen(
                     .fillMaxWidth()
                     .padding(20.dp)
             )
-            Text("Start Time:")
+            Text(text = "Start Time:", fontSize = 18.sp, modifier = Modifier.padding(start = 3.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -232,7 +233,6 @@ fun PostScreen(
                     expanded = startExpended,
                     onExpandedChange = {
                         startExpended = it
-//                        startExpended = true
                     }
                 ) {
                     OutlinedTextField(
@@ -263,7 +263,7 @@ fun PostScreen(
                 }
 
             }
-            Text(text = "End Time:", modifier = Modifier.padding(top = 10.dp))
+            Text(text = "End Time:", modifier = Modifier.padding(top = 10.dp, start = 3.dp), fontSize = 18.sp)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -342,41 +342,12 @@ fun PostScreen(
             }
 
         }
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(top = 10.dp, start = 5.dp, end = 5.dp)
-//        ) {
-//            OutlinedTextField(
-//                modifier = Modifier.weight(0.8f),
-//                value = service_poster.toString(),
-//                onValueChange = { service_poster = it.toInt() },
-//                label = { Text("請輸入會員ID") },
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.Transparent,
-//                    unfocusedContainerColor = Color.Transparent
-//                ),
-//                shape = RoundedCornerShape(15.dp)
-//            )
-//        }
         Row(
             modifier = Modifier
                 .padding(top = 20.dp, start = 5.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-//            OutlinedTextField(
-//                modifier = Modifier.weight(0.7f),
-//                value = post_status.toString(),
-//                onValueChange = { post_status = it.toInt() },
-//                label = { Text(text = "0 為顧客 , 1 為陪伴者") },
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.Transparent,
-//                    unfocusedContainerColor = Color.Transparent
-//                ),
-//                shape = RoundedCornerShape(15.dp)
-//            )
-
             OutlinedTextField(
                 modifier = Modifier.weight(0.8f),
                 value = service_price.toString(),
@@ -389,47 +360,53 @@ fun PostScreen(
                 shape = RoundedCornerShape(15.dp)
             )
         }
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Button(
+                shape = RoundedCornerShape(15.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.purple_200),
+                    contentColor = Color.DarkGray
+                ),
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(70.dp)
+                    .padding(top = 30.dp, bottom = 5.dp),
+                onClick = {
+                    scpoe.launch {
+                        postVM.postOrder(
+                            service = inputTitle,
+                            service_charge = service_price,
+                            post_status = 0,
+                            start_time = stratTimestamp,
+                            finished_time = finishedTimestamp,
+                            service_poster = servicePoster,
+                            service_status = 0,
+                            service_detail = service_content
+                        )
+                        delay(200)
+                        snackBar.showSnackbar(
+                            message = "Post Successful!",
+                            withDismissAction = true
+                        )
+                        delay(2000)
+                    }
+                    scpoe.launch {
+                        service_content = ""
+                        service_price = 0.0
+                        inputTitle = ""
+                        service_poster = 1
+                        startExpendText = "00:00"
+                        endExpendText = "00:00"
+                    }
 
-        Button(
-
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.purple_200),
-                contentColor = Color.DarkGray
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 5.dp),
-            onClick = {
-                scpoe.launch {
-                    postVM.postOrder(
-                        service = inputTitle,
-                        service_charge = service_price,
-                        post_status = 0,
-                        start_time = stratTimestamp,
-                        finished_time = finishedTimestamp,
-                        service_poster = servicePoster,
-                        service_status = 0,
-                        service_detail = service_content
-                    )
-                    delay(200)
-                    snackBar.showSnackbar(
-                        message = "Post Successful!",
-                        withDismissAction = true
-                    )
-                    delay(2000)
                 }
-                scpoe.launch {
-                    service_content = ""
-                    service_price = 0.0
-                    inputTitle = ""
-                    service_poster = 1
-                    startExpendText = "00:00"
-                    endExpendText = "00:00"
-                }
-
+            ) {
+                Text(modifier = Modifier.fillMaxWidth(),text = "Post", softWrap = false, textAlign = TextAlign.Center, fontSize = 20.sp)
             }
-        ) {
-            Text(modifier = Modifier.fillMaxWidth(),text = "Post", softWrap = false, textAlign = TextAlign.Center)
         }
         SnackbarHost(hostState = snackBar, modifier = Modifier.padding(bottom = 60.dp))
     }
@@ -465,11 +442,3 @@ fun getDatePicker(
     )
     { DatePicker(state = datePickerState) }
 }
-
-
-//@Composable
-//@Preview(showBackground = true)
-//fun PostScreenPreview() {
-//    PostScreen(rememberNavController(), postVM = PostVM(), tabVM = TabVM()
-//    )
-//}
